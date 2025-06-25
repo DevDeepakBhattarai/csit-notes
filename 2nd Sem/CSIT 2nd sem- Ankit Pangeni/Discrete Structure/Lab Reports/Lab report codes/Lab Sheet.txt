@@ -1,0 +1,6 @@
+Lab Task 1 and 2: Set operation ( Union, Intersection, Set Difference and Complement)
+Lab Task 3: Cross Product of Two sets. Floor and Ceeling Operations
+LAb Task 4: Euclidean and Extended Euclidean Algorithm
+Lab Task 5 and 6: Recursive function to implementation power(a,b), Permutatioan and Combination
+Lab Task 7 and 8: Recursive function to implementation of Binary Search and Merge Sort
+Lab Task 9 and 10: Graph representation and Implementation of Kruskal Algorithm.
