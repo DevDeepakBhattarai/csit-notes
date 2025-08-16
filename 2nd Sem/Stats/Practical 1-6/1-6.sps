@@ -1,5 +1,5 @@
 ﻿* Encoding: UTF-8.
-
+* Getting 500 Sample.
 DATASET ACTIVATE DataSet1.
 DATASET COPY  sample.
 DATASET ACTIVATE  sample.
@@ -13,14 +13,13 @@ DATASET ACTIVATE  DataSet1.
 SAVE OUTFILE='C:\Users\deepak_bhattarai\Documents\Notes\2nd Sem\Stats\Practical 1-6\sample.sav'
   /COMPRESSED.
 
-
+*Grouping data based on the age.
 DATASET ACTIVATE  sample.
 RECODE Age (Lowest thru 17 = 0) (18 thru 22 = 1)  
 (23 thru 27 = 2) (28 thru 32 = 3) (33 thru 37 = 4) (38 thru 42 = 5)  
 (43 thru 47 = 6) (48 thru 52 = 7) (53 thru 57 = 8)  
 (58 thru 62 = 9) (63 thru 67 = 10) (68 thru Highest = 11)  
 INTO Age_grouped.
-
 VARIABLE LABELS Age_grouped 'Grouped Age'.  
 VALUE LABELS Age_grouped  
 0 "Below 18"  
@@ -38,22 +37,24 @@ VALUE LABELS Age_grouped
 EXECUTE.
 
 
-
+*Making a histogram.
 FREQUENCIES VARIABLES=Age_grouped
   /STATISTICS=MEAN
   /HISTOGRAM
   /ORDER=ANALYSIS.
 
+*Making a bar graph.
 FREQUENCIES VARIABLES=Age_grouped
   /STATISTICS=MEAN
   /BARCHART FREQ
   /ORDER=ANALYSIS.
-
+* Pie Chart.
 FREQUENCIES VARIABLES=Age_grouped
   /STATISTICS=MEAN
   /PIECHART FREQ
   /ORDER=ANALYSIS.
 
+*Box and whisker plot .
 EXAMINE VARIABLES=Age
   /PLOT BOXPLOT STEMLEAF
   /COMPARE GROUPS
@@ -62,6 +63,7 @@ EXAMINE VARIABLES=Age
   /MISSING LISTWISE
   /NOTOTAL.
 
+*Frequency Table.
 FREQUENCIES VARIABLES=Age_grouped
   /NTILES=4
   /PERCENTILES=35.0 
@@ -70,22 +72,7 @@ FREQUENCIES VARIABLES=Age_grouped
   /PIECHART FREQ
   /ORDER=ANALYSIS.
 
-EXAMINE VARIABLES=Age BY typeofrespondent
-  /PLOT BOXPLOT STEMLEAF
-  /COMPARE GROUPS
-  /STATISTICS DESCRIPTIVES
-  /CINTERVAL 95
-  /MISSING LISTWISE
-  /NOTOTAL.
-
-FREQUENCIES VARIABLES=Age
-  /NTILES=4
-  /PERCENTILES=25.0 35.0 75.0 
-  /STATISTICS=STDDEV VARIANCE RANGE MINIMUM MAXIMUM SEMEAN MEAN MEDIAN MODE SUM SKEWNESS SESKEW 
-    KURTOSIS SEKURT
-  /PIECHART FREQ
-  /ORDER=ANALYSIS.
-
+*Box and whisker according to typeof responded.
 EXAMINE VARIABLES=Age BY typeofrespondent
   /PLOT BOXPLOT STEMLEAF
   /COMPARE GROUPS
@@ -95,15 +82,16 @@ EXAMINE VARIABLES=Age BY typeofrespondent
   /MISSING LISTWISE
   /NOTOTAL.
 
+*All the descriptive stats value. 
+FREQUENCIES VARIABLES=Age
+  /NTILES=4
+  /PERCENTILES=25.0 35.0 75.0 
+  /STATISTICS=STDDEV VARIANCE RANGE MINIMUM MAXIMUM SEMEAN MEAN MEDIAN MODE SUM SKEWNESS SESKEW 
+    KURTOSIS SEKURT
+  /PIECHART FREQ
+  /ORDER=ANALYSIS.
 
-DATASET ACTIVATE  sample.
-DATASET COPY  typerespondent_1.
-DATASET ACTIVATE  typerespondent_1.
-FILTER OFF.
-USE ALL.
-SELECT IF (typeofrespondent = 1).
-EXECUTE.
-DATASET ACTIVATE  sample.
+
 
 
 DATASET ACTIVATE typerespondent_1.
