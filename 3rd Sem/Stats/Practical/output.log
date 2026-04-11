@@ -1,0 +1,1188 @@
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\output.log
+  log type:  text
+ opened on:  26 Feb 2026, 19:01:45
+
+. 
+. //Practical 1
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //A sample of size 150 provided the mean of 47.5. 
+. //Can it be regarded as representative of population with mean 50 and standard deviation 12 at 5% level of significance. 
+. //Also find the 95% confidence limits for the population mean using the sample data.
+. 
+. ztesti 150 47.5 12 50
+
+One-sample z test
+------------------------------------------------------------------------------
+         |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+       x |     150        47.5    .9797959          12    45.57964    49.42036
+------------------------------------------------------------------------------
+    mean = mean(x)                                                z =  -2.5516
+H0: mean = 50                                    
+
+    Ha: mean < 50               Ha: mean != 50                 Ha: mean > 50
+ Pr(Z < z) = 0.0054         Pr(|Z| > |z|) = 0.0107          Pr(Z > z) = 0.9946
+
+. 
+. 
+. 
+. //Practical 2
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //Two samples of size 30 each is selected. From two independent populations With variances 840 and 920 respectively. 
+. //Are the selected samples Have Equal means at 5% level of significance. 
+. //Also find 95% confidence limits for the difference of means. 
+. // use data in question 2
+. 
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical2.xlsx", sheet("Sheet1") firstrow
+(2 vars, 30 obs)
+
+. 
+. ztest x == y, unpaired sd1(840) sd2(920)
+
+Two-sample z test
+------------------------------------------------------------------------------
+Variable |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+       x |      30    52.03333    153.3623         840   -248.5513    352.6179
+       y |      30    48.43333    167.9683         920   -280.7784    377.6451
+---------+--------------------------------------------------------------------
+    diff |                 3.6    227.4496               -442.1931    449.3931
+------------------------------------------------------------------------------
+    diff = mean(x) - mean(y)                                      z =   0.0158
+H0: diff = 0
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(Z < z) = 0.5063         Pr(|Z| > |z|) = 0.9874          Pr(Z > z) = 0.4937
+
+. clear
+
+. 
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical2.xlsx", sheet("Sheet2") firstrow 
+(3 vars, 60 obs)
+
+. ztest value, by(grp) sd1(840) sd2(920)
+
+Two-sample z test
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+       x |      30    52.03333    153.3623         840   -248.5513    352.6179
+       y |      30    48.43333    167.9683         920   -280.7784    377.6451
+---------+--------------------------------------------------------------------
+    diff |                 3.6    227.4496               -442.1931    449.3931
+------------------------------------------------------------------------------
+    diff = mean(x) - mean(y)                                      z =   0.0158
+H0: diff = 0
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(Z < z) = 0.5063         Pr(|Z| > |z|) = 0.9874          Pr(Z > z) = 0.4937
+
+. 
+. 
+. 
+. 
+. //Practical 3
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //A sample of size trout is selected from the population of which mean 1100 And standard deviation 275. 
+. //Following are the records of the sample selected. 
+. //Can the sample be regarded as the representative of parent population.
+. //use file practical 3
+. 
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical3.xlsx", sheet("Sheet1") firstrow
+(1 var, 30 obs)
+
+. 
+. ztest x == 1100, sd(275)
+
+One-sample z test
+------------------------------------------------------------------------------
+Variable |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+       x |      30    1172.067     50.2079         275    1073.661    1270.472
+------------------------------------------------------------------------------
+    mean = mean(x)                                                z =   1.4354
+H0: mean = 1100                                  
+
+   Ha: mean < 1100             Ha: mean != 1100               Ha: mean > 1100
+ Pr(Z < z) = 0.9244         Pr(|Z| > |z|) = 0.1512          Pr(Z > z) = 0.0756
+
+. 
+. //Practical 4
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //Two samples of size 50 each are selected to test the proportion of the smokers among the proportion. 
+. //It is observed that 44% in the first population and 50% in the second samples are smokers. 
+. //Is the hypothesis of lesser smokers in first population is significant. 
+. //Also find the 95% confidence limits for the difference of proportion.
+. 
+. prtesti 50 .44 50 .5
+
+Two-sample test of proportions                     x: Number of obs =       50
+                                                   y: Number of obs =       50
+------------------------------------------------------------------------------
+             |       Mean   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |        .44   .0701997                      .3024111    .5775889
+           y |         .5   .0707107                      .3614096    .6385904
+-------------+----------------------------------------------------------------
+        diff |       -.06   .0996393                     -.2552895    .1352895
+             |  under H0:   .0998198    -0.60   0.548
+------------------------------------------------------------------------------
+        diff = prop(x) - prop(y)                                  z =  -0.6011
+    H0: diff = 0
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(Z < z) = 0.2739         Pr(|Z| > |z|) = 0.5478          Pr(Z > z) = 0.7261
+
+. 
+. 
+. //Practical 5
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //The time (in minutes) spent by 10 randomly selected customers using internet in a cyber cafe are as follows 35 ,20 ,30 ,45 ,60 ,40 ,65 ,40 ,25 ,50 Can you say average time spent by customers is more than 30 minutes at 5% level of significance?
+. input time_in_min
+
+     time_in~n
+  1. 35
+  2. 20
+  3. 30
+  4. 45
+  5. 60
+  6. 40
+  7. 65
+  8. 40
+  9. 25
+ 10. 50
+ 11. end
+
+. ttest time_in_min == 30
+
+One-sample t test
+------------------------------------------------------------------------------
+Variable |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+time_i~n |      10          41    4.582576    14.49138    30.63349    51.36651
+------------------------------------------------------------------------------
+    mean = mean(time_in_min)                                      t =   2.4004
+H0: mean = 30                                    Degrees of freedom =        9
+
+    Ha: mean < 30               Ha: mean != 30                 Ha: mean > 30
+ Pr(T < t) = 0.9801         Pr(|T| > |t|) = 0.0399          Pr(T > t) = 0.0199
+
+. 
+. //Practical 6
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //Two kinds of manure were applied to sixteen one-hectare  plot, other condition remaining the
+. //same. The yields in quintals are given below:
+. 
+. //Manure I      18      20      36      50      49      36      34      49      41
+. //Manure II     29      28      26      35      30      44      46      
+. //Is there any significant difference between the mean yields? Use 5% level of significance.Also use Mann Whitney U test to give conclusion.
+. 
+. //Use file practical 6
+. 
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical6.xlsx", sheet("Sheet1") firstrow
+(2 vars, 9 obs)
+
+. 
+. // independent sample t-test
+. // using variable
+. ttest ManureI == ManureII, unpaired unequal
+
+Two-sample t test with unequal variances
+------------------------------------------------------------------------------
+Variable |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+ ManureI |       9          37    3.968627    11.90588    27.84833    46.15167
+ManureII |       7          34     3.03158    8.020806    26.58199    41.41801
+---------+--------------------------------------------------------------------
+Combined |      16     35.6875    2.545779    10.18312     30.2613     41.1137
+---------+--------------------------------------------------------------------
+    diff |                   3    4.994044               -7.725987    13.72599
+------------------------------------------------------------------------------
+    diff = mean(ManureI) - mean(ManureII)                         t =   0.6007
+H0: diff = 0                     Satterthwaite's degrees of freedom =  13.7967
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.7211         Pr(|T| > |t|) = 0.5578          Pr(T > t) = 0.2789
+
+. // using groups
+. clear
+
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical6.xlsx", sheet("Sheet2") firstrow
+(2 vars, 16 obs)
+
+. ttest value, by(type) unequal
+
+Two-sample t test with unequal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+       1 |       9          37    3.968627    11.90588    27.84833    46.15167
+       2 |       7          34     3.03158    8.020806    26.58199    41.41801
+---------+--------------------------------------------------------------------
+Combined |      16     35.6875    2.545779    10.18312     30.2613     41.1137
+---------+--------------------------------------------------------------------
+    diff |                   3    4.994044               -7.725987    13.72599
+------------------------------------------------------------------------------
+    diff = mean(1) - mean(2)                                      t =   0.6007
+H0: diff = 0                     Satterthwaite's degrees of freedom =  13.7967
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.7211         Pr(|T| > |t|) = 0.5578          Pr(T > t) = 0.2789
+
+. 
+. // Mann Whitney U test
+. ranksum value, by(type)
+
+Two-sample Wilcoxon rank-sum (Mann–Whitney) test
+
+        type |      Obs    Rank sum    Expected
+-------------+---------------------------------
+           1 |        9          85        76.5
+           2 |        7          51        59.5
+-------------+---------------------------------
+    Combined |       16         136         136
+
+Unadjusted variance       89.25
+Adjustment for ties       -0.26
+                     ----------
+Adjusted variance         88.99
+
+H0: value(type==1) = value(type==2)
+         z =  0.901
+Prob > |z| = 0.3676
+Exact prob = 0.3923
+
+. 
+. 
+. //Practical 7
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical7.xlsx", sheet("Sheet1") firstrow
+(3 vars, 10 obs)
+
+. 
+. // paired t-test
+. ttest Beforetraining == Aftertraining
+
+Paired t test
+------------------------------------------------------------------------------
+Variable |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+Before~g |      10         7.6    1.359739    4.299871    4.524058    10.67594
+Aftert~g |      10         8.8    1.496663    4.732864    5.414313    12.18569
+---------+--------------------------------------------------------------------
+    diff |      10        -1.2    .8793937    2.780887   -3.189327    .7893268
+------------------------------------------------------------------------------
+     mean(diff) = mean(Beforetraining - Aftertraining)            t =  -1.3646
+ H0: mean(diff) = 0                              Degrees of freedom =        9
+
+ Ha: mean(diff) < 0           Ha: mean(diff) != 0           Ha: mean(diff) > 0
+ Pr(T < t) = 0.1028         Pr(|T| > |t|) = 0.2055          Pr(T > t) = 0.8972
+
+. 
+. // Wilcoxon Signed Ranks test
+. signrank Beforetraining = Aftertraining
+
+Wilcoxon signed-rank test
+
+        Sign |      Obs   Sum ranks    Expected
+-------------+---------------------------------
+    Positive |        4          14        27.5
+    Negative |        6          41        27.5
+        Zero |        0           0           0
+-------------+---------------------------------
+         All |       10          55          55
+
+Unadjusted variance       96.25
+Adjustment for ties       -4.50
+Adjustment for zeros       0.00
+                     ----------
+Adjusted variance         91.75
+
+H0: Beforetraining = Aftertraining
+         z = -1.409
+Prob > |z| = 0.1587
+Exact prob = 0.1875
+
+. 
+. //Practical 8
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //Find confidence interval of mean assuming normal distribution for following data. height
+. // 78   55      68      48      65      76      57      55      65      75      51      61
+. // 68   67      76      78      71      56      57      67      58      51      50      58
+. // 50   77      55      48      70      55      58      70      56      52      74      61
+. // 69   76      61      68      78      56      78      57      66      66      74      66
+. // 48   73  71  70  62  74  76  50  69  75  65  48
+. 
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical8.xlsx", sheet("Sheet1") firstrow
+(1 var, 60 obs)
+
+. // confidence interval of means
+. ci means x
+
+    Variable |        Obs        Mean    Std. err.       [95% conf. interval]
+-------------+---------------------------------------------------------------
+           x |         60       63.88        1.23           61.42       66.35
+
+. // test of randomness using run tested
+. runtest x
+ N(x <= 65.5) = 30
+ N(x >  65.5) = 30
+       obs = 60
+   N(runs) = 34
+        z  = .78
+  Prob>|z| = .43
+
+. summarize x, detail
+
+                              x
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           48             48
+ 5%           48             48
+10%           50             48       Obs                  60
+25%           56             48       Sum of wgt.          60
+
+50%         65.5                      Mean           63.88333
+                        Largest       Std. dev.      9.552871
+75%           72             78
+90%           76             78       Variance       91.25734
+95%           78             78       Skewness       -.132116
+99%           78             78       Kurtosis       1.745769
+
+. ksmirnov x = normalden( x ,63.88333,9.552871)
+
+One-sample Kolmogorov–Smirnov test against theoretical distribution
+    normalden( x ,63.88333,9.552871)
+
+Smaller group             D     p-value  
+---------------------------------------
+x                    0.9860       0.000
+Cumulative          -0.0105       0.987
+Combined K-S         0.9860       0.000
+
+Note: Ties exist in dataset; 
+      there are 23 unique values out of 60 observations.
+
+. ksmirnov x = tden(59, x)
+
+One-sample Kolmogorov–Smirnov test against theoretical distribution
+              tden(59, x)
+
+Smaller group             D     p-value  
+---------------------------------------
+x                    1.0000       0.000
+Cumulative           0.0000       1.000
+Combined K-S         1.0000       0.000
+
+Note: Ties exist in dataset; 
+      there are 23 unique values out of 60 observations.
+
+. 
+. 
+. //Practical 9
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:45
+
+. display "`c(hostname)'"
+Deepak
+
+. //Construct random data of size 5000 height of students categorized by gender. Considering minimum height of 120 cms. to 185 cms.
+. //a)   Draw a sample calculating appropriate sample size assuming the proportion of male and female are equal for 5 % desired margin of error.
+. //b)   Test the hypothesis of male and female are of equal in proportion for the population you have constructed.
+. //c)   Test the hypothesis of male are taller than female students at 5 % level of significance. 
+. //d)   If the sample size is 500 what will be the change in decision for above hypothesis.
+. //e)   Find the 95% confidence limits of proportion of gender and 95 % confidence limits for the difference of height for both cases of sample.
+. //note excel to construct the data file and conduct analysis in stata.
+. 
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_random.xlsx", sheet("Sheet1") firstrow
+(3 vars, 5,000 obs)
+
+. 
+. display "n=(1.96^2)*.5*.5/0.05^2 ="
+n=(1.96^2)*.5*.5/0.05^2 =
+
+. display (1.96^2)*.5*.5/0.05^2
+384.16
+
+. 
+. sample 385, count
+(4,615 observations deleted)
+
+. save "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_sample1.dta", replace
+file C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_sample1.dta saved
+
+. describe
+
+Contains data from C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_sample1.dta
+ Observations:           385                  
+    Variables:             3                  26 Feb 2026 19:01
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SN              int     %10.0g                S.N
+height          int     %10.0g                height
+gender          byte    %10.0g                gender
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+. summarize, detail
+
+                             S.N
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           82             14
+ 5%          282             38
+10%          571             44       Obs                 385
+25%         1277             82       Sum of wgt.         385
+
+50%         2491                      Mean           2496.429
+                        Largest       Std. dev.      1451.698
+75%         3687           4941
+90%         4531           4946       Variance        2107427
+95%         4769           4962       Skewness       .0366971
+99%         4941           4981       Kurtosis        1.74965
+
+                           height
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          120            120
+ 5%          124            120
+10%          126            120       Obs                 385
+25%          135            120       Sum of wgt.         385
+
+50%          152                      Mean           152.2779
+                        Largest       Std. dev.      18.84443
+75%          169            184
+90%          178            185       Variance       355.1127
+95%          181            185       Skewness      -.0131199
+99%          184            185       Kurtosis        1.78389
+
+                           gender
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs                 385
+25%            0              0       Sum of wgt.         385
+
+50%            0                      Mean           .4727273
+                        Largest       Std. dev.      .4999053
+75%            1              1
+90%            1              1       Variance       .2499053
+95%            1              1       Skewness       .1092536
+99%            1              1       Kurtosis       1.011936
+
+. 
+. //b)
+. prtest gender == 0.5
+
+One-sample test of proportion                   Number of obs      =       385
+
+------------------------------------------------------------------------------
+    Variable |       Mean   Std. err.                     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      gender |   .4727273   .0254444                      .4228571    .5225974
+------------------------------------------------------------------------------
+    p = proportion(gender)                                        z =  -1.0703
+H0: p = 0.5
+
+     Ha: p < 0.5                 Ha: p != 0.5                   Ha: p > 0.5
+ Pr(Z < z) = 0.1423         Pr(|Z| > |z|) = 0.2845          Pr(Z > z) = 0.8577
+
+. 
+. //c)
+. ttest height, by(gender) unequal
+
+Two-sample t test with unequal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+       0 |     203    152.6453    1.302477    18.55744    150.0771    155.2135
+       1 |     182    151.8681     1.42338    19.20245    149.0596    154.6767
+---------+--------------------------------------------------------------------
+Combined |     385    152.2779    .9604012    18.84443    150.3896    154.1662
+---------+--------------------------------------------------------------------
+    diff |            .7771883    1.929367               -3.016537    4.570913
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.4028
+H0: diff = 0                     Satterthwaite's degrees of freedom =  375.264
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6563         Pr(|T| > |t|) = 0.6873          Pr(T > t) = 0.3437
+
+. 
+. clear
+
+. 
+. //d)
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_random.xlsx", sheet("Sheet1") firstrow
+(3 vars, 5,000 obs)
+
+. sample 500, count
+(4,500 observations deleted)
+
+. save "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_sample2.dta", replace
+file C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_sample2.dta saved
+
+. describe
+
+Contains data from C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\practical9_sample2.dta
+ Observations:           500                  
+    Variables:             3                  26 Feb 2026 19:01
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SN              int     %10.0g                S.N
+height          int     %10.0g                height
+gender          byte    %10.0g                gender
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+. prtest gender == 0.5
+
+One-sample test of proportion                   Number of obs      =       500
+
+------------------------------------------------------------------------------
+    Variable |       Mean   Std. err.                     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      gender |        .51   .0223562                      .4661826    .5538174
+------------------------------------------------------------------------------
+    p = proportion(gender)                                        z =   0.4472
+H0: p = 0.5
+
+     Ha: p < 0.5                 Ha: p != 0.5                   Ha: p > 0.5
+ Pr(Z < z) = 0.6726         Pr(|Z| > |z|) = 0.6547          Pr(Z > z) = 0.3274
+
+. ttest height, by(gender) unequal
+
+Two-sample t test with unequal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+       0 |     245    150.4245    1.186772    18.57592    148.0869    152.7621
+       1 |     255    151.0549    1.194962    19.08201    148.7016    153.4082
+---------+--------------------------------------------------------------------
+Combined |     500     150.746    .8416339    18.81951    149.0924    152.3996
+---------+--------------------------------------------------------------------
+    diff |           -.6304122     1.68415               -3.939329    2.678505
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -0.3743
+H0: diff = 0                     Satterthwaite's degrees of freedom =  497.913
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.3542         Pr(|T| > |t|) = 0.7083          Pr(T > t) = 0.6458
+
+. 
+. //e)
+. ci proportion gender
+
+                                                            Binomial exact   
+    Variable |        Obs  Proportion    Std. err.       [95% conf. interval]
+-------------+---------------------------------------------------------------
+      gender |        500         .51    .0223562        .4652348    .5546463
+
+. prtesti 385 0.5090909 500 0.534
+
+Two-sample test of proportions                     x: Number of obs =      385
+                                                   y: Number of obs =      500
+------------------------------------------------------------------------------
+             |       Mean   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |   .5090909   .0254781                      .4591546    .5590272
+           y |       .534   .0223089                      .4902753    .5777247
+-------------+----------------------------------------------------------------
+        diff |  -.0249091   .0338648                     -.0912829    .0414647
+             |  under H0:   .0338657    -0.74   0.462
+------------------------------------------------------------------------------
+        diff = prop(x) - prop(y)                                  z =  -0.7355
+    H0: diff = 0
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(Z < z) = 0.2310         Pr(|Z| > |z|) = 0.4620          Pr(Z > z) = 0.7690
+
+. 
+. //Practical 10
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:46
+
+. display "`c(hostname)'"
+Deepak
+
+. //A developer of food for pig would like to determine what relationship exists among the age of a pig when it starts receiving a newly developed food supplement, the initial weight of the pig and the amount of weight it gains in a week period with th
+> e food supplement. The following information is the result of study of eight piglets.
+. //a.    Calculate the least square equation that best describes these three variables.
+. //b.    Calculate the standard error.
+. //c.    How much might we expect a pig to gain weight in a week with the food supplement if it were 9 weeks old and weighed 48 pounds? 
+. //d.    Find coefficient of determination. 
+. //e.    Test the significance of the regression Coefficients and overall regression. Conduct residual analysis. 
+. //f.    Test the multicollinearity between independent variables.
+. //g.    Find simple partial and multiple correlations. Test its significance.
+. 
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Practical 10.xlsx", sheet("Sheet2") firstrow clear
+(4 vars, 8 obs)
+
+. //Regression analysis
+. regress Weightgainy Initialweightpoundsx1 Initialageweeksx2
+
+      Source |       SS           df       MS      Number of obs   =         8
+-------------+----------------------------------   F(2, 5)         =     18.54
+       Model |  37.0092678         2  18.5046339   Prob > F        =    0.0049
+    Residual |  4.99073219         5  .998146438   R-squared       =    0.8812
+-------------+----------------------------------   Adj R-squared   =    0.8336
+       Total |          42         7           6   Root MSE        =    .99907
+
+---------------------------------------------------------------------------------------
+          Weightgainy | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+----------------------+----------------------------------------------------------------
+Initialweightpoundsx1 |   .1048343   .0322915     3.25   0.023     .0218265    .1878422
+    Initialageweeksx2 |   .8065025   .1582366     5.10   0.004     .3997425    1.213263
+                _cons |  -4.191709   1.888119    -2.22   0.077    -9.045274    .6618555
+---------------------------------------------------------------------------------------
+
+. //test of Multicollinearity
+. estat vif
+
+    Variable |       VIF       1/VIF  
+-------------+----------------------
+Initialage~2 |      1.00    0.999723
+Initialwei~1 |      1.00    0.999723
+-------------+----------------------
+    Mean VIF |      1.00
+
+. //Calculation of value of dependent variable when x1 = 48 and x2 = 9
+. display _b[_cons] + _b[Initialweightpoundsx1]*48 + _b[Initialageweeksx2]*9
+8.098861
+
+. //Calculation of correlation matrix
+. corr Initialweightpoundsx1 Initialageweeksx2 Weightgainy
+(obs=8)
+
+             | Initia~1 Initia~2 Weight~y
+-------------+---------------------------
+Initialwei~1 |   1.0000
+Initialage~2 |   0.0166   1.0000
+ Weightgainy |   0.5136   0.7942   1.0000
+
+
+. //Partial correlation matrix
+. pcorr Weightgainy Initialweightpoundsx1 Initialageweeksx2
+(obs=8)
+
+Partial and semipartial correlations of Weightgainy with
+
+               Partial   Semipartial      Partial   Semipartial   Significance
+   Variable |    corr.         corr.      corr.^2       corr.^2          value
+------------+-----------------------------------------------------------------
+Initialwe~1 |   0.8236        0.5005       0.6782        0.2505         0.0228
+Initialag~2 |   0.9157        0.7857       0.8386        0.6174         0.0038
+
+. pcorr Initialweightpoundsx1 Initialageweeksx2 Weightgainy
+(obs=8)
+
+Partial and semipartial correlations of Initialweightpoundsx1 with
+
+               Partial   Semipartial      Partial   Semipartial   Significance
+   Variable |    corr.         corr.      corr.^2       corr.^2          value
+------------+-----------------------------------------------------------------
+Initialag~2 |  -0.7504       -0.6438       0.5631        0.4145         0.0520
+Weightgainy |   0.8236        0.8234       0.6782        0.6781         0.0228
+
+. pcorr Initialageweeksx2 Weightgainy Initialweightpoundsx1
+(obs=8)
+
+Partial and semipartial correlations of Initialageweeksx2 with
+
+               Partial   Semipartial      Partial   Semipartial   Significance
+   Variable |    corr.         corr.      corr.^2       corr.^2          value
+------------+-----------------------------------------------------------------
+Weightgainy |   0.9157        0.9156       0.8386        0.8384         0.0038
+Initialwe~1 |  -0.7504       -0.4560       0.5631        0.2079         0.0520
+
+. //Normal probability plot
+. pnorm Weightgainy
+
+. graph export "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Graph1.jpg", as(jpg) name("Graph") quality(100) replace
+file C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Graph1.jpg written in JPEG format
+
+. rvfplot
+
+. graph export "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Graph2.jpg", as(jpg) name("Graph") quality(100) replace
+file C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Graph2.jpg written in JPEG format
+
+. rvpplot Initialweightpoundsx1
+
+. graph export "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Graph3.jpg", as(jpg) name("Graph") quality(100) replace
+file C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Graph3.jpg written in JPEG format
+
+. 
+. //Practical 11
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:48
+
+. display "`c(hostname)'"
+Deepak
+
+. //11.   The yield of treatments in different plots are as shown in the following plots. Carry out analysis.
+. //t₄    1401  t₃     2536   t₃     2459   t₁      2537  t₃     2827   t₁     2069
+. //t₂    2211  t₁     1797   t₄     1170   t₄     1516   t₄     2104   t₃     2385
+. //t₂    3366  t₁     2104   t₂     2591   t₃     2460   t₄     1077   t₂      2544
+. //(use data from excel after arranging)
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Practical 11.xlsx", sheet("Sheet1") firstrow
+(2 vars, 18 obs)
+
+. oneway value treatment, bonferroni
+
+                        Analysis of variance
+    Source              SS         df      MS            F     Prob > F
+------------------------------------------------------------------------
+Between groups      3561394.36      3   1187131.45      6.72     0.0049
+ Within groups      2473236.75     14   176659.768
+------------------------------------------------------------------------
+    Total           6034631.11     17   354978.301
+
+Bartlett's equal-variances test: chi2(3) =   4.0595    Prob>chi2 = 0.255
+
+                       Comparison of value by treatment
+                                (Bonferroni)
+Row Mean-|
+Col Mean |          1          2          3
+---------+---------------------------------
+       2 |      761.2
+         |      0.104
+         |
+       3 |      616.6     -144.6
+         |      0.216      1.000
+         |
+       4 |    -369.05   -1130.25    -985.65
+         |      1.000      0.012      0.021
+
+. //Kruskal Wallis test
+. kwallis value, by(treatment)
+
+Kruskal–Wallis equality-of-populations rank test
+
+  +---------------------------+
+  | treatm~t | Obs | Rank sum |
+  |----------+-----+----------|
+  |        1 |   5 |    33.50 |
+  |        2 |   4 |    58.00 |
+  |        3 |   5 |    63.00 |
+  |        4 |   4 |    16.50 |
+  +---------------------------+
+
+  chi2(3) = 10.625
+     Prob = 0.0139
+
+  chi2(3) with ties = 10.636
+               Prob = 0.0139
+
+. 
+. 
+. //Practical 12
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:48
+
+. display "`c(hostname)'"
+Deepak
+
+. //12.   The following table gives the result of the experiment on four varieties of a crop in 5 blocks of plot.
+. //          Block I                  Block II               Block III              Block IV              Block V
+. //A           32        B           33  D          30   A           35  C            36
+. //B           34        C           34  C           35  C            32 D            29
+. //C           31        A          34   B           36  B            37 A            37
+. //D           29        D          26   A           33  D           28  B            35
+. //Analyse the above result to test whether there is significant difference between yields of four varieties.
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Practical 12.xlsx", sheet("Sheet1") firstrow
+(3 vars, 20 obs)
+
+. anova values Treatment Block
+
+                         Number of obs =         20    R-squared     =  0.8407
+                         Root MSE      =    1.56791    Adj R-squared =  0.7478
+
+                  Source | Partial SS         df         MS        F    Prob>F
+              -----------+----------------------------------------------------
+                   Model |      155.7          7   22.242857      9.05  0.0006
+                         |
+               Treatment |        134          3   44.666667     18.17  0.0001
+                   Block |       21.7          4       5.425      2.21  0.1296
+                         |
+                Residual |       29.5         12   2.4583333  
+              -----------+----------------------------------------------------
+                   Total |      185.2         19   9.7473684  
+
+. oneway value Treatment, bonferroni
+
+                        Analysis of variance
+    Source              SS         df      MS            F     Prob > F
+------------------------------------------------------------------------
+Between groups             134      3   44.6666667     13.96     0.0001
+ Within groups            51.2     16          3.2
+------------------------------------------------------------------------
+    Total                185.2     19   9.74736842
+
+Bartlett's equal-variances test: chi2(3) =   0.4943    Prob>chi2 = 0.920
+
+                      Comparison of values by Treatment
+                                (Bonferroni)
+Row Mean-|
+Col Mean |          1          2          3
+---------+---------------------------------
+       2 |         .8
+         |      1.000
+         |
+       3 |        -.6       -1.4
+         |      1.000      1.000
+         |
+       4 |       -5.8       -6.6       -5.2
+         |      0.001      0.000      0.002
+
+. 
+. 
+. //Practical 13
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:48
+
+. display "`c(hostname)'"
+Deepak
+
+. import excel "C:\Users\deepak_bhattarai\OneDrive\Documents\Notes\3rd Sem\Stats\Practical\Practical 13.xlsx", sheet("Sheet1") firstrow
+(4 vars, 25 obs)
+
+. anova Values Rows Column Treatment
+
+                         Number of obs =         25    R-squared     =  0.6888
+                         Root MSE      =    5.03401    Adj R-squared =  0.3776
+
+                  Source | Partial SS         df         MS        F    Prob>F
+              -----------+----------------------------------------------------
+                   Model |   673.0752         12     56.0896      2.21  0.0916
+                         |
+                    Rows |   141.0784          4     35.2696      1.39  0.2948
+                  Column |   183.7584          4     45.9396      1.81  0.1912
+               Treatment |   348.2384          4     87.0596      3.44  0.0431
+                         |
+                Residual |   304.0952         12   25.341267  
+              -----------+----------------------------------------------------
+                   Total |   977.1704         24   40.715433  
+
+. oneway Values Treatment, bonferroni
+
+                        Analysis of variance
+    Source              SS         df      MS            F     Prob > F
+------------------------------------------------------------------------
+Between groups        348.2384      4      87.0596      2.77     0.0557
+ Within groups         628.932     20      31.4466
+------------------------------------------------------------------------
+    Total             977.1704     24   40.7154333
+
+Bartlett's equal-variances test: chi2(4) =  10.8668    Prob>chi2 = 0.028
+
+                      Comparison of Values by Treatment
+                                (Bonferroni)
+Row Mean-|
+Col Mean |          1          2          3          4
+---------+--------------------------------------------
+       2 |      -1.54
+         |      1.000
+         |
+       3 |      -7.44       -5.9
+         |      0.488      1.000
+         |
+       4 |      -5.48      -3.94       1.96
+         |      1.000      1.000      1.000
+         |
+       5 |       2.92       4.46      10.36        8.4
+         |      1.000      1.000      0.084      0.280
+
+. 
+. //Practical 14
+. clear
+
+. di "$S_DATE $S_TIME"
+26 Feb 2026 19:01:48
+
+. display "`c(hostname)'"
+Deepak
+
+. //14.   Fit the appropriate distribution and test the goodness of fit of the constructed data using chi square test and K-S test for normality of following data. 
+. //x     frequency
+. //0     1112
+. //1     1308
+. //2     615
+. //3     90
+. //4     25
+. //5     5
+. //6     3
+. //7     1
+. //8     2
+. //9     2
+. 
+. input x frequency
+
+             x  frequency
+  1. 0 1112
+  2. 1 1308
+  3. 2 615
+  4. 3 90
+  5. 4 25
+  6. 5 5
+  7. 6 3
+  8. 7 1
+  9. 8 2
+ 10. 9 2
+ 11. end
+
+. generate trials = 9
+
+. //expand frequency
+. summarize x [fweight = frequency]
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+           x |      3,163    .9459374    .9274361          0          9
+
+. scalar m = r(mean)
+
+. display "Lambda= " m
+Lambda= .9459374
+
+. summarize frequency
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+   frequency |         10       316.3    509.2417          1       1308
+
+. display r(sum)
+3163
+
+. generate totalf = r(sum)
+
+. generate expected_p = exp(-m) * ((m)^x)/exp(lngamma(x+1))
+
+. generate expected = expected_p * totalf
+
+. generate chi = (frequency - expected)^2 / expected
+
+. summarize chi
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+         chi |         10    223.6921    607.7811   .9769822   1944.849
+
+. display "chi-square = " r(sum)
+chi-square = 2236.9207
+
+. twoway (bar freq x, color(gs7)) ///
+>        (line expected x, lwidth(medthick))
+
+. 
+.            
+.            // ksmirnov test
+. summarize frequency     
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+   frequency |         10       316.3    509.2417          1       1308
+
+. generate empcdf = sum(freq)/totalf
+
+. summarize expected
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+    expected |         10       316.3     493.482   .0020525   1228.242
+
+. generate bincdf = sum(expected)/totalf
+
+. generate diff = abs(empcdf - bincdf)
+
+. summarize diff
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        diff |         10    .0086918    .0134132   5.96e-08   .0367504
+
+. display "KS statistic D = " r(max)
+KS statistic D = .03675041
+
+. display "D_alpha" = 1.36/sqrt(totalf)
+D_alpha.02418184
+
+. //if KS statistic D > D_alpha,"reject H0", "H0 is accepted"
+. 
+. 
+. // //Practical 15
+. // clear
+. // di "$S_DATE $S_TIME"
+. // display "`c(hostname)'"
+. // //Fit the appropriate distribution and test the goodness of fit of the constructed data using chi square test and K-S test for normality of following data. 
+. // //x  frequency
+. // //0  2
+. // //1  8
+. // //2  15
+. // //3  40
+. // //4  65
+. // //5  55
+. // //6  38
+. // //7  12
+. // //8  5
+. // //9  2
+. // input x frequency
+. // 0 2
+. // 1 8
+. // 2 15
+. // 3 40
+. // 4 65
+. // 5 55
+. // 6 38
+. // 7 12
+. // 8 5
+. // 9 2
+. // end
+. // generate trials = 9
+. // //expand frequency
+. // summarize x [fweight = frequency]
+. // scalar p = r(mean)/trials
+. // display "Estimated p= " p
+. // summarize frequency
+. // display r(sum)
+. // generate totalf = r(sum)
+. // generate expected_p = comb(trials,x) * p^x * (1-p)^(trials-x) 
+. // generate expected = expected_p * totalf
+. // generate chi = (frequency - expected)^2 / expected
+. // summarize chi
+. // display "chi-square = " r(sum)
+. // twoway (bar freq x, color(gs7)) ///
+. //        (line expected x, lwidth(medthick))
+. //
+. //         
+. //         // ksmirnov test
+. // summarize frequency  
+. // generate empcdf = sum(freq)/totalf
+. // summarize expected
+. // generate bincdf = sum(expected)/totalf
+. // generate diff = abs(empcdf - bincdf)
+. // summarize diff
+. // display "KS statistic D = " r(max)
+. // display "D_alpha" = 1.36/sqrt(totalf)
+. // //if KS statistic D > D_alpha,"reject H0", "H0 is accepted"
+. //
+. // //Practical 16
+. // clear
+. // di "$S_DATE $S_TIME"
+. // display "`c(hostname)'"
+. // //A tobacco company claims that there is no relationship between smoking and lung ailments. To investigate the claims random sample of 300 males in age group of 40 to 50 is given medical test. The observed sample result is tabulated below:
+. // //   Lung ailment    No lung ailment Total
+. // //Smokers    75      105     180
+. // //No smokers 25      95      120
+. // //Total      100     200     300
+. // //On the basis of this information, can it be concluded that smoking and lung ailment are independent?
+. // input str8 Smokers str8 Lung_infection count
+. // "Yes" "yes" 75
+. // "Yes" "no" 105
+. // "No" "yes" 25
+. // "No" "no" 95
+. // end
+. // expand count
+. // tab Smoker Lung_infection, chi2 expected row col
+. //
+. //
+. // //Practical 17
+. // clear
+. // di "$S_DATE $S_TIME"
+. // display "`c(hostname)'"
+. // //In an experiment on immunization of cattle from tuberculosis, the following results were obtained.
+. // //   Affected        Not affected
+. // //Inoculated 2       10
+. // //Not inoculated     6       6
+. // //Examine whether the vaccine has an effect in controlling the disease. (Use Chi-square test and z test of proportion)
+. // // disease (1=affected, 0=not_affected)
+. // // vaccination (1=inoculated, 0=not_inoculated)
+. // input str12 disease str8 vaccination count
+. // "Infected" "Vac_yes" 2
+. // "Infected" "Vac_no" 10
+. // "Notinfected" "Vac_yes" 6
+. // "Notinfected" "Vac_no" 6
+. // end
+. // expand count
+. // tab disease vaccination, chi2 expected row col
+. // clear
+. // prtesti 12 0.1666667 12 0.5000000
+. // clear
+. //
+. //
+. //
+. //
+. 
+end of do-file
+
+. exit, clear

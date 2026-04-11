@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CSC 213 CA Lab Report</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Times New Roman", Times, serif;
+        background: #f1f5f9;
+        color: #111;
+      }
+
+      /* ── Screen-only controls ── */
+      .controls {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #0f172a;
+        color: #e5e7eb;
+        border-radius: 12px;
+        font-family: system-ui, sans-serif;
+      }
+      .controls h1 {
+        margin: 0 0 4px;
+        font-size: 20px;
+        color: #60a5fa;
+        text-align: center;
+      }
+      .controls p {
+        margin: 0 0 14px;
+        font-size: 12px;
+        color: #94a3b8;
+        text-align: center;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .field {
+        flex: 1;
+        min-width: 160px;
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        color: #94a3b8;
+        margin-bottom: 4px;
+      }
+      .field input {
+        width: 100%;
+        padding: 9px;
+        border-radius: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        background: rgba(15, 23, 42, 0.6);
+        color: #e5e7eb;
+        outline: none;
+        font-size: 13px;
+      }
+      .printBtn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin-top: 4px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: rgba(16, 185, 129, 0.95);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      /* ── Lab page (fixed A4 size) ── */
+      .lab-page {
+        width: 210mm;
+        height: 297mm;
+        margin: 32px auto;
+        padding: 10mm;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+        color: #111;
+      }
+      .page-inner {
+        border: 2px solid #222;
+        width: 100%;
+        height: 100%;
+        padding: 5mm;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+
+      /* ── Common elements ── */
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 3px solid #111;
+        padding-bottom: 6px;
+        margin-bottom: 8px;
+        font-size: 22px;
+      }
+      .student-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+      .blank {
+        display: inline-block;
+        min-width: 160px;
+        border-bottom: 1px solid #111;
+      }
+      .lab-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 6px 0;
+      }
+      .question {
+        font-size: 17px;
+        margin: 0 0 8px;
+      }
+      .label-out {
+        font-size: 17px;
+        font-style: italic;
+        font-weight: 700;
+        margin: 8px 0 5px;
+      }
+
+      .circuit-img {
+        display: block;
+        max-width: 55%;
+        height: auto;
+        margin: 6px auto;
+      }
+
+      .code-box {
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        background: #f3f4f6;
+        padding: 10px;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 11.5px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      .terminal {
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+      .terminal-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 10px;
+        background: #fdfdfd;
+        border-bottom: 1px solid #d1d5db;
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+      }
+      .terminal-bar .icons {
+        display: flex;
+        gap: 12px;
+        color: #6b7280;
+        font-size: 13px;
+        user-select: none;
+      }
+      .terminal-body {
+        margin: 0;
+        padding: 10px;
+        background: #fff;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 11px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .warn-text {
+        color: #b45309;
+      }
+      .sub-text {
+        color: #6b7280;
+      }
+
+      .timing-img {
+        display: block;
+        max-width: 95%;
+        height: auto;
+        margin: 6px auto;
+        border: 1px solid #d1d5db;
+      }
+      .theory-box {
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        background: #f3f4f6;
+        padding: 10px;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 12px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+      }
+      .content-block {
+        /* Atomic content wrapper — keeps blocks together */
+      }
+
+      /* ── Print overrides ── */
+      @media print {
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        body {
+          background: #fff;
+          margin: 0;
+          padding: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .lab-page {
+          margin: 0;
+          box-shadow: none;
+          page-break-after: always;
+        }
+        .lab-page:last-child {
+          page-break-after: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls no-print">
+      <h1>CSC 213: Computer Architecture — Lab Report</h1>
+      <p>
+        Fill details, then use <b>Print / Save as PDF</b> (Ctrl+P → Save as PDF)
+      </p>
+      <div class="row">
+        <div class="field">
+          <label>Student Name</label
+          ><input id="nameIn" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <label>Roll No.</label><input id="rollIn" placeholder="Roll no." />
+        </div>
+        <div class="field">
+          <label>Section</label><input id="secIn" placeholder="e.g. A" />
+        </div>
+        <div class="field">
+          <label>Address (Lab 2)</label
+          ><input id="addrIn" placeholder="Your address" />
+        </div>
+      </div>
+      <button class="printBtn" onclick="window.print()">
+        🖨️ Print / Save as PDF
+      </button>
+    </div>
+
+    <div id="pages"></div>
+
+    <script>
+      const labs = [
+        {
+          id: "1",
+          title: "Verilog HDL (Theory)",
+          question:
+            "Briefly describe about Verilog HDL. Describe its history, uses and features.",
+          theory:
+            "Verilog HDL (Hardware Description Language) is a language used to model, design and verify digital systems. It allows engineers to describe hardware behavior and structure at multiple abstraction levels including behavioral, register-transfer level (RTL), and gate-level.\n\nHistory:\n\u2022 Verilog was originally developed by Phil Moorby and Prabhu Goel at Gateway Design Automation in 1984.\n\u2022 Cadence Design Systems later acquired Gateway in 1990 and made Verilog publicly available.\n\u2022 In 1995, it was standardized as IEEE 1364-1995 (Verilog-95).\n\u2022 An updated version, IEEE 1364-2001 (Verilog-2001), added significant improvements like generate blocks and multi-dimensional arrays.\n\u2022 SystemVerilog (IEEE 1800) extends Verilog with advanced verification and design features and is widely used today.\n\nUses:\n\u2022 Design of combinational and sequential digital circuits at RTL level\n\u2022 Simulation and functional verification using testbenches\n\u2022 FPGA and ASIC design flows (synthesis \u2192 place & route \u2192 implementation)\n\u2022 Gate-level and timing-level verification and checking\n\u2022 Modeling of digital systems for prototyping before fabrication\n\u2022 Generation of waveforms (VCD files) for timing analysis using tools like GTKWave\n\nFeatures:\n\u2022 Module-based hierarchical design supporting top-down and bottom-up methodologies\n\u2022 Continuous assignments (assign) for combinational logic and procedural blocks (always/initial) for sequential and behavioral modeling\n\u2022 Bit-vector operations and a rich set of logical, arithmetic, relational, and bitwise operators\n\u2022 Built-in simulation tasks: $display, $monitor, $dumpfile, $dumpvars, $finish\n\u2022 Parameterization using parameter and localparam for creating reusable, configurable designs\n\u2022 Support for four-valued logic system (0, 1, x, z) to model unknown and high-impedance states\n\nData Types:\n\u2022 wire: represents physical connections between hardware elements (used with assign)\n\u2022 reg: stores values in procedural blocks (used inside always/initial)\n\u2022 integer, real, time: used for simulation and testbench purposes\n\nDesign Flow:\n1. Write Verilog source code (.v files) for modules and testbenches\n2. Compile using a simulator (e.g., iverilog -o output.vvp source.v)\n3. Run simulation (e.g., vvp output.vvp) to generate output and VCD files\n4. View timing diagrams using GTKWave (e.g., gtkwave output.vcd)\n",
+        },
+        {
+          id: "2",
+          title: "Display Name, Roll and Address",
+          question:
+            "Write a program to display your name, roll number and address.",
+          filebase: "info_display",
+          code: 'module info_display;\n  initial begin\n    $display("Name    : %s", "{NAME}");\n    $display("Roll No.: %s", "{ROLL}");\n    $display("Address : %s", "{ADDRESS}");\n    $finish;\n  end\nendmodule\n',
+          output: "Name    : {NAME}\nRoll No.: {ROLL}\nAddress : {ADDRESS}",
+        },
+        {
+          id: "3",
+          title: "Implement Given Circuit",
+          question: "Write a program to implement following circuit:",
+          filebase: "cir-one",
+          circuitImg: "1.jpg",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 133204.png"],
+          code: 'module circuit_one(input A, input B, input C, output x, output y);\n  wire e;\n  and g1(e, A, B);   // e = A.B\n  not g2(y, C);      // y = ~C\n  or  g3(x, e, y);   // x = e + y\nendmodule\n\nmodule crctone_test;\n  reg A, B, C;\n  wire x, y;\n\n  circuit_one DUT(A, B, C, x, y);\n\n  initial begin\n    $dumpfile("cir-one.vcd");\n    $dumpvars(0, crctone_test);\n    $monitor($time, " A=%b, B=%b, C=%b, x=%b, y=%b", A, B, C, x, y);\n\n    A=0; B=0; C=0; #10;\n    A=0; B=1; C=0; #10;\n    A=1; B=1; C=0; #10;\n    A=1; B=1; C=1; #10;\n    A=0; B=0; C=1; #10;\n\n    $finish;\n  end\nendmodule\n',
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp cir-one.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile cir-one.vcd opened for output.\n0 A=0, B=0, C=0, x=1, y=1\n10 A=0, B=1, C=0, x=1, y=1\n20 A=1, B=1, C=0, x=1, y=1\n30 A=1, B=1, C=1, x=1, y=0\n40 A=0, B=0, C=1, x=0, y=0\ncir-one.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave cir-one.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "4",
+          title: "Full Adder",
+          question:
+            "Write a program to implement full adder. The circuit diagram of full adder is as follows:",
+          filebase: "full-adder",
+          circuitImg: "2.jpg",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134226.png"],
+          code: 'module half_adder(input a, input b, output s, output c);\n  xor (s, a, b);\n  and (c, a, b);\nendmodule\n\nmodule full_adder(input x, input y, input cin, output sum, output cout);\n  wire s1, c1, c2;\n  half_adder HA1(x, y,  s1, c1);\n  half_adder HA2(s1, cin, sum, c2);\n  or (cout, c1, c2);\nendmodule\n\nmodule full_adder_tb;\n  reg x, y, cin;\n  wire sum, cout;\n  full_adder DUT(x, y, cin, sum, cout);\n  initial begin\n    $dumpfile("full-adder.vcd");\n    $dumpvars(0, full_adder_tb);\n    $monitor($time, " x=%b y=%b cin=%b | sum=%b cout=%b", x, y, cin, sum, cout);\n    x=0; y=0; cin=0; #10;\n    x=0; y=1; cin=0; #10;\n    x=1; y=0; cin=0; #10;\n    x=1; y=1; cin=0; #10;\n    x=1; y=1; cin=1; #10;\n    $finish;\n  end\nendmodule\n',
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp full-adder.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile full-adder.vcd opened for output.\n0 x=0 y=0 cin=0 | sum=0 cout=0\n10 x=0 y=1 cin=0 | sum=1 cout=0\n20 x=1 y=0 cin=0 | sum=1 cout=0\n30 x=1 y=1 cin=0 | sum=0 cout=1\n40 x=1 y=1 cin=1 | sum=1 cout=1\nfull-adder.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave full-adder.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "5",
+          title: "Half Adder",
+          question:
+            "Write a program to simulate half adder. The gate circuit diagram of half adder is as follows:",
+          filebase: "half-adder",
+          circuitImg: "3.jpg",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134330.png"],
+          code: 'module half_adder(input x, input y, output sum, output carry);\n  xor (sum, x, y);\n  and (carry, x, y);\nendmodule\n\nmodule half_adder_tb;\n  reg x, y;\n  wire sum, carry;\n  half_adder DUT(x, y, sum, carry);\n  initial begin\n    $dumpfile("half-adder.vcd");\n    $dumpvars(0, half_adder_tb);\n    $monitor($time, " x=%b y=%b | sum=%b carry=%b", x, y, sum, carry);\n    x=0; y=0; #10;\n    x=0; y=1; #10;\n    x=1; y=0; #10;\n    x=1; y=1; #10;\n    $finish;\n  end\nendmodule\n',
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp half-adder.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile half-adder.vcd opened for output.\n0 x=0 y=0 | sum=0 carry=0\n10 x=0 y=1 | sum=1 carry=0\n20 x=1 y=0 | sum=1 carry=0\n30 x=1 y=1 | sum=0 carry=1\nhalf-adder.v: $finish called at 40 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave half-adder.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[40] end time.",
+        },
+        {
+          id: "6",
+          title: "Odd Parity Generator & Tester",
+          question:
+            "Write a program to implement odd parity bit generator and tester.",
+          filebase: "odd-parity",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134441.png"],
+          code: "module odd_parity_gen(input [7:0] D, output P);\n  assign P = ~(^D);\nendmodule\n\nmodule odd_parity_test(input [7:0] D, input P, output OK);\n  assign OK = (^ {D, P});\nendmodule\n\nmodule odd_parity_tb;\n  reg  [7:0] D;\n  wire P, OK;\n\n  odd_parity_gen  G(D, P);\n  odd_parity_test T(D, P, OK);\n\n  initial begin\n    $dumpfile(\"odd-parity.vcd\");\n    $dumpvars(0, odd_parity_tb);\n    $monitor($time, \" D=%b P=%b OK=%b\", D, P, OK);\n    D=8'b00000000; #10;\n    D=8'b00000001; #10;\n    D=8'b10101010; #10;\n    D=8'b11110000; #10;\n    D=8'b11111111; #10;\n    $finish;\n  end\nendmodule\n",
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp odd-parity.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile odd-parity.vcd opened for output.\n0 D=00000000 P=1 OK=1\n10 D=00000001 P=0 OK=1\n20 D=10101010 P=1 OK=1\n30 D=11110000 P=1 OK=1\n40 D=11111111 P=0 OK=1\nodd-parity.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave odd-parity.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "7",
+          title: "Even Parity Generator & Tester",
+          question:
+            "Write a program to implement even parity bit generator and tester.",
+          filebase: "even-parity",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134532.png"],
+          code: "module even_parity_gen(input [7:0] D, output P);\n  assign P = (^D);\nendmodule\n\nmodule even_parity_test(input [7:0] D, input P, output OK);\n  assign OK = ~(^ {D, P});\nendmodule\n\nmodule even_parity_tb;\n  reg  [7:0] D;\n  wire P, OK;\n\n  even_parity_gen  G(D, P);\n  even_parity_test T(D, P, OK);\n\n  initial begin\n    $dumpfile(\"even-parity.vcd\");\n    $dumpvars(0, even_parity_tb);\n    $monitor($time, \" D=%b P=%b OK=%b\", D, P, OK);\n    D=8'b00000000; #10;\n    D=8'b00000001; #10;\n    D=8'b10101010; #10;\n    D=8'b11110000; #10;\n    D=8'b11111111; #10;\n    $finish;\n  end\nendmodule\n",
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp even-parity.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile even-parity.vcd opened for output.\n0 D=00000000 P=0 OK=1\n10 D=00000001 P=1 OK=1\n20 D=10101010 P=0 OK=1\n30 D=11110000 P=0 OK=1\n40 D=11111111 P=0 OK=1\neven-parity.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave even-parity.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "8",
+          title: "8-bit Addition with Overflow",
+          question:
+            "Write a program to add two 8-bit numbers and display the overflow if present.",
+          filebase: "add8",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134621.png"],
+          code: 'module add8_overflow(input [7:0] A, input [7:0] B, output [7:0] SUM, output OVF);\n  wire [8:0] tmp;\n  assign tmp = {1\'b0, A} + {1\'b0, B};\n  assign SUM = tmp[7:0];\n  assign OVF = tmp[8];\nendmodule\n\nmodule add8_tb;\n  reg  [7:0] A, B;\n  wire [7:0] SUM; wire OVF;\n  add8_overflow DUT(A, B, SUM, OVF);\n  initial begin\n    $dumpfile("add8.vcd"); $dumpvars(0, add8_tb);\n    $monitor($time, " A=%0d B=%0d | SUM=%0d OVF=%b", A, B, SUM, OVF);\n    A=10;  B=20;  #10;\n    A=200; B=50;  #10;\n    A=255; B=1;   #10;\n    A=128; B=128; #10;\n    A=0;   B=0;   #10;\n    $finish;\n  end\nendmodule\n',
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp add8.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile add8.vcd opened for output.\n0 A=10 B=20 | SUM=30 OVF=0\n10 A=200 B=50 | SUM=250 OVF=0\n20 A=255 B=1 | SUM=0 OVF=1\n30 A=128 B=128 | SUM=0 OVF=1\n40 A=0 B=0 | SUM=0 OVF=0\nadd8.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave add8.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "9",
+          title: "16\u00d71 Multiplexer",
+          question: "Write a program to implement 16 \u00d71 multiplexer.",
+          filebase: "mux16",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134707.png"],
+          code: "module mux16x1(input [15:0] D, input [3:0] S, output reg Y);\n  always @(*) begin\n    case (S)\n      4'd0:  Y = D[0];  4'd1:  Y = D[1];\n      4'd2:  Y = D[2];  4'd3:  Y = D[3];\n      4'd4:  Y = D[4];  4'd5:  Y = D[5];\n      4'd6:  Y = D[6];  4'd7:  Y = D[7];\n      4'd8:  Y = D[8];  4'd9:  Y = D[9];\n      4'd10: Y = D[10]; 4'd11: Y = D[11];\n      4'd12: Y = D[12]; 4'd13: Y = D[13];\n      4'd14: Y = D[14]; default: Y = D[15];\n    endcase\n  end\nendmodule\n\nmodule mux16_tb;\n  reg  [15:0] D;\n  reg  [3:0]  S;\n  wire Y;\n  mux16x1 DUT(D, S, Y);\n  initial begin\n    $dumpfile(\"mux16.vcd\"); $dumpvars(0, mux16_tb);\n    $monitor($time, \" S=%0d Y=%b D=%b\", S, Y, D);\n    D = 16'b1010_1100_1111_0001;\n    S=0; #10; S=3; #10; S=7; #10; S=12; #10; S=15; #10;\n    $finish;\n  end\nendmodule\n",
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp mux16.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile mux16.vcd opened for output.\n0 S=0 Y=1 D=1010110011110001\n10 S=3 Y=0 D=1010110011110001\n20 S=7 Y=1 D=1010110011110001\n30 S=12 Y=0 D=1010110011110001\n40 S=15 Y=1 D=1010110011110001\nmux16.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave mux16.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "10",
+          title: "Shift Microoperation",
+          question:
+            "Write a program to perform hardware implementation of Shift microoperation.",
+          filebase: "shift",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134802.png"],
+          code: "module shift_microop(input [3:0] A, input [1:0] op, input sin, output reg [3:0] Y);\n  always @(*) begin\n    case (op)\n      2'b00: Y = A;\n      2'b01: Y = {A[2:0], sin};\n      2'b10: Y = {sin, A[3:1]};\n      2'b11: Y = {A[2:0], A[3]};\n    endcase\n  end\nendmodule\n\nmodule shift_tb;\n  reg [3:0] A; reg [1:0] op; reg sin; wire [3:0] Y;\n  shift_microop DUT(A, op, sin, Y);\n  initial begin\n    $dumpfile(\"shift.vcd\"); $dumpvars(0, shift_tb);\n    $monitor($time, \" A=%b op=%b sin=%b | Y=%b\", A, op, sin, Y);\n    A=4'b1011; sin=0;\n    op=0; #10; op=1; #10; op=2; #10; op=3; #10;\n    A=4'b0101; sin=1; op=1; #10;\n    $finish;\n  end\nendmodule\n",
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp shift.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile shift.vcd opened for output.\n0 A=1011 op=00 sin=0 | Y=1011\n10 A=1011 op=01 sin=0 | Y=0110\n20 A=1011 op=10 sin=0 | Y=0101\n30 A=1011 op=11 sin=0 | Y=0111\n40 A=0101 op=01 sin=1 | Y=1011\nshift.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave shift.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "11",
+          title: "Logical Microoperation",
+          question:
+            "Write a program to perform hardware implementation of logical microoperation.",
+          filebase: "logical",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134903.png"],
+          code: "module logical_microop(input [3:0] A, input [3:0] B, input [1:0] op, output reg [3:0] Y);\n  always @(*) begin\n    case (op)\n      2'b00: Y = A & B;\n      2'b01: Y = A | B;\n      2'b10: Y = A ^ B;\n      2'b11: Y = ~A;\n    endcase\n  end\nendmodule\n\nmodule logical_tb;\n  reg [3:0] A, B; reg [1:0] op; wire [3:0] Y;\n  logical_microop DUT(A, B, op, Y);\n  initial begin\n    $dumpfile(\"logical.vcd\"); $dumpvars(0, logical_tb);\n    $monitor($time, \" A=%b B=%b op=%b | Y=%b\", A, B, op, Y);\n    A=4'b1100; B=4'b1010;\n    op=0; #10; op=1; #10; op=2; #10; op=3; #10;\n    A=4'b0011; B=4'b0101; op=0; #10;\n    $finish;\n  end\nendmodule\n",
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp logical.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile logical.vcd opened for output.\n0 A=1100 B=1010 op=00 | Y=1000\n10 A=1100 B=1010 op=01 | Y=1110\n20 A=1100 B=1010 op=10 | Y=0110\n30 A=1100 B=1010 op=11 | Y=0011\n40 A=0011 B=0101 op=00 | Y=0001\nlogical.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave logical.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "12",
+          title: "4-input Priority Encoder",
+          question: "Write a program to implement four input priority encoder.",
+          filebase: "prienc",
+          needsTiming: true,
+          timingImgs: ["Screenshot 2026-02-25 134951.png"],
+          code: "module prienc4(input [3:0] D, output reg [1:0] Y, output reg V);\n  always @(*) begin\n    V = 1'b1;\n    casex (D)\n      4'b1xxx:  Y = 2'b11;\n      4'b01xx:  Y = 2'b10;\n      4'b001x:  Y = 2'b01;\n      4'b0001:  Y = 2'b00;\n      default: begin Y = 2'b00; V = 1'b0; end\n    endcase\n  end\nendmodule\n\nmodule prienc_tb;\n  reg [3:0] D; wire [1:0] Y; wire V;\n  prienc4 DUT(D, Y, V);\n  initial begin\n    $dumpfile(\"prienc.vcd\"); $dumpvars(0, prienc_tb);\n    $monitor($time, \" D=%b | V=%b Y=%b\", D, V, Y);\n    D=0; #10; D=1; #10; D=2; #10; D=4; #10; D=8; #10;\n    $finish;\n  end\nendmodule\n",
+          output:
+            "Microsoft Windows [Version 10.0.19045.4780]\n(c) Microsoft Corporation. All rights reserved.\n\nD:\\Academic\\CA_{SLUG}>iverilog -o out1.vvp prienc.v\nD:\\Academic\\CA_{SLUG}>vvp out1.vvp\nVCD info: dumpfile prienc.vcd opened for output.\n0 D=0000 | V=0 Y=00\n10 D=0001 | V=1 Y=00\n20 D=0010 | V=1 Y=01\n30 D=0100 | V=1 Y=10\n40 D=1000 | V=1 Y=11\nprienc.v: $finish called at 50 (1s)\nD:\\Academic\\CA_{SLUG}>gtkwave prienc.vcd\nGTKWave Analyzer v3.3.100 (w)1999-2019 BSI\n[0] start time.\n[50] end time.",
+        },
+        {
+          id: "13",
+          title: "Booth Multiplication Algorithm (C/C++)",
+          question:
+            "Write a program in C/C++ to implement Booth Multiplication algorithm.",
+          filebase: "booth",
+          isCpp: true,
+          code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int M, Q, A = 0, Q_1 = 0, n = 8;\n\n    cout << "Enter Multiplicand (M): ";\n    cin >> M;\n    cout << "Enter Multiplier (Q): ";\n    cin >> Q;\n\n    cout << "Step 0: A=" << A << " Q=" << Q << " Q-1=" << Q_1 << endl;\n\n    for (int i = 1; i <= n; i++) {\n        int Q0 = Q & 1;\n        if (Q0 == 1 && Q_1 == 0)\n            A = A - M;\n        else if (Q0 == 0 && Q_1 == 1)\n            A = A + M;\n\n        // Arithmetic Right Shift\n        Q_1 = Q & 1;\n        Q = (Q >> 1) | ((A & 1) << (n - 1));\n        A = A >> 1;\n\n        cout << "Step " << i << ": A=" << A\n             << " Q=" << Q << " Q-1=" << Q_1 << endl;\n    }\n\n    int result = (A << n) | (Q & 0xFF);\n    cout << "Result = " << result << endl;\n    return 0;\n}\n',
+          output:
+            "Enter Multiplicand (M): 7\nEnter Multiplier (Q): -3\nStep 0: A=0 Q=-3 Q-1=0\nStep 1: ...\n...\nStep 8: ...\nResult = -21",
+        },
+        {
+          id: "14",
+          title: "Illustrate Overflow (C/C++)",
+          question: "Write a program in C/C++ to illustrate overflow.",
+          filebase: "overflow",
+          isCpp: true,
+          code: '#include <iostream>\n#include <climits>\nusing namespace std;\n\nint main() {\n    // Unsigned 8-bit overflow\n    unsigned char a = 250, b = 20;\n    unsigned char c = a + b;\n    cout << "Unsigned 8-bit: 250 + 20 = " << (int)c << " (wrapped)" << endl;\n\n    // Signed overflow check\n    int x = INT_MAX;\n    if (x > INT_MAX - 10)\n        cout << "Signed int overflow would occur for (max_int + 10)" << endl;\n\n    // 16-bit overflow\n    short p = 30000, q = 10000;\n    int sum = (int)p + (int)q;\n    if (sum > SHRT_MAX)\n        cout << "int16_t overflow would occur for 30000 + 10000" << endl;\n\n    return 0;\n}\n',
+          output:
+            "Unsigned 8-bit: 250 + 20 = 14 (wrapped)\nSigned int overflow would occur for (max_int + 10)\nint16_t overflow would occur for 30000 + 10000",
+        },
+      ];
+
+      function esc(s) {
+        return (s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function val(id, fallback) {
+        var v = document.getElementById(id).value.trim();
+        return v || fallback;
+      }
+
+      function slug(name) {
+        var s = (name || "").replace(/[^a-zA-Z0-9]/g, "").slice(0, 16);
+        return s || "Student";
+      }
+
+      function fill(text, tok) {
+        var out = text || "";
+        for (var k in tok) out = out.split(k).join(tok[k]);
+        return out;
+      }
+
+      /* ── Pagination Engine ── */
+      function paginateLab(container, labData) {
+        var hdr = labData.hdr;
+        var srow = labData.srow;
+        var blocks = labData.blocks;
+        var labId = labData.labId;
+        var firstPage = true;
+
+        function newPage() {
+          var page = document.createElement("div");
+          page.className = "lab-page";
+          var inner = document.createElement("div");
+          inner.className = "page-inner";
+
+          // Always add header + student row
+          var hdrEl = document.createElement("div");
+          hdrEl.innerHTML = hdr + srow;
+          while (hdrEl.firstChild) inner.appendChild(hdrEl.firstChild);
+
+          if (!firstPage) {
+            var contEl = document.createElement("div");
+            contEl.className = "lab-title";
+            contEl.textContent = "Lab " + labId + " (contd.)";
+            inner.appendChild(contEl);
+          }
+          firstPage = false;
+
+          page.appendChild(inner);
+          container.appendChild(page);
+          return inner;
+        }
+
+        var inner = newPage();
+
+        for (var i = 0; i < blocks.length; i++) {
+          var block = document.createElement("div");
+          block.className = "content-block";
+          block.innerHTML = blocks[i];
+          inner.appendChild(block);
+
+          // Check overflow: scrollHeight > clientHeight means it doesn't fit
+          if (inner.scrollHeight > inner.clientHeight + 2) {
+            // Remove from current page, create new page, add there
+            inner.removeChild(block);
+            inner = newPage();
+            inner.appendChild(block);
+          }
+        }
+      }
+
+      function buildLabData(lab, tok, name, roll, sec) {
+        var hdr =
+          '<div class="page-header"><div>CSC 213: Computer Architecture</div><div>Lab Report</div></div>';
+        var srow =
+          '<div class="student-row">' +
+          '<div>Student Name: <span class="blank">' +
+          esc(name) +
+          "</span></div>" +
+          '<div>Roll No.: <span class="blank" style="min-width:100px">' +
+          esc(roll) +
+          "</span></div>" +
+          '<div>Section: <span class="blank" style="min-width:80px">' +
+          esc(sec) +
+          "</span></div>" +
+          "<div>Date: 2082/11/____</div></div>";
+
+        var blocks = [];
+
+        // Block: Title + Question
+        blocks.push(
+          '<div class="lab-title">Lab ' +
+            esc(lab.id) +
+            "</div>" +
+            '<div class="question"><b>Q.</b> ' +
+            esc(lab.question) +
+            "</div>",
+        );
+
+        // Block: Circuit image
+        if (lab.circuitImg) {
+          blocks.push(
+            '<img class="circuit-img" src="' +
+              lab.circuitImg +
+              '" alt="Circuit Diagram">',
+          );
+        }
+
+        // Block: Theory
+        if (lab.theory) {
+          blocks.push(
+            '<div class="label-out">Solution:</div>' +
+              '<div class="theory-box">' +
+              esc(lab.theory) +
+              "</div>",
+          );
+        }
+
+        // Block: Source Code
+        if (lab.code) {
+          blocks.push(
+            '<div class="label-out">Source Code:</div>' +
+              '<pre class="code-box">' +
+              esc(fill(lab.code, tok)) +
+              "</pre>",
+          );
+
+          // Block: Output terminal
+          var outTitle =
+            "Command Prompt - " +
+            (lab.filebase || "lab" + lab.id) +
+            (lab.isCpp ? ".exe" : ".out");
+          var outBody = esc(fill(lab.output, tok));
+          if (lab.isCpp) {
+            outBody +=
+              '\n\n<span class="warn-text">Process exited after 0.0234 seconds with return value 0</span>\n<span class="sub-text">Press any key to continue . . .</span>';
+          }
+          blocks.push(
+            '<div class="label-out">Output:</div>' +
+              '<div class="terminal">' +
+              '<div class="terminal-bar">' +
+              '<div style="display:flex;align-items:center;gap:6px">' +
+              '<svg width="12" height="12" viewBox="0 0 16 16" fill="#000"><path d="M0 0h16v16H0z"/><path d="M3 5l3 3-3 3M7 11h4" stroke="#fff" fill="none" stroke-width="1.5"/></svg>' +
+              "<span>" +
+              esc(outTitle) +
+              "</span></div>" +
+              '<div class="icons"><span>&#x2012;</span><span>&#x25A1;</span><span>&#x2715;</span></div>' +
+              "</div>" +
+              '<pre class="terminal-body">' +
+              outBody +
+              "</pre></div>",
+          );
+        }
+
+        // Block: Timing diagram images
+        if (lab.needsTiming && lab.timingImgs) {
+          var timingHtml = '<div class="label-out">Timing Diagram:</div>';
+          for (var t = 0; t < lab.timingImgs.length; t++) {
+            timingHtml +=
+              '<img class="timing-img" src="' +
+              lab.timingImgs[t] +
+              '" alt="Timing Diagram">';
+          }
+          blocks.push(timingHtml);
+        }
+
+        return { hdr: hdr, srow: srow, labId: lab.id, blocks: blocks };
+      }
+
+      function render() {
+        var name = val("nameIn", "______________________________");
+        var roll = val("rollIn", "______________");
+        var sec = val("secIn", "__________");
+        var addr = val("addrIn", "YOUR_ADDRESS");
+        var nameSlug = slug(document.getElementById("nameIn").value);
+
+        var tok = {
+          "{NAME}": name,
+          "{ROLL}": roll,
+          "{SECTION}": sec,
+          "{ADDRESS}": addr,
+          "{SLUG}": nameSlug,
+        };
+
+        // Build data for all labs
+        var allLabsData = [];
+        labs.forEach(function (lab) {
+          allLabsData.push(buildLabData(lab, tok, name, roll, sec));
+        });
+
+        // Run pagination (places blocks into fixed-size pages)
+        function doPagination() {
+          var container = document.getElementById("pages");
+          container.innerHTML = "";
+          allLabsData.forEach(function (labData) {
+            paginateLab(container, labData);
+          });
+        }
+
+        // Initial render
+        doPagination();
+
+        // Re-paginate after images load (they affect block heights)
+        var imgs = document.querySelectorAll(".circuit-img, .timing-img");
+        var pending = 0;
+        imgs.forEach(function (img) {
+          if (!img.complete) pending++;
+        });
+        if (pending > 0) {
+          imgs.forEach(function (img) {
+            if (!img.complete) {
+              img.onload = img.onerror = function () {
+                pending--;
+                if (pending <= 0) doPagination();
+              };
+            }
+          });
+        }
+      }
+
+      // Re-render on input change
+      ["nameIn", "rollIn", "secIn", "addrIn"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", render);
+      });
+
+      render();
+    </script>
+  </body>
+</html>
