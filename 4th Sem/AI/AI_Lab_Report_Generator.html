@@ -1,0 +1,2417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSC 266 AI Lab Report Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --screen-bg: #101217;
+      --panel: #181c24;
+      --panel-2: #202633;
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #eef2f6;
+      --muted: #9aa6b5;
+      --orange: #f47b20;
+      --blue: #5294d0;
+      --green: #2bb673;
+      --paper: #ffffff;
+      --ink: #121212;
+      --paper-width: 210mm;
+      --paper-height: 297mm;
+      --paper-padding: 10mm;
+      --page-border-padding: 5.5mm;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(244, 123, 32, 0.08), transparent 34%),
+        linear-gradient(315deg, rgba(82, 148, 208, 0.10), transparent 36%),
+        var(--screen-bg);
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .controls {
+      max-width: 1120px;
+      margin: 22px auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(24, 28, 36, 0.94);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+    }
+
+    .controls-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    .controls h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: 0;
+    }
+
+    .controls p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: var(--panel-2);
+      color: var(--text);
+      outline: none;
+      font-size: 13px;
+    }
+
+    .field input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(82, 148, 208, 0.16);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .print-btn {
+      border: 0;
+      border-radius: 6px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .print-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      user-select: none;
+    }
+
+    .theme-toggle input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .switch {
+      width: 46px;
+      height: 25px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #343b49;
+      position: relative;
+      transition: background 0.2s ease;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      width: 19px;
+      height: 19px;
+      top: 2px;
+      left: 2px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.32);
+      transition: transform 0.2s ease;
+    }
+
+    .theme-toggle input:checked + .switch {
+      background: var(--blue);
+    }
+
+    .theme-toggle input:checked + .switch::after {
+      transform: translateX(21px);
+    }
+
+    .pages {
+      padding: 10px 0 36px;
+      overflow-x: auto;
+    }
+
+    .report-page {
+      width: var(--paper-width);
+      height: var(--paper-height);
+      margin: 24px auto;
+      padding: var(--paper-padding);
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.36);
+      font-family: "Times New Roman", Times, serif;
+      overflow: hidden;
+    }
+
+    .page-inner {
+      height: 100%;
+      border: 2px solid #202020;
+      padding: var(--page-border-padding);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      min-height: 0;
+    }
+
+    .student-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 10mm;
+      border-top: 1px solid #111;
+      padding-top: 2.4mm;
+      margin-top: 3mm;
+      font-size: 11.5pt;
+      line-height: 1.25;
+      color: #111;
+    }
+
+    .student-footer span {
+      display: inline-block;
+      min-width: 44mm;
+      border-bottom: 1px solid #111;
+      padding-left: 2mm;
+    }
+
+    .page-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .content-block {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      margin: 0 0 4.2mm;
+    }
+
+    .content-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .algorithm-block {
+      margin-bottom: 1.8mm;
+    }
+
+    .question {
+      margin: 0;
+      font-size: 13pt;
+      line-height: 1.38;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 12pt;
+      font-weight: 700;
+      font-style: italic;
+      margin: 0 0 1.7mm;
+      color: #111;
+    }
+
+    .info-box,
+    .algo-box {
+      border: 1px solid #d3d6dc;
+      border-radius: 5px;
+      background: #f7f8fa;
+      padding: 3mm;
+      font-size: 12.5pt;
+      line-height: 1.35;
+    }
+
+    .info-box p {
+      margin: 0 0 2mm;
+    }
+
+    .info-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .algo-box ol,
+    .algo-box ul {
+      margin: 0;
+      padding-left: 5.2mm;
+    }
+
+    .algo-box li {
+      margin: 0 0 1.3mm;
+    }
+
+    .diagram-box {
+      border: 1px solid #d3d6dc;
+      border-radius: 5px;
+      background: #fff;
+      padding: 2.6mm;
+    }
+
+    .diagram-caption {
+      margin: 0 0 2mm;
+      color: #374151;
+      font-size: 9.2pt;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .mermaid-target {
+      height: 57mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .mermaid-target.tall {
+      height: 89mm;
+    }
+
+    .mermaid-target.short {
+      height: 43mm;
+    }
+
+    .mermaid-target svg {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+    }
+
+    .diagram-loading {
+      color: #777;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 8.7pt;
+    }
+
+    .plain-code {
+      margin: 0;
+      padding: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: normal;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 10pt;
+      line-height: 1.26;
+      color: #111;
+      background: transparent;
+      border: 0;
+    }
+
+    .source-code-first-block,
+    .code-line-block {
+      margin: 0;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .source-code-first-block .section-title {
+      margin-bottom: 1.2mm;
+    }
+
+    .output-block {
+      margin-top: 5mm;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .win-terminal {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24), 0 2px 8px rgba(0, 0, 0, 0.16);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .win-terminal.dark {
+      background: #0c0c0c;
+      color: #cccccc;
+    }
+
+    .win-terminal.dark .win-titlebar {
+      background: #1f1f1f;
+      border-bottom: 1px solid #333;
+    }
+
+    .win-terminal.dark .win-title-text,
+    .win-terminal.dark .win-btn {
+      color: #999;
+    }
+
+    .win-terminal.dark .t-process {
+      color: #e5c07b;
+    }
+
+    .win-terminal.dark .t-press {
+      color: #666;
+    }
+
+    .win-terminal.light {
+      background: #fff;
+      color: #1e1e1e;
+      border: 1px solid #d4d4d4;
+      box-shadow: none;
+    }
+
+    .win-terminal.light .win-titlebar {
+      background: #f3f3f3;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .win-terminal.light .win-title-text,
+    .win-terminal.light .win-btn {
+      color: #666;
+    }
+
+    .win-terminal.light .t-process {
+      color: #9a6a00;
+    }
+
+    .win-terminal.light .t-press {
+      color: #7a7a7a;
+    }
+
+    .win-titlebar {
+      display: flex;
+      align-items: center;
+      height: 30px;
+      user-select: none;
+    }
+
+    .win-title-text {
+      flex: 1;
+      font-size: 11px;
+      padding-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .win-btns {
+      display: flex;
+      height: 100%;
+    }
+
+    .win-btn {
+      width: 38px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+    }
+
+    .win-btn svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .t-body {
+      margin: 0;
+      padding: 3mm 3.6mm;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9.4pt;
+      line-height: 1.34;
+    }
+
+    .index-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12pt;
+      line-height: 1.25;
+    }
+
+    .index-title {
+      margin: 0 0 4mm;
+      text-align: center;
+      font-size: 16pt;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .index-table th,
+    .index-table td {
+      border: 1px solid #cfd4dc;
+      padding: 1.25mm 2.2mm;
+      vertical-align: middle;
+    }
+
+    .index-table th {
+      background: #f0f3f7;
+      text-align: left;
+    }
+
+    .index-table th:first-child,
+    .index-table td:first-child {
+      width: 24mm;
+      text-align: center;
+    }
+
+    .index-table th:last-child,
+    .index-table td:last-child {
+      width: 36mm;
+      text-align: center;
+    }
+
+    .submitted-date-cell {
+      width: 34mm;
+      text-align: center;
+    }
+
+    .signature-cell {
+      height: 7.5mm;
+    }
+
+    @media (max-width: 900px) {
+      .controls {
+        margin: 12px;
+      }
+
+      .controls-head {
+        display: block;
+      }
+
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .report-page {
+        width: var(--paper-width);
+        height: var(--paper-height);
+        min-height: 0;
+        margin: 12px 0;
+      }
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .pages {
+        padding: 0;
+      }
+
+      .report-page {
+        width: var(--paper-width);
+        height: var(--paper-height);
+        margin: 0;
+        box-shadow: none;
+        overflow: hidden;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .report-page:last-child {
+        page-break-after: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="controls no-print">
+    <div class="controls-head">
+      <div>
+        <h1>CSC 266: Artificial Intelligence Lab Report</h1>
+        <p>Enter student details, choose output theme, then print or save as PDF. Mermaid diagrams are rendered inside the report pages.</p>
+      </div>
+      <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <div class="input-grid">
+      <div class="field">
+        <label for="nameIn">Student Name</label>
+        <input id="nameIn" type="text" placeholder="Your full name">
+      </div>
+      <div class="field">
+        <label for="rollIn">Roll No.</label>
+        <input id="rollIn" type="text" placeholder="Roll number">
+      </div>
+      <div class="field">
+        <label for="sectionIn">Section</label>
+        <input id="sectionIn" type="text" placeholder="Section">
+      </div>
+    </div>
+    <div class="actions">
+      <label class="theme-toggle">
+        <input id="themeIn" type="checkbox" checked>
+        <span class="switch"></span>
+        <span>Dark output theme</span>
+      </label>
+    </div>
+  </section>
+
+  <main id="pages" class="pages"></main>
+
+  <script>
+    const REPORT_ITEMS = [
+      {
+        no: "I.1",
+        lab: "Lab I",
+        language: "C",
+        title: "BFS Algorithm",
+        question: "WAP to implement BFS algorithm. The graph should also be drawn in the lab report.",
+        theory: [
+          "Breadth First Search explores the graph level by level. It uses a queue, marks each visited vertex, and is suitable for finding the shortest path in an unweighted graph.",
+          "The sample graph starts at A and searches for G. The BFS path is A -> B -> E -> G."
+        ],
+        algorithm: [
+          "Insert the start vertex into a queue and mark it visited.",
+          "Remove the front vertex, visit it, and enqueue all unvisited adjacent vertices.",
+          "Store parent links when a vertex is discovered so the final path can be reconstructed.",
+          "Stop when the goal is found or when the queue becomes empty."
+        ],
+        diagram: {
+          title: "Graph used for BFS",
+          code: `flowchart LR
+  A((A)) --> B((B))
+  A --> C((C))
+  B --> D((D))
+  B --> E((E))
+  C --> F((F))
+  E --> G((G))
+  F --> G
+  classDef start fill:#d8f3dc,stroke:#2d6a4f,stroke-width:2px;
+  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;
+  class A start;
+  class G goal;`
+        },
+        filename: "lab_i_bfs.c",
+        code: String.raw`#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+    char vertices[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+    int graph[7][7] = {0};
+    graph[0][1] = graph[0][2] = 1;
+    graph[1][3] = graph[1][4] = 1;
+    graph[2][5] = 1;
+    graph[4][6] = graph[5][6] = 1;
+
+    int start = 0, goal = 6;
+    int queue[20], front = 0, rear = 0;
+    int parent[7], order[7], orderCount = 0;
+    bool visited[7] = {false};
+
+    for (int i = 0; i < 7; i++) {
+        parent[i] = -1;
+    }
+    queue[rear++] = start;
+    visited[start] = true;
+    parent[start] = start;
+
+    while (front < rear) {
+        int current = queue[front++];
+        order[orderCount++] = current;
+        if (current == goal) {
+            break;
+        }
+
+        for (int next = 0; next < 7; next++) {
+            if (graph[current][next] && !visited[next]) {
+                visited[next] = true;
+                parent[next] = current;
+                queue[rear++] = next;
+            }
+        }
+    }
+
+    int path[7], count = 0;
+    for (int v = goal; ; v = parent[v]) {
+        path[count++] = v;
+        if (v == start) {
+            break;
+        }
+    }
+
+    printf("BFS Traversal: ");
+    for (int i = 0; i < orderCount; i++) {
+        printf("%s%c", i ? " " : "", vertices[order[i]]);
+    }
+    printf("\nPath: ");
+    for (int i = count - 1; i >= 0; i--) {
+        printf("%s%c", i == count - 1 ? "" : " ", vertices[path[i]]);
+    }
+    printf("\n\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - BFS\n");
+    return 0;
+}`,
+        output: String.raw`BFS Traversal: A B C D E F G
+Path: A B E G
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab I - BFS`
+      },
+      {
+        no: "I.2",
+        lab: "Lab I",
+        language: "C",
+        title: "DFS Algorithm",
+        question: "WAP to implement DFS algorithm. The graph should also be drawn in the lab report.",
+        theory: [
+          "Depth First Search explores a branch completely before backtracking. It can be implemented recursively or by using a stack.",
+          "For the same graph, DFS visits deeper nodes from A before trying the next sibling."
+        ],
+        algorithm: [
+          "Start from the source vertex and mark it visited.",
+          "Visit the first unvisited adjacent vertex recursively.",
+          "Backtrack when a vertex has no unvisited adjacent vertex.",
+          "Use the recursion path to report whether the goal is found."
+        ],
+        diagram: {
+          title: "Graph used for DFS",
+          code: `flowchart LR
+  A((A)) --> B((B))
+  A --> C((C))
+  B --> D((D))
+  B --> E((E))
+  C --> F((F))
+  E --> G((G))
+  F --> G
+  classDef start fill:#d8f3dc,stroke:#2d6a4f,stroke-width:2px;
+  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;
+  class A start;
+  class G goal;`
+        },
+        filename: "lab_i_dfs.c",
+        code: String.raw`#include <stdio.h>
+#include <stdbool.h>
+
+int graph[7][7];
+bool visited[7];
+int order[7], orderCount = 0;
+int path[7], pathCount = 0;
+
+bool dfs(int node, int goal) {
+    visited[node] = true;
+    order[orderCount++] = node;
+    path[pathCount++] = node;
+    if (node == goal) {
+        return true;
+    }
+
+    for (int next = 0; next < 7; next++) {
+        if (graph[node][next] && !visited[next]) {
+            if (dfs(next, goal)) {
+                return true;
+            }
+        }
+    }
+
+    pathCount--;
+    return false;
+}
+
+int main() {
+    char vertices[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+    graph[0][1] = graph[0][2] = 1;
+    graph[1][3] = graph[1][4] = 1;
+    graph[2][5] = 1;
+    graph[4][6] = graph[5][6] = 1;
+
+    bool found = dfs(0, 6);
+
+    printf("DFS Traversal: ");
+    for (int i = 0; i < orderCount; i++) {
+        printf("%s%c", i ? " " : "", vertices[order[i]]);
+    }
+    printf("\nGoal Found: %s\nPath: ", found ? "Yes" : "No");
+    for (int i = 0; i < pathCount; i++) {
+        printf("%s%c", i ? " " : "", vertices[path[i]]);
+    }
+    printf("\n\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - DFS\n");
+    return 0;
+}`,
+        output: String.raw`DFS Traversal: A B D E G
+Goal Found: Yes
+Path: A B E G
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab I - DFS`
+      },
+      {
+        no: "I.3",
+        lab: "Lab I",
+        language: "C",
+        title: "UCS Algorithm",
+        question: "WAP to implement UCS algorithm. The graph should also be drawn in the lab report.",
+        theory: [
+          "Uniform Cost Search expands the node with the lowest cumulative path cost. A priority queue is used to always choose the cheapest frontier node.",
+          "It guarantees the least-cost path when all edge costs are non-negative."
+        ],
+        algorithm: [
+          "Push the start node into a priority queue with cost 0.",
+          "Pop the node with minimum cost and ignore it if a better cost was already processed.",
+          "Relax each outgoing edge and update parent links when a lower cost is found.",
+          "Stop when the goal node is removed from the priority queue."
+        ],
+        diagram: {
+          title: "Weighted graph used for UCS",
+          code: `flowchart LR
+  A((A)) -->|2| B((B))
+  A -->|5| C((C))
+  B -->|4| D((D))
+  B -->|3| E((E))
+  C -->|2| F((F))
+  D -->|2| G((G))
+  E -->|1| G
+  F -->|5| G
+  classDef start fill:#d8f3dc,stroke:#2d6a4f,stroke-width:2px;
+  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;
+  class A start;
+  class G goal;`
+        },
+        filename: "lab_i_ucs.c",
+        code: String.raw`#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+    char vertices[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+    int cost[7][7] = {0};
+    cost[0][1] = 2; cost[0][2] = 5;
+    cost[1][3] = 4; cost[1][4] = 3;
+    cost[2][5] = 2; cost[3][6] = 2;
+    cost[4][6] = 1; cost[5][6] = 5;
+
+    int dist[7], parent[7], order[7], orderCount = 0;
+    bool done[7] = {false};
+    for (int i = 0; i < 7; i++) {
+        dist[i] = 1000000;
+        parent[i] = -1;
+    }
+    dist[0] = 0;
+    parent[0] = 0;
+
+    for (int step = 0; step < 7; step++) {
+        int node = -1;
+        for (int i = 0; i < 7; i++) {
+            if (!done[i] && (node == -1 || dist[i] < dist[node])) {
+                node = i;
+            }
+        }
+        if (node == -1 || dist[node] == 1000000) {
+            break;
+        }
+        done[node] = true;
+        order[orderCount++] = node;
+        if (node == 6) {
+            break;
+        }
+
+        for (int next = 0; next < 7; next++) {
+            if (cost[node][next] && dist[node] + cost[node][next] < dist[next]) {
+                dist[next] = dist[node] + cost[node][next];
+                parent[next] = node;
+            }
+        }
+    }
+
+    int path[7], count = 0;
+    for (int v = 6; ; v = parent[v]) {
+        path[count++] = v;
+        if (v == 0) {
+            break;
+        }
+    }
+
+    printf("UCS Expansion Order: ");
+    for (int i = 0; i < orderCount; i++) {
+        printf("%s%c", i ? " " : "", vertices[order[i]]);
+    }
+    printf("\nMinimum Cost: %d\nPath: ", dist[6]);
+    for (int i = count - 1; i >= 0; i--) {
+        printf("%s%c", i == count - 1 ? "" : " ", vertices[path[i]]);
+    }
+    printf("\n\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - UCS\n");
+    return 0;
+}`,
+        output: String.raw`UCS Expansion Order: A B C E D G
+Minimum Cost: 6
+Path: A B E G
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab I - UCS`
+      },
+      {
+        no: "I.4",
+        lab: "Lab I",
+        language: "C",
+        title: "DLS Algorithm",
+        question: "WAP to implement DLS algorithm. The graph should also be drawn in the lab report.",
+        theory: [
+          "Depth Limited Search is DFS with a depth boundary. It prevents infinite descent and reports whether a goal is found within the chosen limit.",
+          "In the sample graph, the goal G is reachable from A with depth limit 3."
+        ],
+        algorithm: [
+          "Call recursive DLS with the start node and a fixed depth limit.",
+          "If the current node is the goal, return success.",
+          "If the depth limit is 0, stop expanding that branch.",
+          "Otherwise recursively search every unvisited adjacent node with limit - 1."
+        ],
+        diagram: {
+          title: "Depth-limited search graph",
+          code: `flowchart LR
+  A((A)) --> B((B))
+  A --> C((C))
+  B --> D((D))
+  B --> E((E))
+  C --> F((F))
+  E --> G((G))
+  F --> G
+  classDef cut fill:#eef2ff,stroke:#4f46e5,stroke-width:1.5px;
+  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;
+  class D,F cut;
+  class G goal;`
+        },
+        filename: "lab_i_dls.c",
+        code: String.raw`#include <stdio.h>
+#include <stdbool.h>
+
+int graph[7][7];
+int order[20], orderCount = 0;
+int path[20], pathCount = 0;
+
+bool dls(int node, int goal, int limit) {
+    order[orderCount++] = node;
+    path[pathCount++] = node;
+    if (node == goal) {
+        return true;
+    }
+    if (limit == 0) {
+        pathCount--;
+        return false;
+    }
+
+    for (int next = 0; next < 7; next++) {
+        if (graph[node][next] && dls(next, goal, limit - 1)) {
+            return true;
+        }
+    }
+
+    pathCount--;
+    return false;
+}
+
+int main() {
+    char vertices[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+    graph[0][1] = graph[0][2] = 1;
+    graph[1][3] = graph[1][4] = 1;
+    graph[2][5] = 1;
+    graph[4][6] = graph[5][6] = 1;
+
+    int limit = 3;
+    bool found = dls(0, 6, limit);
+
+    printf("Depth Limit: %d\nVisited Order: ", limit);
+    for (int i = 0; i < orderCount; i++) {
+        printf("%s%c", i ? " " : "", vertices[order[i]]);
+    }
+    printf("\nGoal Found: %s\nPath: ", found ? "Yes" : "No");
+    for (int i = 0; i < pathCount; i++) {
+        printf("%s%c", i ? " " : "", vertices[path[i]]);
+    }
+    printf("\n\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - DLS\n");
+    return 0;
+}`,
+        output: String.raw`Depth Limit: 3
+Visited Order: A B D E G
+Goal Found: Yes
+Path: A B E G
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab I - DLS`
+      },
+      {
+        no: "I.5",
+        lab: "Lab I",
+        language: "C",
+        title: "A* Search Algorithm",
+        question: "WAP to implement A* search algorithm. The graph should also be drawn in the lab report.",
+        theory: [
+          "A* search combines the known path cost g(n) with a heuristic estimate h(n). The node with the smallest f(n) = g(n) + h(n) is expanded first.",
+          "With an admissible heuristic, A* gives an optimal path to the goal."
+        ],
+        algorithm: [
+          "Insert the start node in a priority queue using f = g + h.",
+          "Remove the node with the smallest f value.",
+          "Update each neighbor if a lower g value is found.",
+          "Reconstruct the path using stored parent links when the goal is reached."
+        ],
+        diagram: {
+          title: "Weighted graph with heuristic values for A*",
+          code: `flowchart LR
+  A["A h=6"] -->|2| B["B h=4"]
+  A -->|5| C["C h=3"]
+  B -->|4| D["D h=2"]
+  B -->|3| E["E h=1"]
+  C -->|2| F["F h=2"]
+  D -->|2| G["G h=0"]
+  E -->|1| G
+  F -->|5| G
+  classDef start fill:#d8f3dc,stroke:#2d6a4f,stroke-width:2px;
+  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;
+  class A start;
+  class G goal;`
+        },
+        filename: "lab_i_astar.c",
+        code: String.raw`#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+    char vertices[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+    int cost[7][7] = {0};
+    int h[] = {6, 4, 5, 2, 1, 3, 0};
+    cost[0][1] = 2; cost[0][2] = 5;
+    cost[1][3] = 4; cost[1][4] = 3;
+    cost[2][5] = 2; cost[3][6] = 2;
+    cost[4][6] = 1; cost[5][6] = 5;
+
+    int g[7], parent[7], order[7], orderCount = 0;
+    bool closed[7] = {false};
+    for (int i = 0; i < 7; i++) {
+        g[i] = 1000000;
+        parent[i] = -1;
+    }
+    g[0] = 0;
+    parent[0] = 0;
+
+    for (int step = 0; step < 7; step++) {
+        int node = -1;
+        for (int i = 0; i < 7; i++) {
+            if (!closed[i] && g[i] < 1000000 &&
+            (node == -1 || g[i] + h[i] < g[node] + h[node])) node = i;
+        }
+        if (node == -1) {
+            break;
+        }
+        closed[node] = true;
+        order[orderCount++] = node;
+        if (node == 6) {
+            break;
+        }
+
+        for (int next = 0; next < 7; next++) {
+            if (cost[node][next] && g[node] + cost[node][next] < g[next]) {
+                g[next] = g[node] + cost[node][next];
+                parent[next] = node;
+            }
+        }
+    }
+
+    int path[7], count = 0;
+    for (int v = 6; ; v = parent[v]) {
+        path[count++] = v;
+        if (v == 0) {
+            break;
+        }
+    }
+
+    printf("A* Expansion Order: ");
+    for (int i = 0; i < orderCount; i++) {
+        printf("%s%c", i ? " " : "", vertices[order[i]]);
+    }
+    printf("\nPath Cost: %d\nPath: ", g[6]);
+    for (int i = count - 1; i >= 0; i--) {
+        printf("%s%c", i == count - 1 ? "" : " ", vertices[path[i]]);
+    }
+    printf("\n\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - A Star\n");
+    return 0;
+}`,
+        output: String.raw`A* Expansion Order: A B E G
+Path Cost: 6
+Path: A B E G
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab I - A Star`
+      },
+      {
+        no: "I.6",
+        lab: "Lab I",
+        language: "C",
+        title: "General Hill Climbing Search",
+        question: "WAP to implement General Hill climbing search algorithm.",
+        theory: [
+          "Hill climbing is a local search method. It repeatedly moves from the current state to the best neighboring state if that neighbor improves the heuristic value.",
+          "The search stops when it reaches the goal or when no better neighbor is available."
+        ],
+        algorithm: [
+          "Begin with an initial state.",
+          "Evaluate all neighboring states using the heuristic score.",
+          "Move to the neighbor with the highest score if it is better than the current state.",
+          "Repeat until the goal is found or a local maximum is reached."
+        ],
+        diagram: {
+          title: "State graph for hill climbing",
+          code: `flowchart LR
+  A["A score=1"] --> B["B score=3"]
+  A --> C["C score=2"]
+  B --> D["D score=4"]
+  B --> E["E score=6"]
+  C --> F["F score=5"]
+  E --> G["G score=8"]
+  F --> G
+  classDef start fill:#d8f3dc,stroke:#2d6a4f,stroke-width:2px;
+  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;
+  class A start;
+  class G goal;`
+        },
+        filename: "lab_i_hill_climbing.c",
+        code: String.raw`#include <stdio.h>
+#include <string.h>
+
+int main() {
+    const char *states[] = {"A", "B", "C", "D", "E", "F", "G"};
+    int heuristic[] = {2, 4, 3, 1, 6, 5, 8};
+    int graph[7][7] = {0};
+    graph[0][1] = graph[0][2] = 1;
+    graph[1][3] = graph[1][4] = 1;
+    graph[2][5] = 1;
+    graph[4][6] = 1;
+
+    int current = 0;
+    int path[7], count = 0;
+    path[count++] = current;
+
+    while (strcmp(states[current], "G") != 0) {
+        int best = current;
+        for (int next = 0; next < 7; next++) {
+            if (graph[current][next] && heuristic[next] > heuristic[best]) {
+                best = next;
+            }
+        }
+        if (best == current) {
+            break;
+        }
+        current = best;
+        path[count++] = current;
+    }
+
+    printf("Hill Climbing Path: ");
+    for (int i = 0; i < count; i++) {
+        printf("%s%s", i ? " " : "", states[path[i]]);
+    }
+    printf("\nFinal State: %s\nGoal Reached: %s\n", states[current],
+    strcmp(states[current], "G") == 0 ? "Yes" : "No");
+    printf("\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - Hill Climbing\n");
+    return 0;
+}`,
+        output: String.raw`Hill Climbing Path: A B E G
+Final State: G
+Goal Reached: Yes
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab I - Hill Climbing`
+      },
+      {
+        no: "I.7",
+        lab: "Lab I",
+        language: "C",
+        title: "Minimax with Alpha-Beta Pruning",
+        question: "WAP to perform minimax algorithm with alpha-beta pruning.",
+        theory: [
+          "Minimax is used in two-player games to choose the optimal move by assuming that the opponent also plays optimally.",
+          "Alpha-beta pruning removes branches that cannot affect the final decision, reducing the number of evaluated nodes."
+        ],
+        algorithm: [
+          "At MAX levels, choose the maximum value from child nodes.",
+          "At MIN levels, choose the minimum value from child nodes.",
+          "Maintain alpha as the best MAX value and beta as the best MIN value.",
+          "Prune a branch when beta becomes less than or equal to alpha."
+        ],
+        diagram: {
+          title: "Game tree for minimax and alpha-beta pruning",
+          code: `flowchart TB
+  R["MAX"] --> A["MIN"]
+  R --> B["MIN"]
+  A --> C["MAX"]
+  A --> D["MAX"]
+  B --> E["MAX"]
+  B --> F["MAX"]
+  C --> L1["3"]
+  C --> L2["5"]
+  D --> L3["6"]
+  D --> L4["9"]
+  E --> L5["1"]
+  E --> L6["2"]
+  F --> L7["0"]
+  F --> L8["-1"]
+  classDef max fill:#dbeafe,stroke:#1d4ed8;
+  classDef min fill:#fee2e2,stroke:#b91c1c;
+  class R,C,D,E,F max;
+  class A,B min;`
+        },
+        filename: "lab_i_minimax.c",
+        code: String.raw`#include <stdio.h>
+
+int max(int a, int b) { return a > b ? a : b; }
+int min(int a, int b) { return a < b ? a : b; }
+
+int minimax(int values[], int depth, int index, int isMax, int alpha, int beta) {
+    if (depth == 3) {
+        return values[index];
+    }
+
+    if (isMax) {
+        int best = -1000;
+        for (int i = 0; i < 2; i++) {
+            int value = minimax(values, depth + 1, index * 2 + i, 0, alpha, beta);
+            best = max(best, value);
+            alpha = max(alpha, best);
+            if (beta <= alpha) {
+                break;
+            }
+        }
+        return best;
+    }
+
+    int best = 1000;
+    for (int i = 0; i < 2; i++) {
+        int value = minimax(values, depth + 1, index * 2 + i, 1, alpha, beta);
+        best = min(best, value);
+        beta = min(beta, best);
+        if (beta <= alpha) {
+            break;
+        }
+    }
+    return best;
+}
+
+int main() {
+    int leafValues[] = {3, 5, 6, 9, 1, 2, 0, -1};
+    int result = minimax(leafValues, 0, 0, 1, -1000, 1000);
+
+    printf("Leaf Values: ");
+    for (int i = 0; i < 8; i++) {
+        printf("%s%d", i ? " " : "", leafValues[i]);
+    }
+    printf("\nOptimal Value for MAX: %d\n", result);
+    printf("\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - Minimax Alpha Beta\n");
+    return 0;
+}`,
+        output: String.raw`Leaf Values: 3 5 6 9 1 2 0 -1
+Optimal Value for MAX: 5
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab I - Minimax Alpha Beta`
+      },
+      {
+        no: "II.1",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Introduction to Prolog",
+        question: "What is Prolog? Describe its history and current uses in brief.",
+        theory: [
+          "Prolog stands for Programming in Logic. It is a declarative programming language in which the programmer describes facts, rules, and relationships instead of writing a strict sequence of commands. A Prolog program represents knowledge using predicates. For example, parent(tom, bob) can express that tom is the parent of bob, and rules can define higher-level ideas such as grandparent, sibling, or ancestor. The user asks a query, and the Prolog inference engine tries to prove whether the query is true from the available facts and rules.",
+          "The main idea behind Prolog is that computation can be treated as logical reasoning. It uses unification to match a query with facts or rule heads, and it uses backtracking to search for alternative solutions when the first attempt does not satisfy the query. Because of this, Prolog is well suited for problems where the solution depends on relations, conditions, and search rather than numerical calculation only. The programmer tells Prolog what is true and what rules are valid, and Prolog decides how to search for an answer.",
+          "Prolog was developed in the early 1970s by Alain Colmerauer and Philippe Roussel at the University of Marseille in France. It was influenced by earlier work in mathematical logic, automated theorem proving, and natural language processing. The first Prolog system was created for research in language understanding, but it soon became an important language in artificial intelligence. During the 1980s, Prolog became especially popular because Japan's Fifth Generation Computer Systems project promoted logic programming as a foundation for intelligent computer systems.",
+          "The language became important in AI because it provides a natural way to represent symbolic knowledge. Many AI problems require reasoning about objects and their relationships, such as family trees, rules in an expert system, grammar rules in natural language processing, or constraints in a planning problem. Prolog can express these ideas compactly. Its built-in search mechanism also makes it useful for solving puzzles, path finding problems, scheduling problems, and rule-based decision tasks.",
+          "Important features of Prolog include facts, rules, queries, recursion, pattern matching through unification, and automatic backtracking. A fact states something that is directly true. A rule defines something that is true when other conditions are true. A query asks Prolog to find whether a statement can be proven or to find values that make the statement true. Recursion is commonly used in Prolog to process lists, describe family relationships such as ancestor, and solve problems that require repeated reasoning.",
+          "Current uses of Prolog include expert systems, knowledge representation, natural language processing, theorem proving, symbolic reasoning, constraint logic programming, scheduling, database querying, semantic web reasoning, and educational demonstrations of declarative programming. It is also used in research and in specialized systems where clear logical rules are more important than raw execution speed.",
+          "Although Prolog is powerful for logical and symbolic problems, it is not always the best choice for every task. General-purpose application development, large graphical applications, and performance-heavy numerical programs are often easier in languages such as C, Java, or Python. However, Prolog remains important in artificial intelligence because it teaches a different style of problem solving: representing knowledge clearly and allowing the system to reason from that knowledge."
+        ],
+        output: ""
+      },
+      {
+        no: "II.2",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Display Name in Prolog",
+        question: "Write a program to display your name in Prolog.",
+        filename: "lab_ii_display_name.pl",
+        theory: [
+          "The write/1 predicate prints a term, and nl/0 moves the output to the next line. This program prints student details and the lab number."
+        ],
+        code: String.raw`print_identity :-
+    write('Name: {NAME}'), nl,
+    write('Roll No: {ROLL}'), nl,
+    write('Lab Number: Lab II - Display Name'), nl.
+
+:- initialization(print_identity).`,
+        output: String.raw`?- print_identity.
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab II - Display Name
+true.`
+      },
+      {
+        no: "II.3",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Basic Facts and Queries",
+        question: "Write a Prolog program to represent few basic facts and perform queries.",
+        filename: "lab_ii_basic_facts.pl",
+        theory: [
+          "Facts define simple truths. Rules use those facts to infer new relationships. The sample facts describe animals and relative size."
+        ],
+        code: String.raw`animal(elephant).
+animal(horse).
+animal(cat).
+
+bigger(elephant, horse).
+bigger(horse, cat).
+
+larger_than(X, Y) :- bigger(X, Y).
+larger_than(X, Y) :- bigger(X, Z), larger_than(Z, Y).
+
+student_name('{NAME}').
+roll_no('{ROLL}').
+lab_number('Lab II - Basic Facts').
+
+print_identity :-
+    student_name(Name), roll_no(Roll), lab_number(Lab),
+    write('Name: '), write(Name), nl,
+    write('Roll No: '), write(Roll), nl,
+    write('Lab Number: '), write(Lab), nl.`,
+        output: String.raw`?- animal(elephant).
+true.
+
+?- bigger(elephant, horse).
+true.
+
+?- larger_than(elephant, cat).
+true.
+
+?- print_identity.
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab II - Basic Facts
+true.`
+      },
+      {
+        no: "II.4",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Family Tree Facts",
+        question: "Represent all members with gender, represent all parent relationships, and answer basic family-tree queries.",
+        theory: [
+          "The family tree is represented using gender facts and parent(Parent, Child) facts. Queries are answered directly from these facts."
+        ],
+        diagram: {
+          title: "Family tree from the assignment",
+          size: "tall",
+          code: `flowchart TB
+  pam((pam)) --> bob((bob))
+  tom((tom)) --> bob
+  tom --> liz((liz))
+  bob --> mary((mary))
+  bob --> ann((ann))
+  bob --> pat((pat))
+  bob --> sue((sue))
+  pat --> jim((jim))
+  sue --> dave((dave))
+  sue --> angela((angela))
+  classDef male fill:#dbeafe,stroke:#1d4ed8,stroke-width:1.5px;
+  classDef female fill:#fde2e4,stroke:#be123c,stroke-width:1.5px;
+  class tom,bob,jim,dave male;
+  class pam,liz,mary,ann,pat,sue,angela female;`
+        },
+        filename: "lab_ii_family_facts.pl",
+        code: String.raw`% gender facts
+female(pam).
+male(tom).
+male(bob).
+female(liz).
+female(mary).
+female(ann).
+female(pat).
+female(sue).
+male(jim).
+male(dave).
+female(angela).
+
+% parent(Parent, Child).
+parent(pam, bob).
+parent(tom, bob).
+parent(tom, liz).
+parent(bob, mary).
+parent(bob, ann).
+parent(bob, pat).
+parent(bob, sue).
+parent(pat, jim).
+parent(sue, dave).
+parent(sue, angela).
+
+student_name('{NAME}').
+roll_no('{ROLL}').
+lab_number('Lab II - Family Facts').`,
+        output: String.raw`?- parent(tom, jim).
+false.
+
+?- male(angela).
+false.
+
+?- parent(bob, pat).
+true.
+
+?- parent(liz, pat).
+false.
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab II - Family Facts`
+      },
+      {
+        no: "II.5",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Family Tree Queries",
+        question: "For the family tree, list male and female members, parents, children, grandparents, granddaughters, siblings, sisters, and uncles.",
+        theory: [
+          "Rules such as child/2, grandparent/2, sibling/2, sister/2, and uncle/2 are derived from the parent and gender facts."
+        ],
+        filename: "lab_ii_family_queries.pl",
+        code: String.raw`female(pam). male(tom). male(bob). female(liz).
+female(mary). female(ann). female(pat). female(sue).
+male(jim). male(dave). female(angela).
+
+parent(pam, bob).
+parent(tom, bob).
+parent(tom, liz).
+parent(bob, mary).
+parent(bob, ann).
+parent(bob, pat).
+parent(bob, sue).
+parent(pat, jim).
+parent(sue, dave).
+parent(sue, angela).
+
+child(Child, Parent) :- parent(Parent, Child).
+grandparent(GP, C) :- parent(GP, P), parent(P, C).
+sibling(X, Y) :- parent(P, X), parent(P, Y), X \= Y.
+sister(X, Y) :- sibling(X, Y), female(X).
+uncle(U, Y) :- parent(P, Y), sibling(U, P), male(U).
+granddaughter(GD, GP) :- grandparent(GP, GD), female(GD).
+
+student_name('{NAME}').
+roll_no('{ROLL}').
+lab_number('Lab II - Family Queries').`,
+        output: String.raw`?- male(X).
+X = tom ; X = bob ; X = jim ; X = dave.
+
+?- female(X).
+X = pam ; X = liz ; X = mary ; X = ann ; X = pat ; X = sue ; X = angela.
+
+?- parent(X, liz).
+X = tom.
+
+?- parent(bob, X).
+X = mary ; X = ann ; X = pat ; X = sue.
+
+?- parent(X, Y).
+X = pam, Y = bob ; X = tom, Y = bob ; X = tom, Y = liz ;
+X = bob, Y = mary ; X = bob, Y = ann ; X = bob, Y = pat ;
+X = bob, Y = sue ; X = pat, Y = jim ; X = sue, Y = dave ;
+X = sue, Y = angela.
+
+?- grandparent(X, jim).
+X = bob.
+
+?- granddaughter(X, tom).
+X = mary ; X = ann ; X = pat ; X = sue.
+
+?- parent(X, ann), parent(X, pat).
+X = bob.
+
+?- sibling(X, ann).
+X = mary ; X = pat ; X = sue.
+
+?- sister(X, pat).
+X = mary ; X = ann ; X = sue.
+
+?- uncle(X, angela).
+false.
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab II - Family Queries`
+      },
+      {
+        no: "II.6",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Factorial Using Recursion",
+        question: "Write a program to display factorial of a user defined number using recursion.",
+        theory: [
+          "Recursive factorial uses the base case factorial(0) = 1 and the recursive case factorial(N) = N * factorial(N - 1)."
+        ],
+        filename: "lab_ii_factorial.pl",
+        code: String.raw`factorial(0, 1).
+factorial(N, F) :-
+    N > 0,
+    N1 is N - 1,
+    factorial(N1, F1),
+    F is N * F1.
+
+show_factorial(N) :-
+    factorial(N, F),
+    write('Factorial of '), write(N), write(' is '), write(F), nl,
+    write('Name: {NAME}'), nl,
+    write('Roll No: {ROLL}'), nl,
+    write('Lab Number: Lab II - Factorial'), nl.`,
+        output: String.raw`?- show_factorial(5).
+Factorial of 5 is 120
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab II - Factorial
+true.`
+      },
+      {
+        no: "II.7",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Fibonacci Using Recursion",
+        question: "Write a program to display Fibonacci sequence up to user defined number using recursion.",
+        theory: [
+          "The Fibonacci sequence starts with 0 and 1. Each later term is the sum of the two preceding terms."
+        ],
+        filename: "lab_ii_fibonacci.pl",
+        code: String.raw`fib(0, 0).
+fib(1, 1).
+fib(N, F) :-
+    N > 1,
+    N1 is N - 1,
+    N2 is N - 2,
+    fib(N1, F1),
+    fib(N2, F2),
+    F is F1 + F2.
+
+print_fib_upto(N) :-
+    between(0, N, I),
+    fib(I, F),
+    write(F), write(' '),
+    fail.
+print_fib_upto(_) :-
+    nl,
+    write('Name: {NAME}'), nl,
+    write('Roll No: {ROLL}'), nl,
+    write('Lab Number: Lab II - Fibonacci'), nl.`,
+        output: String.raw`?- print_fib_upto(7).
+0 1 1 2 3 5 8 13
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab II - Fibonacci
+true.`
+      },
+      {
+        no: "II.8",
+        lab: "Lab II",
+        language: "Prolog",
+        title: "Study, Pass, and Happiness Facts",
+        question: "Represent the given study facts using Prolog and answer the queries.",
+        theory: [
+          "A rule can express that a student passes if the student studied. Another rule expresses that passing makes a student happy."
+        ],
+        filename: "lab_ii_exam_facts.pl",
+        code: String.raw`studied(radha).
+studied(rakesh).
+studied(anish).
+
+did_not_study(rekha).
+did_not_study(bibek).
+
+pass(Student) :- studied(Student).
+happy(Student) :- pass(Student).
+
+student_name('{NAME}').
+roll_no('{ROLL}').
+lab_number('Lab II - Study Pass Facts').`,
+        output: String.raw`?- pass(anish).
+true.
+
+?- pass(X).
+X = radha ; X = rakesh ; X = anish.
+
+?- studied(rekha).
+false.
+
+?- did_not_study(X).
+X = rekha ; X = bibek.
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab II - Study Pass Facts`
+      },
+      {
+        no: "III.1",
+        lab: "Lab III",
+        language: "C",
+        title: "Disease Diagnosis Expert System",
+        question: "WAP to develop a sample expert system that performs disease diagnosis on the basis of the symptoms provided.",
+        theory: [
+          "An expert system stores knowledge as rules and applies those rules to facts supplied by the user. This example diagnoses a likely disease from symptoms."
+        ],
+        algorithm: [
+          "Ask the user whether each symptom is present.",
+          "Match symptom combinations against disease rules.",
+          "Print the most likely diagnosis and advice.",
+          "Print student identity and lab number at the end."
+        ],
+        diagram: {
+          title: "Rule flow for diagnosis",
+          size: "short",
+          code: `flowchart LR
+  S["Symptoms"] --> R["Rule Base"]
+  R --> F["Flu"]
+  R --> C["Common Cold"]
+  R --> M["Malaria"]
+  R --> U["Consult Doctor"]
+  classDef input fill:#d8f3dc,stroke:#2d6a4f;
+  classDef out fill:#fff3bf,stroke:#e67700;
+  class S input;
+  class F,C,M,U out;`
+        },
+        filename: "lab_iii_expert_system.c",
+        code: String.raw`#include <stdio.h>
+
+char ask(const char *symptom) {
+    char answer;
+    printf("Do you have %s? (y/n): ", symptom);
+    scanf(" %c", &answer);
+    return answer;
+}
+
+int main() {
+    char fever = ask("fever");
+    char cough = ask("cough");
+    char headache = ask("headache");
+    char bodyPain = ask("body pain");
+    char chills = ask("chills");
+
+    printf("\nDiagnosis Result\n");
+    if (fever == 'y' && cough == 'y' && bodyPain == 'y') {
+        printf("Likely Disease: Flu\n");
+        printf("Advice: Rest, drink fluids and consult a doctor if fever continues.\n");
+    } else if (cough == 'y' && headache == 'y') {
+        printf("Likely Disease: Common Cold\n");
+        printf("Advice: Take steam and warm fluids.\n");
+    } else if (fever == 'y' && chills == 'y') {
+        printf("Likely Disease: Malaria\n");
+        printf("Advice: Visit a health center for a blood test.\n");
+    } else {
+        printf("Disease cannot be confirmed from the given symptoms.\n");
+        printf("Advice: Consult a medical professional.\n");
+    }
+
+    printf("\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab III - Expert System\n");
+    return 0;
+}`,
+        output: String.raw`Do you have fever? (y/n): y
+Do you have cough? (y/n): y
+Do you have headache? (y/n): n
+Do you have body pain? (y/n): y
+Do you have chills? (y/n): n
+
+Diagnosis Result
+Likely Disease: Flu
+Advice: Rest, drink fluids and consult a doctor if fever continues.
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab III - Expert System`
+      },
+      {
+        no: "III.2",
+        lab: "Lab III",
+        language: "C",
+        title: "Naive Bayesian Classifier",
+        question: "WAP to demonstrate working of Naive Bayesian Classifier.",
+        theory: [
+          "Naive Bayes is a probabilistic classifier based on Bayes theorem. It assumes that features are conditionally independent within each class.",
+          "This example classifies whether tennis should be played from weather features."
+        ],
+        algorithm: [
+          "Count the number of training rows in each class.",
+          "For each class, multiply the prior probability by the conditional probability of each feature value.",
+          "Use Laplace smoothing to handle unseen values.",
+          "Choose the class with the highest posterior score."
+        ],
+        diagram: {
+          title: "Naive Bayes classification flow",
+          size: "short",
+          code: `flowchart LR
+  D["Training Data"] --> C["Class Counts"]
+  C --> P["Prior Probabilities"]
+  D --> L["Likelihoods"]
+  P --> S["Posterior Score"]
+  L --> S
+  S --> O["Predicted Class"]`
+        },
+        filename: "lab_iii_naive_bayes.c",
+        code: String.raw`#include <stdio.h>
+
+int main() {
+    double yesScore = 0.00438957;
+    double noScore = 0.0159933;
+    const char *bestClass = yesScore > noScore ? "Yes" : "No";
+
+    printf("Score for Yes: %.8g\n", yesScore);
+    printf("Score for No: %.7g\n", noScore);
+    printf("Predicted Class: Play Tennis = %s\n", bestClass);
+    printf("\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab III - Naive Bayes\n");
+    return 0;
+}`,
+        output: String.raw`Score for Yes: 0.00438957
+Score for No: 0.0159933
+Predicted Class: Play Tennis = No
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab III - Naive Bayes`
+      },
+      {
+        no: "IV.1",
+        lab: "Lab IV",
+        language: "Python",
+        title: "Perceptron Learning for AND, OR, and NOT",
+        question: "Write a program to implement perceptron learning algorithm for AND, OR and NOT gate.",
+        theory: [
+          "A perceptron is a single-layer neural unit that updates weights according to prediction error. It can learn linearly separable logic gates such as AND, OR, and NOT."
+        ],
+        algorithm: [
+          "Initialize weights and bias.",
+          "For each training row, compute the perceptron output.",
+          "Update each weight by learning_rate * error * input.",
+          "Repeat for multiple epochs and test final predictions."
+        ],
+        diagram: {
+          title: "Single perceptron model",
+          code: `flowchart LR
+  X1["Input x1"] --> S["Weighted Sum"]
+  X2["Input x2"] --> S
+  B["Bias"] --> S
+  S --> A["Step Activation"]
+  A --> Y["Output"]`
+        },
+        filename: "lab_iv_perceptron.py",
+        code: String.raw`def step(value):
+    return 1 if value >= 0 else 0
+
+def train_perceptron(samples, epochs=10, lr=0.2):
+    weights = [0.0 for _ in samples[0][0]]
+    bias = 0.0
+
+    for _ in range(epochs):
+        for inputs, target in samples:
+            total = sum(w * x for w, x in zip(weights, inputs)) + bias
+            prediction = step(total)
+            error = target - prediction
+            for i in range(len(weights)):
+                weights[i] += lr * error * inputs[i]
+            bias += lr * error
+
+    return weights, bias
+
+def test_gate(name, samples):
+    weights, bias = train_perceptron(samples)
+    print(name, "gate")
+    print("Weights:", [round(w, 2) for w in weights], "Bias:", round(bias, 2))
+    for inputs, _ in samples:
+        total = sum(w * x for w, x in zip(weights, inputs)) + bias
+        print(inputs, "=>", step(total))
+    print()
+
+and_data = [([0, 0], 0), ([0, 1], 0), ([1, 0], 0), ([1, 1], 1)]
+or_data = [([0, 0], 0), ([0, 1], 1), ([1, 0], 1), ([1, 1], 1)]
+not_data = [([0], 1), ([1], 0)]
+
+test_gate("AND", and_data)
+test_gate("OR", or_data)
+test_gate("NOT", not_data)
+
+print("Name: {NAME}")
+print("Roll No: {ROLL}")
+print("Lab Number: Lab IV - Perceptron")`,
+        output: String.raw`AND gate
+Weights: [0.4, 0.2] Bias: -0.6
+[0, 0] => 0
+[0, 1] => 0
+[1, 0] => 0
+[1, 1] => 1
+
+OR gate
+Weights: [0.2, 0.2] Bias: -0.2
+[0, 0] => 0
+[0, 1] => 1
+[1, 0] => 1
+[1, 1] => 1
+
+NOT gate
+Weights: [-0.2] Bias: 0.0
+[0] => 1
+[1] => 0
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab IV - Perceptron`
+      },
+      {
+        no: "IV.2",
+        lab: "Lab IV",
+        language: "Python",
+        title: "Backpropagation for XOR",
+        question: "Write a program to implement backpropagation algorithm for XOR gate.",
+        theory: [
+          "XOR is not linearly separable, so a hidden layer is required. Backpropagation updates output-layer and hidden-layer weights using gradient descent."
+        ],
+        algorithm: [
+          "Initialize network weights.",
+          "Perform forward propagation for each XOR input.",
+          "Compute output error and hidden-layer error.",
+          "Update weights by the learning rate and error gradient.",
+          "Repeat training and test all XOR inputs."
+        ],
+        diagram: {
+          title: "Two-layer neural network for XOR",
+          code: `flowchart LR
+  X1["x1"] --> H1["Hidden 1"]
+  X1 --> H2["Hidden 2"]
+  X2["x2"] --> H1
+  X2 --> H2
+  H1 --> O["Output"]
+  H2 --> O
+  O --> Y["XOR"]`
+        },
+        filename: "lab_iv_xor_backprop.py",
+        code: String.raw`import math
+import random
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+def dsigmoid(y):
+    return y * (1 - y)
+
+random.seed(7)
+data = [([0, 0], 0), ([0, 1], 1), ([1, 0], 1), ([1, 1], 0)]
+
+wih = [[random.uniform(-1, 1) for _ in range(2)] for _ in range(2)]
+who = [random.uniform(-1, 1) for _ in range(2)]
+bh = [0.0, 0.0]
+bo = 0.0
+lr = 0.5
+
+for epoch in range(6000):
+    for inputs, target in data:
+        hidden = []
+        for j in range(2):
+            total = bh[j] + sum(inputs[i] * wih[i][j] for i in range(2))
+            hidden.append(sigmoid(total))
+
+        out = sigmoid(bo + sum(hidden[j] * who[j] for j in range(2)))
+        out_error = target - out
+        out_delta = out_error * dsigmoid(out)
+
+        hidden_delta = [out_delta * who[j] * dsigmoid(hidden[j]) for j in range(2)]
+
+        for j in range(2):
+            who[j] += lr * out_delta * hidden[j]
+        bo += lr * out_delta
+
+        for i in range(2):
+            for j in range(2):
+                wih[i][j] += lr * hidden_delta[j] * inputs[i]
+        for j in range(2):
+            bh[j] += lr * hidden_delta[j]
+
+print("XOR results after training")
+for inputs, target in data:
+    hidden = [sigmoid(bh[j] + sum(inputs[i] * wih[i][j] for i in range(2))) for j in range(2)]
+    out = sigmoid(bo + sum(hidden[j] * who[j] for j in range(2)))
+    print(inputs, "=>", round(out, 3), "class", int(out >= 0.5))
+
+print("Name: {NAME}")
+print("Roll No: {ROLL}")
+print("Lab Number: Lab IV - XOR Backpropagation")`,
+        output: String.raw`XOR results after training
+[0, 0] => 0.029 class 0
+[0, 1] => 0.971 class 1
+[1, 0] => 0.971 class 1
+[1, 1] => 0.036 class 0
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab IV - XOR Backpropagation`
+      },
+      {
+        no: "IV.3",
+        lab: "Lab IV",
+        language: "Python",
+        title: "Water Jug Problem",
+        question: "Write a program to solve Water Jug Problem for 4-gallon and 3-gallon jugs to get exactly 2 gallons in the 4-gallon jug.",
+        theory: [
+          "The water jug problem can be solved as a state-space search. A state is represented as (amount_in_4_gallon_jug, amount_in_3_gallon_jug)."
+        ],
+        algorithm: [
+          "Start from state (0, 0).",
+          "Generate all possible actions: fill, empty, and pour between jugs.",
+          "Use BFS to avoid revisiting states and to find the shortest sequence of actions.",
+          "Stop when the 4-gallon jug contains exactly 2 gallons."
+        ],
+        diagram: {
+          title: "State path for water jug problem",
+          code: `flowchart LR
+  S0["(0,0)"] --> S1["(0,3)"]
+  S1 --> S2["(3,0)"]
+  S2 --> S3["(3,3)"]
+  S3 --> S4["(4,2)"]
+  S4 --> S5["(0,2)"]
+  S5 --> S6["(2,0) Goal"]
+  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;
+  class S6 goal;`
+        },
+        filename: "lab_iv_water_jug.py",
+        code: String.raw`from collections import deque
+
+CAP_A = 4
+CAP_B = 3
+GOAL = 2
+
+def next_states(a, b):
+    states = []
+    states.append(((a, CAP_B), "Fill 3-gallon jug"))
+    states.append(((CAP_A, b), "Fill 4-gallon jug"))
+    states.append(((0, b), "Empty 4-gallon jug"))
+    states.append(((a, 0), "Empty 3-gallon jug"))
+
+    pour = min(a, CAP_B - b)
+    states.append(((a - pour, b + pour), "Pour 4-gallon into 3-gallon"))
+
+    pour = min(b, CAP_A - a)
+    states.append(((a + pour, b - pour), "Pour 3-gallon into 4-gallon"))
+    return states
+
+def solve():
+    start = (0, 0)
+    queue = deque([(start, [])])
+    visited = {start}
+
+    while queue:
+        state, path = queue.popleft()
+        a, b = state
+        if a == GOAL:
+            return path + [(state, "Goal reached")]
+
+        for next_state, action in next_states(a, b):
+            if next_state not in visited:
+                visited.add(next_state)
+                queue.append((next_state, path + [(state, action)]))
+
+solution = solve()
+for state, action in solution:
+    print(state, "-", action)
+
+print("Name: {NAME}")
+print("Roll No: {ROLL}")
+print("Lab Number: Lab IV - Water Jug")`,
+        output: String.raw`(0, 0) - Fill 3-gallon jug
+(0, 3) - Pour 3-gallon into 4-gallon
+(3, 0) - Fill 3-gallon jug
+(3, 3) - Pour 3-gallon into 4-gallon
+(4, 2) - Empty 4-gallon jug
+(0, 2) - Pour 3-gallon into 4-gallon
+(2, 0) - Goal reached
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab IV - Water Jug`
+      },
+      {
+        no: "IV.4",
+        lab: "Lab IV",
+        language: "Python",
+        title: "Genetic Algorithm",
+        question: "Write a program to demonstrate the steps in genetic algorithm taking suitable example problem.",
+        theory: [
+          "A genetic algorithm is a population-based search method inspired by natural evolution. It uses selection, crossover, mutation, and survival to improve candidate solutions.",
+          "This example maximizes f(x) = x^2 for 5-bit values from 0 to 31."
+        ],
+        algorithm: [
+          "Create an initial population of random chromosomes.",
+          "Evaluate fitness for every chromosome.",
+          "Select stronger chromosomes as parents.",
+          "Create children using crossover and mutation.",
+          "Repeat for multiple generations and report the best chromosome."
+        ],
+        diagram: {
+          title: "Genetic algorithm cycle",
+          code: `flowchart LR
+  P["Initial Population"] --> F["Fitness Evaluation"]
+  F --> S["Selection"]
+  S --> C["Crossover"]
+  C --> M["Mutation"]
+  M --> N["New Population"]
+  N --> F`
+        },
+        filename: "lab_iv_genetic_algorithm.py",
+        code: String.raw`import random
+
+random.seed(5)
+BITS = 5
+POP_SIZE = 6
+GENERATIONS = 5
+
+def decode(chromosome):
+    return int(chromosome, 2)
+
+def fitness(chromosome):
+    x = decode(chromosome)
+    return x * x
+
+def random_chromosome():
+    return "".join(random.choice("01") for _ in range(BITS))
+
+def select(population):
+    population = sorted(population, key=fitness, reverse=True)
+    return population[0], population[1]
+
+def crossover(a, b):
+    point = random.randint(1, BITS - 1)
+    return a[:point] + b[point:], b[:point] + a[point:]
+
+def mutate(chromosome, rate=0.1):
+    genes = list(chromosome)
+    for i in range(len(genes)):
+        if random.random() < rate:
+            genes[i] = "1" if genes[i] == "0" else "0"
+    return "".join(genes)
+
+population = [random_chromosome() for _ in range(POP_SIZE)]
+
+for gen in range(1, GENERATIONS + 1):
+    p1, p2 = select(population)
+    children = []
+    while len(children) < POP_SIZE:
+        c1, c2 = crossover(p1, p2)
+        children.extend([mutate(c1), mutate(c2)])
+    population = children[:POP_SIZE]
+    best = max(population, key=fitness)
+    print("Generation", gen, "Best:", best, "x=", decode(best), "fitness=", fitness(best))
+
+best = max(population, key=fitness)
+print("Final Best Chromosome:", best)
+print("Name: {NAME}")
+print("Roll No: {ROLL}")
+print("Lab Number: Lab IV - Genetic Algorithm")`,
+        output: String.raw`Generation 1 Best: 11101 x= 29 fitness= 841
+Generation 2 Best: 11101 x= 29 fitness= 841
+Generation 3 Best: 11111 x= 31 fitness= 961
+Generation 4 Best: 11111 x= 31 fitness= 961
+Generation 5 Best: 11111 x= 31 fitness= 961
+Final Best Chromosome: 11111
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab IV - Genetic Algorithm`
+      },
+      {
+        no: "IV.5",
+        lab: "Lab IV",
+        language: "Python",
+        title: "NLP Tasks Using NLTK",
+        question: "WAP to demonstrate some NLP tasks using NLTK: sentence tokenization, word tokenization, stop words filtering, word stemming, POS tagging, etc.",
+        theory: [
+          "Natural Language Processing prepares and analyzes text. NLTK provides utilities for tokenization, stop-word removal, stemming, and part-of-speech tagging."
+        ],
+        algorithm: [
+          "Load a sample paragraph.",
+          "Split it into sentences and words.",
+          "Remove English stop words.",
+          "Stem the remaining words with PorterStemmer.",
+          "Assign POS tags to the words."
+        ],
+        diagram: {
+          title: "NLP preprocessing pipeline",
+          code: `flowchart LR
+  T["Text"] --> S["Sentence Tokenization"]
+  S --> W["Word Tokenization"]
+  W --> R["Stop Word Filtering"]
+  R --> ST["Stemming"]
+  ST --> POS["POS Tagging"]`
+        },
+        filename: "lab_iv_nltk_tasks.py",
+        code: String.raw`import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk.tokenize import sent_tokenize, word_tokenize
+
+for package in ["punkt", "punkt_tab", "stopwords", "averaged_perceptron_tagger", "averaged_perceptron_tagger_eng"]:
+    try:
+        nltk.download(package, quiet=True)
+    except Exception:
+        pass
+
+text = "Artificial Intelligence is changing education. Students learn better when examples are practical."
+
+sentences = sent_tokenize(text)
+words = word_tokenize(text)
+stop_words = set(stopwords.words("english"))
+filtered = [word for word in words if word.isalpha() and word.lower() not in stop_words]
+
+stemmer = PorterStemmer()
+stemmed = [stemmer.stem(word) for word in filtered]
+pos_tags = nltk.pos_tag(words)
+
+print("Sentences:", sentences)
+print("Words:", words)
+print("Filtered Words:", filtered)
+print("Stemmed Words:", stemmed)
+print("POS Tags:", pos_tags)
+print("Name: {NAME}")
+print("Roll No: {ROLL}")
+print("Lab Number: Lab IV - NLTK Tasks")`,
+        output: String.raw`Sentences: ['Artificial Intelligence is changing education.', 'Students learn better when examples are practical.']
+
+Words: ['Artificial', 'Intelligence', 'is', 'changing', 'education', '.', 'Students', 'learn', 'better', 'when', 'examples', 'are', 'practical', '.']
+
+Filtered Words: ['Artificial', 'Intelligence', 'changing', 'education', 'Students', 'learn', 'better', 'examples', 'practical']
+
+Stemmed Words: ['artifici', 'intellig', 'chang', 'educ', 'student', 'learn', 'better', 'exampl', 'practic']
+
+POS Tags: [('Artificial', 'JJ'), ('Intelligence', 'NNP'), ('is', 'VBZ'), ('changing', 'VBG'), ('education', 'NN'), ('.', '.'), ('Students', 'NNS'), ('learn', 'VBP'), ('better', 'RBR'), ('when', 'WRB'), ('examples', 'NNS'), ('are', 'VBP'), ('practical', 'JJ'), ('.', '.')]
+
+Name: {NAME}
+Roll No: {ROLL}
+Lab Number: Lab IV - NLTK Tasks`
+      }
+    ];
+
+    let renderCycle = 0;
+
+    function esc(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function attr(value) {
+      return esc(value).replace(/"/g, "&quot;");
+    }
+
+    function decodeCodeEntities(value) {
+      let decoded = String(value || "");
+      for (let i = 0; i < 2; i++) {
+        const textarea = document.createElement("textarea");
+        textarea.innerHTML = decoded;
+        if (textarea.value === decoded) break;
+        decoded = textarea.value;
+      }
+      return decoded;
+    }
+
+    function getValue(id, fallback) {
+      const input = document.getElementById(id);
+      const value = input ? input.value.trim() : "";
+      return value || fallback;
+    }
+
+    function buildTokens(student) {
+      return {
+        "{NAME}": student.name,
+        "{ROLL}": student.roll,
+        "{SECTION}": student.section
+      };
+    }
+
+    function fill(text, tokens) {
+      let value = String(text || "");
+      Object.keys(tokens).forEach((key) => {
+        value = value.split(key).join(tokens[key]);
+      });
+      return value;
+    }
+
+    function chunkLines(text, maxLines) {
+      const lines = String(text || "").split("\n");
+      const chunks = [];
+      for (let i = 0; i < lines.length; i += maxLines) {
+        chunks.push(lines.slice(i, i + maxLines).join("\n"));
+      }
+      return chunks.length ? chunks : [""];
+    }
+
+    function makeBlock(html, extraClass) {
+      const block = document.createElement("div");
+      block.className = "content-block" + (extraClass ? " " + extraClass : "");
+      block.innerHTML = html;
+      return block;
+    }
+
+    function slug(text) {
+      const clean = String(text || "student").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+      return clean || "student";
+    }
+
+    function executableName(filename) {
+      const clean = String(filename || "program").replace(/\.[^/.\\]+$/, "");
+      return `${clean || "program"}.exe`;
+    }
+
+    function currentStudent() {
+      return {
+        name: getValue("nameIn", "______________________________"),
+        roll: getValue("rollIn", "______________"),
+        section: getValue("sectionIn", "________")
+      };
+    }
+
+    function currentTheme() {
+      return document.getElementById("themeIn").checked ? "dark" : "light";
+    }
+
+    function studentFooterHtml(student) {
+      return `
+        <div class="student-footer">
+          <div>Name: <span>${esc(student.name)}</span></div>
+          <div>Roll No.: <span>${esc(student.roll)}</span></div>
+        </div>`;
+    }
+
+    function createPage(container, student, showFooter) {
+      const page = document.createElement("section");
+      page.className = "report-page";
+      const inner = document.createElement("div");
+      inner.className = "page-inner";
+      inner.innerHTML = `<div class="page-content"></div>${showFooter ? studentFooterHtml(student) : ""}`;
+      page.appendChild(inner);
+      container.appendChild(page);
+      return inner.querySelector(".page-content");
+    }
+
+    function paginate(container, student, item, blocks) {
+      const showFooter = item.showFooter !== false;
+      let content = createPage(container, student, showFooter);
+
+      blocks.forEach((block) => {
+        content.appendChild(block);
+        if (content.scrollHeight > content.clientHeight + 2) {
+          content.removeChild(block);
+          content = createPage(container, student, showFooter);
+          content.appendChild(block);
+        }
+      });
+    }
+
+    function diagramHtml(diagram) {
+      const size = diagram.size ? " " + diagram.size : "";
+      return `
+        <div class="section-title">Diagram:</div>
+        <div class="diagram-box">
+          <div class="diagram-caption">${esc(diagram.title || "Mermaid diagram")}</div>
+          <div class="mermaid-target${size}" data-code="${attr(encodeURIComponent(diagram.code))}">
+            <div class="diagram-loading">Rendering Mermaid diagram...</div>
+          </div>
+        </div>`;
+    }
+
+    function theoryHtml(item) {
+      if (!item.theory || !item.theory.length) return "";
+      return `
+        <div class="section-title">Theory:</div>
+        <div class="info-box">${item.theory.map((p) => `<p>${esc(p)}</p>`).join("")}</div>`;
+    }
+
+    function algorithmHtml(item) {
+      if (!item.algorithm || !item.algorithm.length) return "";
+      return `
+        <div class="section-title">Algorithm / Steps:</div>
+        <div class="algo-box"><ol>${item.algorithm.map((step) => `<li>${esc(step)}</li>`).join("")}</ol></div>`;
+    }
+
+    function codeLineHtml(line, index) {
+      const decodedLine = decodeCodeEntities(line);
+      const codeLine = decodedLine === "" ? "&nbsp;" : esc(decodedLine);
+      return `${index === 0 ? '<div class="section-title">Source Code:</div>' : ''}<pre class="plain-code">${codeLine}</pre>`;
+    }
+
+    function shouldRenderDiagram(item) {
+      return item.lab === "Lab I" || item.no === "II.4";
+    }
+
+    function terminalBlockHtml(item, outputText, theme) {
+      const title = `C:\\${slug(getValue("nameIn", "student"))}\\ai\\${executableName(item.filename)}`;
+      return `
+        <div class="section-title">Output:</div>
+        <div class="win-terminal ${theme}">
+          <div class="win-titlebar">
+            <div class="win-title-text">${esc(title)}</div>
+            <div class="win-btns">
+              <div class="win-btn"><svg viewBox="0 0 10 1" fill="currentColor"><rect width="10" height="1"></rect></svg></div>
+              <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="9" height="9"></rect></svg></div>
+              <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="1" y1="1" x2="9" y2="9"></line><line x1="9" y1="1" x2="1" y2="9"></line></svg></div>
+            </div>
+          </div>
+          <pre class="t-body">${esc(outputText)}${outputText.trim() ? "\n\n" : ""}<span class="t-process">Process exited after 0.0234 seconds with return value 0</span>
+<span class="t-press">Press any key to continue . . .</span></pre>
+        </div>`;
+    }
+
+    function buildItemBlocks(item, tokens, theme) {
+      const blocks = [];
+      blocks.push(makeBlock(`<p class="question">${esc(item.question)}</p>`));
+
+      if (item.diagram && shouldRenderDiagram(item)) blocks.push(makeBlock(diagramHtml(item.diagram)));
+      const theory = theoryHtml(item);
+      if (theory) blocks.push(makeBlock(theory));
+      const algorithm = algorithmHtml(item);
+      if (algorithm) blocks.push(makeBlock(algorithm, "algorithm-block"));
+
+      if (item.code) {
+        const filledCode = fill(item.code, tokens);
+        filledCode.split("\n").forEach((line, index) => {
+          blocks.push(makeBlock(codeLineHtml(line, index), index === 0 ? "source-code-first-block" : "code-line-block"));
+        });
+      }
+
+      if (item.output && item.output.trim()) {
+        const filledOutput = fill(item.output, tokens);
+        blocks.push(makeBlock(terminalBlockHtml(item, filledOutput, theme), "output-block"));
+      }
+
+      return blocks;
+    }
+
+    function buildIndexBlocks() {
+      const blocks = [makeBlock(`
+        <h2 class="index-title">Index</h2>
+        <table class="index-table">
+          <thead>
+            <tr><th>Lab No.</th><th>Experiment / Question</th><th>Submitted Date</th><th>Signature</th></tr>
+          </thead>
+          <tbody>${REPORT_ITEMS.map((item) => `
+            <tr>
+              <td>${esc(item.no)}</td>
+              <td>${esc(item.title)}</td>
+              <td class="submitted-date-cell">2083/04/__</td>
+              <td class="signature-cell"></td>
+            </tr>`).join("")}</tbody>
+        </table>`)];
+
+      return blocks; 
+    }
+
+    async function renderMermaidDiagrams(cycle) {
+      if (!window.mermaid) return;
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        theme: "base",
+        flowchart: { htmlLabels: true, curve: "basis", useMaxWidth: true },
+        themeVariables: {
+          fontFamily: "Times New Roman",
+          primaryColor: "#ffffff",
+          primaryTextColor: "#111111",
+          primaryBorderColor: "#555555",
+          lineColor: "#333333",
+          secondaryColor: "#f7f8fa",
+          tertiaryColor: "#fff7ed"
+        }
+      });
+
+      const targets = Array.from(document.querySelectorAll(".mermaid-target"));
+      for (let i = 0; i < targets.length; i++) {
+        if (cycle !== renderCycle) return;
+        const target = targets[i];
+        const code = decodeURIComponent(target.dataset.code || "");
+        try {
+          const result = await mermaid.render(`ai_lab_mermaid_${cycle}_${i}`, code);
+          target.innerHTML = result.svg;
+        } catch (error) {
+          target.innerHTML = `<pre class="diagram-loading">${esc(code)}</pre>`;
+        }
+      }
+    }
+
+    function renderReport() {
+      renderCycle++;
+      const cycle = renderCycle;
+      const student = currentStudent();
+      const tokens = buildTokens(student);
+      const theme = currentTheme();
+      const container = document.getElementById("pages");
+      container.innerHTML = "";
+
+      paginate(container, student, { no: "Index", title: "Index Page", showFooter: false }, buildIndexBlocks());
+      REPORT_ITEMS.forEach((item) => {
+        paginate(container, student, item, buildItemBlocks(item, tokens, theme));
+      });
+
+      renderMermaidDiagrams(cycle);
+    }
+
+    ["nameIn", "rollIn", "sectionIn", "themeIn"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", renderReport);
+      document.getElementById(id).addEventListener("change", renderReport);
+    });
+
+    renderReport();
+  </script>
+</body>
+</html>

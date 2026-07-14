@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operating System Lab Report Generator</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --screen-bg: #101217;
+      --panel: #181c24;
+      --panel-2: #202633;
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #eef2f6;
+      --muted: #9aa6b5;
+      --orange: #f47b20;
+      --blue: #5294d0;
+      --green: #2bb673;
+      --paper: #ffffff;
+      --ink: #121212;
+      --paper-width: 210mm;
+      --paper-height: 297mm;
+      --paper-padding: 10mm;
+      --page-border-padding: 5.5mm;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(244, 123, 32, 0.08), transparent 34%),
+        linear-gradient(315deg, rgba(82, 148, 208, 0.10), transparent 36%),
+        var(--screen-bg);
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .controls {
+      max-width: 1120px;
+      margin: 22px auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(24, 28, 36, 0.94);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+    }
+
+    .controls-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    .controls h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: 0;
+    }
+
+    .controls p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: var(--panel-2);
+      color: var(--text);
+      outline: none;
+      font-size: 13px;
+    }
+
+    .field input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(82, 148, 208, 0.16);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .print-btn {
+      border: 0;
+      border-radius: 6px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .print-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      user-select: none;
+    }
+
+    .theme-toggle input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .switch {
+      width: 46px;
+      height: 25px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #343b49;
+      position: relative;
+      transition: background 0.2s ease;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      width: 19px;
+      height: 19px;
+      top: 2px;
+      left: 2px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.32);
+      transition: transform 0.2s ease;
+    }
+
+    .theme-toggle input:checked + .switch {
+      background: var(--blue);
+    }
+
+    .theme-toggle input:checked + .switch::after {
+      transform: translateX(21px);
+    }
+
+    .pages {
+      padding: 10px 0 36px;
+      overflow-x: auto;
+    }
+
+    .report-page {
+      width: var(--paper-width);
+      height: var(--paper-height);
+      margin: 24px auto;
+      padding: var(--paper-padding);
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.36);
+      font-family: "Times New Roman", Times, serif;
+      overflow: hidden;
+    }
+
+    .page-inner {
+      height: 100%;
+      border: 2px solid #202020;
+      padding: var(--page-border-padding);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      min-height: 0;
+    }
+
+    .page-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .content-block {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      margin: 0 0 4.2mm;
+    }
+
+    .content-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .algorithm-block {
+      margin-bottom: 1.8mm;
+    }
+
+    .question {
+      margin: 0;
+      font-size: 13pt;
+      line-height: 1.38;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 12pt;
+      font-weight: 700;
+      font-style: italic;
+      margin: 0 0 1.7mm;
+      color: #111;
+    }
+
+    .info-box,
+    .algo-box {
+      border: 1px solid #d3d6dc;
+      border-radius: 5px;
+      background: #f7f8fa;
+      padding: 3mm;
+      font-size: 12.5pt;
+      line-height: 1.35;
+    }
+
+    .info-box p {
+      margin: 0 0 2mm;
+    }
+
+    .info-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .algo-box ol,
+    .algo-box ul {
+      margin: 0;
+      padding-left: 5.2mm;
+    }
+
+    .algo-box li {
+      margin: 0 0 1.3mm;
+    }
+
+    .plain-code {
+      margin: 0;
+      padding: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: normal;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 10pt;
+      line-height: 1.26;
+      color: #111;
+      background: transparent;
+      border: 0;
+    }
+
+    .source-code-first-block,
+    .code-line-block {
+      margin: 0;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .source-code-first-block .section-title {
+      margin-bottom: 1.2mm;
+    }
+
+    .output-block {
+      margin-top: 5mm;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .win-terminal {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24), 0 2px 8px rgba(0, 0, 0, 0.16);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .win-terminal.dark {
+      background: #0c0c0c;
+      color: #cccccc;
+    }
+
+    .win-terminal.dark .win-titlebar {
+      background: #1f1f1f;
+      border-bottom: 1px solid #333;
+    }
+
+    .win-terminal.dark .win-title-text,
+    .win-terminal.dark .win-btn {
+      color: #999;
+    }
+
+    .win-terminal.dark .t-process {
+      color: #e5c07b;
+    }
+
+    .win-terminal.dark .t-press {
+      color: #666;
+    }
+
+    .win-terminal.light {
+      background: #fff;
+      color: #1e1e1e;
+      border: 1px solid #d4d4d4;
+      box-shadow: none;
+    }
+
+    .win-terminal.light .win-titlebar {
+      background: #f3f3f3;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .win-terminal.light .win-title-text,
+    .win-terminal.light .win-btn {
+      color: #666;
+    }
+
+    .win-terminal.light .t-process {
+      color: #9a6a00;
+    }
+
+    .win-terminal.light .t-press {
+      color: #7a7a7a;
+    }
+
+    .win-titlebar {
+      display: flex;
+      align-items: center;
+      height: 30px;
+      user-select: none;
+    }
+
+    .win-title-text {
+      flex: 1;
+      font-size: 11px;
+      padding-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .win-btns {
+      display: flex;
+      height: 100%;
+    }
+
+    .win-btn {
+      width: 38px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+    }
+
+    .win-btn svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .t-body {
+      margin: 0;
+      padding: 3mm 3.6mm;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9.4pt;
+      line-height: 1.34;
+    }
+
+    .index-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12pt;
+      line-height: 1.22;
+    }
+
+    .index-title {
+      margin: 0 0 2mm;
+      text-align: center;
+      font-size: 16pt;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .index-subtitle {
+      margin: 0 0 4mm;
+      text-align: center;
+      font-size: 11.5pt;
+      font-weight: 700;
+    }
+
+    .index-table th,
+    .index-table td {
+      border: 1px solid #cfd4dc;
+      padding: 1.2mm 2mm;
+      vertical-align: middle;
+    }
+
+    .index-table th {
+      background: #f0f3f7;
+      text-align: left;
+    }
+
+    .index-table th:first-child,
+    .index-table td:first-child {
+      width: 18mm;
+      text-align: center;
+    }
+
+    .index-table th:last-child,
+    .index-table td:last-child {
+      width: 34mm;
+      text-align: center;
+    }
+
+    .submitted-date-cell {
+      width: 30mm;
+      text-align: center;
+    }
+
+    .signature-cell {
+      height: 6.4mm;
+    }
+
+    @media (max-width: 900px) {
+      .controls {
+        margin: 12px;
+      }
+
+      .controls-head {
+        display: block;
+      }
+
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .report-page {
+        width: var(--paper-width);
+        height: var(--paper-height);
+        min-height: 0;
+        margin: 12px 0;
+      }
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .pages {
+        padding: 0;
+        overflow: visible;
+      }
+
+      .report-page {
+        width: var(--paper-width);
+        height: var(--paper-height);
+        margin: 0;
+        box-shadow: none;
+        overflow: hidden;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .report-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="controls no-print">
+    <div class="controls-head">
+      <div>
+        <h1>Operating System Lab Report</h1>
+        <p>Enter student details, choose output theme, then print or save as PDF. The report uses A4 pages and includes all OS lab part 1 answers.</p>
+      </div>
+      <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <div class="input-grid">
+      <div class="field">
+        <label for="nameIn">Student Name</label>
+        <input id="nameIn" type="text" placeholder="Your full name">
+      </div>
+      <div class="field">
+        <label for="rollIn">Roll No.</label>
+        <input id="rollIn" type="text" placeholder="Roll number">
+      </div>
+      <div class="field">
+        <label for="sectionIn">Section</label>
+        <input id="sectionIn" type="text" placeholder="Section">
+      </div>
+    </div>
+    <div class="actions">
+      <label class="theme-toggle">
+        <input id="themeIn" type="checkbox" checked>
+        <span class="switch"></span>
+        <span>Dark output theme</span>
+      </label>
+    </div>
+  </section>
+
+  <main id="pages" class="pages"></main>
+
+  <script type="application/json" id="report-data">[{"no": "1(a)", "title": "FCFS CPU Scheduling Algorithm", "question": "WAP to simulate FCFS CPU Scheduling Algorithm.", "theory": ["First Come First Served scheduling executes processes in the order in which they arrive in the ready queue. It is simple and non-preemptive, but short jobs may wait behind long jobs."], "algorithm": ["Sort the processes according to arrival time.", "If the CPU is idle, move time to the next arriving process.", "Run the selected process until its burst time completes.", "Calculate completion time, turnaround time, waiting time, and the averages."], "filename": "lab_1a_fcfs.c", "code": "#include \u003cstdio.h\u003e\n\ntypedef struct {\n    int pid, arrival, burst, completion, turnaround, waiting;\n} Process;\n\nint main() {\n    Process p[] = {{1, 0, 5}, {2, 1, 3}, {3, 2, 8}, {4, 3, 6}};\n    int n = 4, time = 0;\n    double totalWaiting = 0, totalTurnaround = 0;\n\n    printf(\"FCFS Gantt Chart\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        if (time \u003c p[i].arrival) {\n            time = p[i].arrival;\n        }\n        int start = time;\n        time += p[i].burst;\n        p[i].completion = time;\n        p[i].turnaround = p[i].completion - p[i].arrival;\n        p[i].waiting = p[i].turnaround - p[i].burst;\n        totalWaiting += p[i].waiting;\n        totalTurnaround += p[i].turnaround;\n        printf(\"P%d: %d -\u003e %d\\n\", p[i].pid, start, p[i].completion);\n    }\n\n    printf(\"\\nPID AT BT CT TAT WT\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        printf(\"P%d  %d  %d  %d  %d   %d\\n\", p[i].pid, p[i].arrival, p[i].burst,\n        p[i].completion, p[i].turnaround, p[i].waiting);\n    }\n    printf(\"Average Waiting Time: %.2f\\n\", totalWaiting / n);\n    printf(\"Average Turnaround Time: %.2f\\n\", totalTurnaround / n);\n\n    printf(\"\\nLab No.: 1(a)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "FCFS Gantt Chart\nP1: 0 -\u003e 5\nP2: 5 -\u003e 8\nP3: 8 -\u003e 16\nP4: 16 -\u003e 22\n\nPID AT BT CT TAT WT\nP1  0  5  5  5   0\nP2  1  3  8  7   4\nP3  2  8  16  14   6\nP4  3  6  22  19   13\nAverage Waiting Time: 5.75\nAverage Turnaround Time: 11.25\n\nLab No.: 1(a)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "1(b)", "title": "SJF CPU Scheduling Algorithm", "question": "WAP to simulate SJF CPU Scheduling Algorithm.", "theory": ["Shortest Job First is a non-preemptive CPU scheduling algorithm that selects the available process with the smallest CPU burst. It reduces average waiting time when burst times are known."], "algorithm": ["Keep all processes with arrival time, burst time, and completion fields.", "At each decision point, select the arrived unfinished process with the least burst time.", "Run that process completely and update completion, turnaround, and waiting time.", "Repeat until all processes are completed."], "filename": "lab_1b_sjf.c", "code": "#include \u003climits.h\u003e\n#include \u003cstdio.h\u003e\n\ntypedef struct {\n    int pid, arrival, burst, completion, turnaround, waiting, done;\n} Process;\n\nint main() {\n    Process p[] = {{1, 0, 5}, {2, 1, 3}, {3, 2, 8}, {4, 3, 6}};\n    int n = 4, completed = 0, time = 0;\n    double totalWaiting = 0, totalTurnaround = 0;\n    printf(\"SJF Gantt Chart\\n\");\n\n    while (completed \u003c n) {\n        int selected = -1, bestBurst = INT_MAX;\n        for (int i = 0; i \u003c n; i++) {\n            if (!p[i].done \u0026\u0026 p[i].arrival \u003c= time) {\n                if (p[i].burst \u003c bestBurst ||\n                (p[i].burst == bestBurst \u0026\u0026 (selected == -1 || p[i].arrival \u003c p[selected].arrival))) {\n                    bestBurst = p[i].burst;\n                    selected = i;\n                }\n            }\n        }\n        if (selected == -1) {\n            time++;\n            continue;\n        }\n        int start = time;\n        time += p[selected].burst;\n        p[selected].completion = time;\n        p[selected].turnaround = p[selected].completion - p[selected].arrival;\n        p[selected].waiting = p[selected].turnaround - p[selected].burst;\n        p[selected].done = 1;\n        completed++;\n        totalWaiting += p[selected].waiting;\n        totalTurnaround += p[selected].turnaround;\n        printf(\"P%d: %d -\u003e %d\\n\", p[selected].pid, start, time);\n    }\n\n    printf(\"\\nPID AT BT CT TAT WT\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        printf(\"P%d  %d  %d  %d  %d   %d\\n\", p[i].pid, p[i].arrival, p[i].burst,\n        p[i].completion, p[i].turnaround, p[i].waiting);\n    }\n    printf(\"Average Waiting Time: %.2f\\n\", totalWaiting / n);\n    printf(\"Average Turnaround Time: %.2f\\n\", totalTurnaround / n);\n\n    printf(\"\\nLab No.: 1(b)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "SJF Gantt Chart\nP1: 0 -\u003e 5\nP2: 5 -\u003e 8\nP4: 8 -\u003e 14\nP3: 14 -\u003e 22\n\nPID AT BT CT TAT WT\nP1  0  5  5  5   0\nP2  1  3  8  7   4\nP3  2  8  22  20   12\nP4  3  6  14  11   5\nAverage Waiting Time: 5.25\nAverage Turnaround Time: 10.75\n\nLab No.: 1(b)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "1(c)", "title": "SRTF CPU Scheduling Algorithm", "question": "WAP to simulate SRTF CPU Scheduling Algorithm.", "theory": ["Shortest Remaining Time First is the preemptive version of SJF. Whenever a new process arrives, the CPU may switch to the process with the smallest remaining burst time."], "algorithm": ["Maintain the remaining time of every process.", "At each time unit, choose the arrived process with the least remaining time.", "Preempt the current process if another process has a smaller remaining time.", "When a process reaches zero remaining time, record completion and calculate times."], "filename": "lab_1c_srtf.c", "code": "#include \u003climits.h\u003e\n#include \u003cstdio.h\u003e\n\ntypedef struct {\n    int pid, arrival, burst, remaining, completion, turnaround, waiting;\n} Process;\ntypedef struct { int pid, start, finish; } Segment;\n\nint main() {\n    Process p[] = {{1, 0, 8, 8}, {2, 1, 4, 4}, {3, 2, 9, 9}, {4, 3, 5, 5}};\n    Segment gantt[50];\n    int n = 4, completed = 0, time = 0, current = -1, segmentStart = 0, g = 0;\n\n    while (completed \u003c n) {\n        int selected = -1, bestRemaining = INT_MAX;\n        for (int i = 0; i \u003c n; i++) {\n            if (p[i].arrival \u003c= time \u0026\u0026 p[i].remaining \u003e 0 \u0026\u0026 p[i].remaining \u003c bestRemaining) {\n                bestRemaining = p[i].remaining;\n                selected = i;\n            }\n        }\n        if (selected == -1) {\n            time++;\n            continue;\n        }\n        if (current != selected) {\n            if (current != -1) {\n                gantt[g++] = (Segment){p[current].pid, segmentStart, time};\n            }\n            current = selected;\n            segmentStart = time;\n        }\n        p[selected].remaining--;\n        time++;\n        if (p[selected].remaining == 0) {\n            p[selected].completion = time;\n            p[selected].turnaround = p[selected].completion - p[selected].arrival;\n            p[selected].waiting = p[selected].turnaround - p[selected].burst;\n            completed++;\n        }\n    }\n    if (current != -1) {\n        gantt[g++] = (Segment){p[current].pid, segmentStart, time};\n    }\n\n    printf(\"SRTF Gantt Chart\\n\");\n    for (int i = 0; i \u003c g; i++) {\n        printf(\"P%d: %d -\u003e %d\\n\", gantt[i].pid, gantt[i].start, gantt[i].finish);\n    }\n\n    double totalWaiting = 0, totalTurnaround = 0;\n    printf(\"\\nPID AT BT CT TAT WT\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        totalWaiting += p[i].waiting;\n        totalTurnaround += p[i].turnaround;\n        printf(\"P%d  %d  %d  %d  %d   %d\\n\", p[i].pid, p[i].arrival, p[i].burst,\n        p[i].completion, p[i].turnaround, p[i].waiting);\n    }\n    printf(\"Average Waiting Time: %.2f\\n\", totalWaiting / n);\n    printf(\"Average Turnaround Time: %.2f\\n\", totalTurnaround / n);\n\n    printf(\"\\nLab No.: 1(c)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "SRTF Gantt Chart\nP1: 0 -\u003e 1\nP2: 1 -\u003e 5\nP4: 5 -\u003e 10\nP1: 10 -\u003e 17\nP3: 17 -\u003e 26\n\nPID AT BT CT TAT WT\nP1  0  8  17  17   9\nP2  1  4  5  4   0\nP3  2  9  26  24   15\nP4  3  5  10  7   2\nAverage Waiting Time: 6.50\nAverage Turnaround Time: 13.00\n\nLab No.: 1(c)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "1(d)", "title": "Round Robin CPU Scheduling Algorithm", "question": "WAP to simulate Round Robin CPU Scheduling Algorithm.", "theory": ["Round Robin scheduling is a preemptive time-sharing algorithm. Each ready process receives a fixed time quantum and unfinished processes return to the rear of the ready queue."], "algorithm": ["Sort processes by arrival time and insert arrived processes into a queue.", "Run the front process for the time quantum or its remaining time, whichever is smaller.", "Insert newly arrived processes and reinsert the current process if it is unfinished.", "Calculate completion, turnaround, and waiting time after all processes complete."], "filename": "lab_1d_round_robin.c", "code": "#include \u003cstdio.h\u003e\n\ntypedef struct {\n    int pid, arrival, burst, remaining, completion, turnaround, waiting, queued;\n} Process;\n\nint main() {\n    Process p[] = {{1, 0, 5, 5}, {2, 1, 4, 4}, {3, 2, 2, 2}, {4, 4, 1, 1}};\n    int n = 4, quantum = 3, time = 0, completed = 0;\n    int ready[50], front = 0, rear = 0;\n\n    printf(\"Round Robin Gantt Chart (Time Quantum = %d)\\n\", quantum);\n    while (completed \u003c n) {\n        for (int i = 0; i \u003c n; i++) {\n            if (!p[i].queued \u0026\u0026 p[i].arrival \u003c= time) {\n                ready[rear++] = i;\n                p[i].queued = 1;\n            }\n        }\n        if (front == rear) {\n            time++;\n            continue;\n        }\n        int i = ready[front++];\n        int start = time;\n        int run = p[i].remaining \u003c quantum ? p[i].remaining : quantum;\n        p[i].remaining -= run;\n        time += run;\n        printf(\"P%d: %d -\u003e %d\\n\", p[i].pid, start, time);\n\n        for (int j = 0; j \u003c n; j++) {\n            if (!p[j].queued \u0026\u0026 p[j].arrival \u003c= time) {\n                ready[rear++] = j;\n                p[j].queued = 1;\n            }\n        }\n        if (p[i].remaining \u003e 0) {\n            ready[rear++] = i;\n        } else {\n            p[i].completion = time;\n            p[i].turnaround = p[i].completion - p[i].arrival;\n            p[i].waiting = p[i].turnaround - p[i].burst;\n            completed++;\n        }\n    }\n\n    double totalWaiting = 0, totalTurnaround = 0;\n    printf(\"\\nPID AT BT CT TAT WT\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        totalWaiting += p[i].waiting;\n        totalTurnaround += p[i].turnaround;\n        printf(\"P%d  %d  %d  %d  %d   %d\\n\", p[i].pid, p[i].arrival, p[i].burst,\n        p[i].completion, p[i].turnaround, p[i].waiting);\n    }\n    printf(\"Average Waiting Time: %.2f\\n\", totalWaiting / n);\n    printf(\"Average Turnaround Time: %.2f\\n\", totalTurnaround / n);\n\n    printf(\"\\nLab No.: 1(d)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Round Robin Gantt Chart (Time Quantum = 3)\nP1: 0 -\u003e 3\nP2: 3 -\u003e 6\nP3: 6 -\u003e 8\nP1: 8 -\u003e 10\nP4: 10 -\u003e 11\nP2: 11 -\u003e 12\n\nPID AT BT CT TAT WT\nP1  0  5  10  10   5\nP2  1  4  12  11   7\nP3  2  2  8  6   4\nP4  4  1  11  7   6\nAverage Waiting Time: 5.50\nAverage Turnaround Time: 8.50\n\nLab No.: 1(d)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "1(e)", "title": "Non-Preemptive Priority CPU Scheduling Algorithm", "question": "WAP to simulate Non-Preemptive Priority Scheduling Algorithm.", "theory": ["Priority scheduling selects the available process with the highest priority. In this program, a smaller priority number means higher priority, and the selected process runs to completion."], "algorithm": ["Store arrival time, burst time, and priority for each process.", "When the CPU becomes free, select the arrived unfinished process with highest priority.", "Run the process fully and compute completion, turnaround, and waiting time.", "Continue until every process is finished."], "filename": "lab_1e_non_preemptive_priority.c", "code": "#include \u003climits.h\u003e\n#include \u003cstdio.h\u003e\n\ntypedef struct {\n    int pid, arrival, burst, priority, completion, turnaround, waiting, done;\n} Process;\n\nint main() {\n    Process p[] = {{1, 0, 4, 2}, {2, 1, 3, 1}, {3, 2, 5, 3}, {4, 3, 2, 2}};\n    int n = 4, completed = 0, time = 0;\n    printf(\"Non-Preemptive Priority Gantt Chart\\n\");\n\n    while (completed \u003c n) {\n        int selected = -1, bestPriority = INT_MAX;\n        for (int i = 0; i \u003c n; i++) {\n            if (!p[i].done \u0026\u0026 p[i].arrival \u003c= time) {\n                if (p[i].priority \u003c bestPriority ||\n                (p[i].priority == bestPriority \u0026\u0026 (selected == -1 || p[i].arrival \u003c p[selected].arrival))) {\n                    bestPriority = p[i].priority;\n                    selected = i;\n                }\n            }\n        }\n        if (selected == -1) {\n            time++;\n            continue;\n        }\n        int start = time;\n        time += p[selected].burst;\n        p[selected].completion = time;\n        p[selected].turnaround = p[selected].completion - p[selected].arrival;\n        p[selected].waiting = p[selected].turnaround - p[selected].burst;\n        p[selected].done = 1;\n        completed++;\n        printf(\"P%d: %d -\u003e %d\\n\", p[selected].pid, start, time);\n    }\n\n    double totalWaiting = 0, totalTurnaround = 0;\n    printf(\"\\nPID AT BT PR CT TAT WT\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        totalWaiting += p[i].waiting;\n        totalTurnaround += p[i].turnaround;\n        printf(\"P%d  %d  %d  %d  %d  %d   %d\\n\", p[i].pid, p[i].arrival, p[i].burst,\n        p[i].priority, p[i].completion, p[i].turnaround, p[i].waiting);\n    }\n    printf(\"Average Waiting Time: %.2f\\n\", totalWaiting / n);\n    printf(\"Average Turnaround Time: %.2f\\n\", totalTurnaround / n);\n\n    printf(\"\\nLab No.: 1(e)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Non-Preemptive Priority Gantt Chart\nP1: 0 -\u003e 4\nP2: 4 -\u003e 7\nP4: 7 -\u003e 9\nP3: 9 -\u003e 14\n\nPID AT BT PR CT TAT WT\nP1  0  4  2  4  4   0\nP2  1  3  1  7  6   3\nP3  2  5  3  14  12   7\nP4  3  2  2  9  6   4\nAverage Waiting Time: 3.50\nAverage Turnaround Time: 7.00\n\nLab No.: 1(e)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "1(f)", "title": "Preemptive Priority CPU Scheduling Algorithm", "question": "WAP to simulate Preemptive Priority Scheduling Algorithm.", "theory": ["Preemptive priority scheduling always runs the arrived process with the highest priority. If a higher priority process arrives, the currently running process is preempted."], "algorithm": ["Track remaining burst time for every process.", "At each time unit, choose the arrived process with the smallest priority number.", "Create a new Gantt segment whenever the selected process changes.", "When remaining time reaches zero, record completion, turnaround, and waiting time."], "filename": "lab_1f_preemptive_priority.c", "code": "#include \u003climits.h\u003e\n#include \u003cstdio.h\u003e\n\ntypedef struct {\n    int pid, arrival, burst, priority, remaining, completion, turnaround, waiting;\n} Process;\ntypedef struct { int pid, start, finish; } Segment;\n\nint main() {\n    Process p[] = {{1, 0, 7, 3, 7}, {2, 2, 4, 1, 4}, {3, 4, 1, 4, 1}, {4, 5, 4, 2, 4}};\n    Segment gantt[50];\n    int n = 4, completed = 0, time = 0, current = -1, segmentStart = 0, g = 0;\n\n    while (completed \u003c n) {\n        int selected = -1, bestPriority = INT_MAX;\n        for (int i = 0; i \u003c n; i++) {\n            if (p[i].arrival \u003c= time \u0026\u0026 p[i].remaining \u003e 0) {\n                if (p[i].priority \u003c bestPriority ||\n                (p[i].priority == bestPriority \u0026\u0026 (selected == -1 || p[i].remaining \u003c p[selected].remaining))) {\n                    bestPriority = p[i].priority;\n                    selected = i;\n                }\n            }\n        }\n        if (selected == -1) {\n            time++;\n            continue;\n        }\n        if (current != selected) {\n            if (current != -1) {\n                gantt[g++] = (Segment){p[current].pid, segmentStart, time};\n            }\n            current = selected;\n            segmentStart = time;\n        }\n        p[selected].remaining--;\n        time++;\n        if (p[selected].remaining == 0) {\n            p[selected].completion = time;\n            p[selected].turnaround = p[selected].completion - p[selected].arrival;\n            p[selected].waiting = p[selected].turnaround - p[selected].burst;\n            completed++;\n        }\n    }\n    if (current != -1) {\n        gantt[g++] = (Segment){p[current].pid, segmentStart, time};\n    }\n\n    printf(\"Preemptive Priority Gantt Chart\\n\");\n    for (int i = 0; i \u003c g; i++) {\n        printf(\"P%d: %d -\u003e %d\\n\", gantt[i].pid, gantt[i].start, gantt[i].finish);\n    }\n\n    double totalWaiting = 0, totalTurnaround = 0;\n    printf(\"\\nPID AT BT PR CT TAT WT\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        totalWaiting += p[i].waiting;\n        totalTurnaround += p[i].turnaround;\n        printf(\"P%d  %d  %d  %d  %d  %d   %d\\n\", p[i].pid, p[i].arrival, p[i].burst,\n        p[i].priority, p[i].completion, p[i].turnaround, p[i].waiting);\n    }\n    printf(\"Average Waiting Time: %.2f\\n\", totalWaiting / n);\n    printf(\"Average Turnaround Time: %.2f\\n\", totalTurnaround / n);\n\n    printf(\"\\nLab No.: 1(f)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Preemptive Priority Gantt Chart\nP1: 0 -\u003e 2\nP2: 2 -\u003e 6\nP4: 6 -\u003e 10\nP1: 10 -\u003e 15\nP3: 15 -\u003e 16\n\nPID AT BT PR CT TAT WT\nP1  0  7  3  15  15   8\nP2  2  4  1  6  4   0\nP3  4  1  4  16  12   11\nP4  5  4  2  10  5   1\nAverage Waiting Time: 5.00\nAverage Turnaround Time: 9.00\n\nLab No.: 1(f)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "2(a)", "title": "Banker's Algorithm", "question": "WAP to simulate Bankers Algorithm for multiple type of resources to decide safe/unsafe state.", "theory": ["Banker's Algorithm is a deadlock avoidance technique. It checks whether the system can allocate resources and still leave a safe sequence in which every process can finish."], "algorithm": ["Calculate the Need matrix as Max minus Allocation.", "Use Available as the initial Work vector.", "Repeatedly find an unfinished process whose Need is less than or equal to Work.", "Release that process allocation into Work and record the safe sequence.", "If no such process exists while processes remain, the state is unsafe."], "filename": "lab_2a_bankers_algorithm.c", "code": "#include \u003cstdio.h\u003e\n\nint canRun(int need[], int work[], int m) {\n    for (int i = 0; i \u003c m; i++) {\n        if (need[i] \u003e work[i]) {\n            return 0;\n        }\n    }\n    return 1;\n}\n\nvoid runBanker(const char *title, int available[]) {\n    int allocation[5][3] = {{0, 1, 0}, {2, 0, 0}, {3, 0, 2}, {2, 1, 1}, {0, 0, 2}};\n    int maximum[5][3] = {{7, 5, 3}, {3, 2, 2}, {9, 0, 2}, {2, 2, 2}, {4, 3, 3}};\n    int need[5][3], work[3], finish[5] = {0}, sequence[5], count = 0;\n    for (int i = 0; i \u003c 3; i++) {\n        work[i] = available[i];\n    }\n    for (int i = 0; i \u003c 5; i++) {\n        for (int j = 0; j \u003c 3; j++) {\n            need[i][j] = maximum[i][j] - allocation[i][j];\n        }\n    }\n\n    int progress = 1;\n    while (progress) {\n        progress = 0;\n        for (int i = 0; i \u003c 5; i++) {\n            if (!finish[i] \u0026\u0026 canRun(need[i], work, 3)) {\n                for (int j = 0; j \u003c 3; j++) {\n                    work[j] += allocation[i][j];\n                }\n                finish[i] = 1;\n                sequence[count++] = i;\n                progress = 1;\n            }\n        }\n    }\n\n    printf(\"%s\\nAvailable: \", title);\n    for (int i = 0; i \u003c 3; i++) {\n        printf(\"%d \", available[i]);\n    }\n    printf(\"\\n\");\n    if (count == 5) {\n        printf(\"System is in SAFE state.\\nSafe sequence: \");\n        for (int i = 0; i \u003c count; i++) {\n            printf(\"P%d \", sequence[i]);\n        }\n        printf(\"\\n\\n\");\n    } else {\n        printf(\"System is in UNSAFE state.\\n\\n\");\n    }\n}\n\nint main() {\n    int safeAvailable[] = {3, 3, 2};\n    int unsafeAvailable[] = {0, 0, 0};\n    runBanker(\"Case 1: Safe instance\", safeAvailable);\n    runBanker(\"Case 2: Unsafe instance\", unsafeAvailable);\n\n    printf(\"\\nLab No.: 2(a)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Case 1: Safe instance\nAvailable: 3 3 2 \nSystem is in SAFE state.\nSafe sequence: P1 P3 P4 P0 P2 \n\nCase 2: Unsafe instance\nAvailable: 0 0 0 \nSystem is in UNSAFE state.\n\n\nLab No.: 2(a)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "2(b)", "title": "Deadlock Detection Algorithm", "question": "WAP for simulating deadlock detection in the system having multiple type of resources. The program should list the deadlocked process in case of deadlock detection results true.", "theory": ["Deadlock detection checks the current allocation and request matrices to determine whether processes are permanently waiting for resources held by one another."], "algorithm": ["Set Work equal to Available.", "Mark a process finishable if its allocation is zero, otherwise mark it unfinished.", "Find an unfinished process whose outstanding request is less than or equal to Work.", "Pretend it completes and releases its allocated resources to Work.", "Processes still unfinished at the end are deadlocked."], "filename": "lab_2b_deadlock_detection.c", "code": "#include \u003cstdio.h\u003e\n\nint leq(int a[], int b[], int m) {\n    for (int i = 0; i \u003c m; i++) {\n        if (a[i] \u003e b[i]) {\n            return 0;\n        }\n    }\n    return 1;\n}\n\nint zeroAllocation(int row[], int m) {\n    for (int i = 0; i \u003c m; i++) {\n        if (row[i] != 0) {\n            return 0;\n        }\n    }\n    return 1;\n}\n\nvoid detect(const char *title, int n, int allocation[][2], int request[][2], int available[]) {\n    int work[2] = {available[0], available[1]};\n    int finish[4] = {0};\n\n    for (int i = 0; i \u003c n; i++) {\n        finish[i] = zeroAllocation(allocation[i], 2);\n    }\n\n    int progress = 1;\n    while (progress) {\n        progress = 0;\n        for (int i = 0; i \u003c n; i++) {\n            if (!finish[i] \u0026\u0026 leq(request[i], work, 2)) {\n                for (int j = 0; j \u003c 2; j++) {\n                    work[j] += allocation[i][j];\n                }\n                finish[i] = 1;\n                progress = 1;\n            }\n        }\n    }\n\n    printf(\"%s\\nAvailable: %d %d \\n\", title, available[0], available[1]);\n    printf(\"Deadlocked processes: \");\n    int deadlock = 0;\n    for (int i = 0; i \u003c n; i++) {\n        if (!finish[i]) {\n            printf(\"P%d \", i);\n            deadlock = 1;\n        }\n    }\n    if (!deadlock) {\n        printf(\"None\");\n    }\n    printf(\"\\nDetection Result: %s\\n\\n\", deadlock ? \"Deadlock detected\" : \"No deadlock\");\n}\n\nint main() {\n    int allocation1[3][2] = {{1, 0}, {0, 1}, {1, 1}};\n    int request1[3][2] = {{0, 1}, {1, 0}, {0, 0}};\n    int available1[2] = {1, 0};\n    int allocation2[2][2] = {{1, 0}, {0, 1}};\n    int request2[2][2] = {{0, 1}, {1, 0}};\n    int available2[2] = {0, 0};\n    detect(\"Case 1: Negative instance\", 3, allocation1, request1, available1);\n    detect(\"Case 2: Positive instance\", 2, allocation2, request2, available2);\n\n    printf(\"\\nLab No.: 2(b)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Case 1: Negative instance\nAvailable: 1 0 \nDeadlocked processes: None\nDetection Result: No deadlock\n\nCase 2: Positive instance\nAvailable: 0 0 \nDeadlocked processes: P0 P1 \nDetection Result: Deadlock detected\n\n\nLab No.: 2(b)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "3(a)", "title": "FIFO Page Replacement Algorithm", "question": "WAP to simulate FIFO Page Replacement Algorithm.", "theory": ["FIFO page replacement removes the page that entered memory first. It is simple to implement with a circular pointer or queue."], "algorithm": ["Scan the reference string one page at a time.", "If the page is already in a frame, count a hit.", "If the page is absent, replace the oldest loaded page and count a fault.", "Move the replacement pointer after every fault that replaces a frame."], "filename": "lab_3a_fifo_page_replacement.c", "code": "#include \u003cstdio.h\u003e\n\nvoid printFrames(int frames[], int n) {\n    printf(\"[\");\n    for (int i = 0; i \u003c n; i++) {\n        if (frames[i] == -1) {\n            printf(\"-\");\n        }\n        else {\n            printf(\"%d\", frames[i]);\n        }\n        if (i + 1 != n) {\n            printf(\" \");\n        }\n    }\n    printf(\"]\");\n}\n\nint main() {\n    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};\n    int frames[3] = {-1, -1, -1};\n    int n = 13, pointer = 0, faults = 0, hits = 0;\n    printf(\"FIFO Page Replacement\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        int page = pages[i], hit = 0;\n        for (int j = 0; j \u003c 3; j++) {\n            if (frames[j] == page) {\n                hit = 1;\n            }\n        }\n        if (hit) {\n            hits++;\n        }\n        else {\n            faults++;\n            frames[pointer] = page;\n            pointer = (pointer + 1) % 3;\n        }\n        printf(\"Page %2d -\u003e \", page);\n        printFrames(frames, 3);\n        printf(\"%s\\n\", hit ? \" Hit\" : \" Fault\");\n    }\n    printf(\"Total Page Faults: %d\\nTotal Page Hits: %d\\n\", faults, hits);\n\n    printf(\"\\nLab No.: 3(a)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "FIFO Page Replacement\nPage  7 -\u003e [7 - -] Fault\nPage  0 -\u003e [7 0 -] Fault\nPage  1 -\u003e [7 0 1] Fault\nPage  2 -\u003e [2 0 1] Fault\nPage  0 -\u003e [2 0 1] Hit\nPage  3 -\u003e [2 3 1] Fault\nPage  0 -\u003e [2 3 0] Fault\nPage  4 -\u003e [4 3 0] Fault\nPage  2 -\u003e [4 2 0] Fault\nPage  3 -\u003e [4 2 3] Fault\nPage  0 -\u003e [0 2 3] Fault\nPage  3 -\u003e [0 2 3] Hit\nPage  2 -\u003e [0 2 3] Hit\nTotal Page Faults: 10\nTotal Page Hits: 3\n\nLab No.: 3(a)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "3(b)", "title": "Optimal Page Replacement Algorithm", "question": "WAP to simulate Optimal Page Replacement Algorithm.", "theory": ["Optimal page replacement removes the page that will not be used for the longest time in the future. It gives the minimum possible page faults for a known reference string."], "algorithm": ["For each page reference, check whether the page already exists in a frame.", "On a fault with a free frame, insert the page directly.", "On a fault with full frames, look ahead in the reference string.", "Replace the page whose next use is farthest away, or never used again."], "filename": "lab_3b_optimal_page_replacement.c", "code": "#include \u003cstdio.h\u003e\n\nvoid printFrames(int frames[], int n) {\n    printf(\"[\");\n    for (int i = 0; i \u003c n; i++) {\n        if (frames[i] == -1) {\n            printf(\"-\");\n        }\n        else {\n            printf(\"%d\", frames[i]);\n        }\n        if (i + 1 != n) {\n            printf(\" \");\n        }\n    }\n    printf(\"]\");\n}\n\nint main() {\n    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};\n    int frames[3] = {-1, -1, -1};\n    int n = 13, faults = 0, hits = 0;\n    printf(\"Optimal Page Replacement\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        int page = pages[i], hit = 0;\n        for (int j = 0; j \u003c 3; j++) {\n            if (frames[j] == page) {\n                hit = 1;\n            }\n        }\n        if (hit) {\n            hits++;\n        }\n        else {\n            faults++;\n            int empty = -1;\n            for (int j = 0; j \u003c 3; j++) {\n                if (frames[j] == -1 \u0026\u0026 empty == -1) {\n                    empty = j;\n                }\n            }\n            if (empty != -1) {\n                frames[empty] = page;\n            }\n            else {\n                int replaceIndex = 0, farthest = -1;\n                for (int f = 0; f \u003c 3; f++) {\n                    int nextUse = n + 1;\n                    for (int j = i + 1; j \u003c n; j++) {\n                        if (pages[j] == frames[f]) {\n                            nextUse = j;\n                            break;\n                        }\n                    }\n                    if (nextUse \u003e farthest) {\n                        farthest = nextUse;\n                        replaceIndex = f;\n                    }\n                }\n                frames[replaceIndex] = page;\n            }\n        }\n        printf(\"Page %2d -\u003e \", page);\n        printFrames(frames, 3);\n        printf(\"%s\\n\", hit ? \" Hit\" : \" Fault\");\n    }\n    printf(\"Total Page Faults: %d\\nTotal Page Hits: %d\\n\", faults, hits);\n\n    printf(\"\\nLab No.: 3(b)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Optimal Page Replacement\nPage  7 -\u003e [7 - -] Fault\nPage  0 -\u003e [7 0 -] Fault\nPage  1 -\u003e [7 0 1] Fault\nPage  2 -\u003e [2 0 1] Fault\nPage  0 -\u003e [2 0 1] Hit\nPage  3 -\u003e [2 0 3] Fault\nPage  0 -\u003e [2 0 3] Hit\nPage  4 -\u003e [2 4 3] Fault\nPage  2 -\u003e [2 4 3] Hit\nPage  3 -\u003e [2 4 3] Hit\nPage  0 -\u003e [2 0 3] Fault\nPage  3 -\u003e [2 0 3] Hit\nPage  2 -\u003e [2 0 3] Hit\nTotal Page Faults: 7\nTotal Page Hits: 6\n\nLab No.: 3(b)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "3(c)", "title": "LRU Page Replacement Algorithm", "question": "WAP to simulate LRU Page Replacement Algorithm.", "theory": ["Least Recently Used page replacement removes the page that has not been used for the longest time. It approximates program locality by remembering recent access history."], "algorithm": ["Maintain frames and the last-used time of each frame.", "On a hit, update the page's last-used time.", "On a fault with a free frame, insert the page.", "On a fault with full frames, replace the page with the smallest last-used time."], "filename": "lab_3c_lru_page_replacement.c", "code": "#include \u003cstdio.h\u003e\n\nvoid printFrames(int frames[], int n) {\n    printf(\"[\");\n    for (int i = 0; i \u003c n; i++) {\n        if (frames[i] == -1) {\n            printf(\"-\");\n        }\n        else {\n            printf(\"%d\", frames[i]);\n        }\n        if (i + 1 != n) {\n            printf(\" \");\n        }\n    }\n    printf(\"]\");\n}\n\nint main() {\n    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};\n    int frames[3] = {-1, -1, -1}, lastUsed[3] = {-1, -1, -1};\n    int n = 13, faults = 0, hits = 0;\n    printf(\"LRU Page Replacement\\n\");\n    for (int time = 0; time \u003c n; time++) {\n        int page = pages[time], hit = 0;\n        for (int i = 0; i \u003c 3; i++) {\n            if (frames[i] == page) {\n                hit = 1;\n                lastUsed[i] = time;\n                break;\n            }\n        }\n        if (hit) {\n            hits++;\n        }\n        else {\n            faults++;\n            int replaceIndex = -1;\n            for (int i = 0; i \u003c 3; i++) {\n                if (frames[i] == -1 \u0026\u0026 replaceIndex == -1) {\n                    replaceIndex = i;\n                }\n            }\n            if (replaceIndex == -1) {\n                replaceIndex = 0;\n                for (int i = 1; i \u003c 3; i++) {\n                    if (lastUsed[i] \u003c lastUsed[replaceIndex]) {\n                        replaceIndex = i;\n                    }\n                }\n            }\n            frames[replaceIndex] = page;\n            lastUsed[replaceIndex] = time;\n        }\n        printf(\"Page %2d -\u003e \", page);\n        printFrames(frames, 3);\n        printf(\"%s\\n\", hit ? \" Hit\" : \" Fault\");\n    }\n    printf(\"Total Page Faults: %d\\nTotal Page Hits: %d\\n\", faults, hits);\n\n    printf(\"\\nLab No.: 3(c)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "LRU Page Replacement\nPage  7 -\u003e [7 - -] Fault\nPage  0 -\u003e [7 0 -] Fault\nPage  1 -\u003e [7 0 1] Fault\nPage  2 -\u003e [2 0 1] Fault\nPage  0 -\u003e [2 0 1] Hit\nPage  3 -\u003e [2 0 3] Fault\nPage  0 -\u003e [2 0 3] Hit\nPage  4 -\u003e [4 0 3] Fault\nPage  2 -\u003e [4 0 2] Fault\nPage  3 -\u003e [4 3 2] Fault\nPage  0 -\u003e [0 3 2] Fault\nPage  3 -\u003e [0 3 2] Hit\nPage  2 -\u003e [0 3 2] Hit\nTotal Page Faults: 9\nTotal Page Hits: 4\n\nLab No.: 3(c)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "3(d)", "title": "Second Chance Page Replacement Algorithm", "question": "WAP to simulate Second Chance Page Replacement Algorithm.", "theory": ["Second Chance is a FIFO-based algorithm that uses a reference bit. A page with reference bit 1 is given another chance and its bit is reset before the pointer advances."], "algorithm": ["Maintain frames, reference bits, and a circular pointer.", "On a hit, set the page's reference bit to 1.", "On a fault, advance through frames while reference bit is 1 and reset those bits.", "Replace the first frame found with reference bit 0."], "filename": "lab_3d_second_chance.c", "code": "#include \u003cstdio.h\u003e\n\nvoid printFrames(int frames[], int ref[], int n) {\n    printf(\"[\");\n    for (int i = 0; i \u003c n; i++) {\n        if (frames[i] == -1) {\n            printf(\"-\");\n        }\n        else {\n            printf(\"%d(%d)\", frames[i], ref[i]);\n        }\n        if (i + 1 != n) {\n            printf(\" \");\n        }\n    }\n    printf(\"]\");\n}\n\nint main() {\n    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};\n    int frames[3] = {-1, -1, -1}, ref[3] = {0, 0, 0};\n    int n = 13, pointer = 0, faults = 0, hits = 0;\n    printf(\"Second Chance Page Replacement\\n\");\n    for (int i = 0; i \u003c n; i++) {\n        int page = pages[i], hit = 0;\n        for (int j = 0; j \u003c 3; j++) {\n            if (frames[j] == page) {\n                ref[j] = 1;\n                hit = 1;\n                break;\n            }\n        }\n        if (hit) {\n            hits++;\n        }\n        else {\n            faults++;\n            while (frames[pointer] != -1 \u0026\u0026 ref[pointer] == 1) {\n                ref[pointer] = 0;\n                pointer = (pointer + 1) % 3;\n            }\n            frames[pointer] = page;\n            ref[pointer] = 1;\n            pointer = (pointer + 1) % 3;\n        }\n        printf(\"Page %2d -\u003e \", page);\n        printFrames(frames, ref, 3);\n        printf(\"%s\\n\", hit ? \" Hit\" : \" Fault\");\n    }\n    printf(\"Total Page Faults: %d\\nTotal Page Hits: %d\\n\", faults, hits);\n\n    printf(\"\\nLab No.: 3(d)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Second Chance Page Replacement\nPage  7 -\u003e [7(1) - -] Fault\nPage  0 -\u003e [7(1) 0(1) -] Fault\nPage  1 -\u003e [7(1) 0(1) 1(1)] Fault\nPage  2 -\u003e [2(1) 0(0) 1(0)] Fault\nPage  0 -\u003e [2(1) 0(1) 1(0)] Hit\nPage  3 -\u003e [2(1) 0(0) 3(1)] Fault\nPage  0 -\u003e [2(1) 0(1) 3(1)] Hit\nPage  4 -\u003e [4(1) 0(0) 3(0)] Fault\nPage  2 -\u003e [4(1) 2(1) 3(0)] Fault\nPage  3 -\u003e [4(1) 2(1) 3(1)] Hit\nPage  0 -\u003e [4(0) 2(0) 0(1)] Fault\nPage  3 -\u003e [3(1) 2(0) 0(1)] Fault\nPage  2 -\u003e [3(1) 2(1) 0(1)] Hit\nTotal Page Faults: 9\nTotal Page Hits: 4\n\nLab No.: 3(d)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "3(e)", "title": "LFU Page Replacement Algorithm", "question": "WAP to simulate LFU Page Replacement Algorithm.", "theory": ["Least Frequently Used page replacement removes the page with the smallest access count. When frequencies tie, this implementation removes the oldest page among the tied frames."], "algorithm": ["Store each page frame, its frequency count, and insertion time.", "On a hit, increase the frequency count.", "On a fault with a free frame, place the new page there with frequency 1.", "On a fault with full frames, replace the page with the least frequency and oldest age."], "filename": "lab_3e_lfu_page_replacement.c", "code": "#include \u003cstdio.h\u003e\n\nvoid printFrames(int frames[], int freq[], int n) {\n    printf(\"[\");\n    for (int i = 0; i \u003c n; i++) {\n        if (frames[i] == -1) {\n            printf(\"-\");\n        }\n        else {\n            printf(\"%d(%d)\", frames[i], freq[i]);\n        }\n        if (i + 1 != n) {\n            printf(\" \");\n        }\n    }\n    printf(\"]\");\n}\n\nint main() {\n    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};\n    int frames[3] = {-1, -1, -1}, freq[3] = {0, 0, 0}, age[3] = {0, 0, 0};\n    int n = 13, faults = 0, hits = 0;\n    printf(\"LFU Page Replacement\\n\");\n    for (int time = 0; time \u003c n; time++) {\n        int page = pages[time], hit = 0;\n        for (int i = 0; i \u003c 3; i++) {\n            if (frames[i] == page) {\n                freq[i]++;\n                hit = 1;\n                break;\n            }\n        }\n        if (hit) {\n            hits++;\n        }\n        else {\n            faults++;\n            int replaceIndex = -1;\n            for (int i = 0; i \u003c 3; i++) {\n                if (frames[i] == -1 \u0026\u0026 replaceIndex == -1) {\n                    replaceIndex = i;\n                }\n            }\n            if (replaceIndex == -1) {\n                replaceIndex = 0;\n                for (int i = 1; i \u003c 3; i++) {\n                    if (freq[i] \u003c freq[replaceIndex] ||\n                    (freq[i] == freq[replaceIndex] \u0026\u0026 age[i] \u003c age[replaceIndex])) {\n                        replaceIndex = i;\n                    }\n                }\n            }\n            frames[replaceIndex] = page;\n            freq[replaceIndex] = 1;\n            age[replaceIndex] = time;\n        }\n        printf(\"Page %2d -\u003e \", page);\n        printFrames(frames, freq, 3);\n        printf(\"%s\\n\", hit ? \" Hit\" : \" Fault\");\n    }\n    printf(\"Total Page Faults: %d\\nTotal Page Hits: %d\\n\", faults, hits);\n\n    printf(\"\\nLab No.: 3(e)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "LFU Page Replacement\nPage  7 -\u003e [7(1) - -] Fault\nPage  0 -\u003e [7(1) 0(1) -] Fault\nPage  1 -\u003e [7(1) 0(1) 1(1)] Fault\nPage  2 -\u003e [2(1) 0(1) 1(1)] Fault\nPage  0 -\u003e [2(1) 0(2) 1(1)] Hit\nPage  3 -\u003e [2(1) 0(2) 3(1)] Fault\nPage  0 -\u003e [2(1) 0(3) 3(1)] Hit\nPage  4 -\u003e [4(1) 0(3) 3(1)] Fault\nPage  2 -\u003e [4(1) 0(3) 2(1)] Fault\nPage  3 -\u003e [3(1) 0(3) 2(1)] Fault\nPage  0 -\u003e [3(1) 0(4) 2(1)] Hit\nPage  3 -\u003e [3(2) 0(4) 2(1)] Hit\nPage  2 -\u003e [3(2) 0(4) 2(2)] Hit\nTotal Page Faults: 8\nTotal Page Hits: 5\n\nLab No.: 3(e)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "4(a)", "title": "Contiguous File Allocation Technique", "question": "WAP to simulate Contiguous File Allocation Technique.", "theory": ["Contiguous allocation stores every block of a file in adjacent disk blocks. It gives fast sequential and direct access, but external fragmentation can occur."], "algorithm": ["Represent disk blocks with an array.", "For each file, check whether all requested consecutive blocks are free.", "If free, mark those blocks with the file id.", "If any block is occupied or out of range, reject the allocation."], "filename": "lab_4a_contiguous_file_allocation.c", "code": "#include \u003cstdio.h\u003e\n\ntypedef struct {\n    const char *name;\n    int start, length;\n} File;\n\nint allocate(int disk[], int diskSize, File file, int id) {\n    if (file.start \u003c 0 || file.start + file.length \u003e diskSize) {\n        return 0;\n    }\n    for (int i = file.start; i \u003c file.start + file.length; i++) {\n        if (disk[i] != -1) {\n            return 0;\n        }\n    }\n    for (int i = file.start; i \u003c file.start + file.length; i++) {\n        disk[i] = id;\n    }\n    return 1;\n}\n\nint main() {\n    int disk[20];\n    for (int i = 0; i \u003c 20; i++) {\n        disk[i] = -1;\n    }\n    File files[] = {{\"alpha.txt\", 2, 5}, {\"beta.dat\", 10, 4}, {\"gamma.log\", 15, 3}, {\"delta.bin\", 4, 5}};\n\n    printf(\"Contiguous File Allocation\\n\");\n    for (int i = 0; i \u003c 4; i++) {\n        int ok = allocate(disk, 20, files[i], i);\n        printf(\"%s start=%d length=%d -\u003e %s\\n\", files[i].name, files[i].start, files[i].length,\n        ok ? \"Allocated\" : \"Rejected\");\n    }\n\n    printf(\"\\nDisk Block Status\\n\");\n    for (int i = 0; i \u003c 20; i++) {\n        printf(\"Block %d: \", i);\n        if (disk[i] == -1) {\n            printf(\"Free\");\n        }\n        else {\n            printf(\"%s\", files[disk[i]].name);\n        }\n        printf(\"\\n\");\n    }\n\n    printf(\"\\nLab No.: 4(a)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Contiguous File Allocation\nalpha.txt start=2 length=5 -\u003e Allocated\nbeta.dat start=10 length=4 -\u003e Allocated\ngamma.log start=15 length=3 -\u003e Allocated\ndelta.bin start=4 length=5 -\u003e Rejected\n\nDisk Block Status\nBlock 0: Free\nBlock 1: Free\nBlock 2: alpha.txt\nBlock 3: alpha.txt\nBlock 4: alpha.txt\nBlock 5: alpha.txt\nBlock 6: alpha.txt\nBlock 7: Free\nBlock 8: Free\nBlock 9: Free\nBlock 10: beta.dat\nBlock 11: beta.dat\nBlock 12: beta.dat\nBlock 13: beta.dat\nBlock 14: Free\nBlock 15: gamma.log\nBlock 16: gamma.log\nBlock 17: gamma.log\nBlock 18: Free\nBlock 19: Free\n\nLab No.: 4(a)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "4(b)", "title": "Linked File Allocation Technique", "question": "WAP to simulate Linked File Allocation Technique.", "theory": ["Linked allocation stores a file as a linked list of disk blocks. The blocks do not need to be contiguous, and each block points to the next block of the file."], "algorithm": ["Assign a list of free blocks to each file.", "Store the next block pointer for every allocated block.", "The final block points to end of file.", "Print each file chain from start block to end block."], "filename": "lab_4b_linked_file_allocation.c", "code": "#include \u003cstdio.h\u003e\n\ntypedef struct {\n    const char *name;\n    int blocks[5];\n    int count;\n} File;\n\nint main() {\n    File files[] = {\n        {\"alpha.txt\", {4, 7, 9, 12}, 4},\n        {\"beta.dat\", {2, 5, 8}, 3},\n        {\"gamma.log\", {13, 16}, 2}\n    };\n    int nextBlock[20];\n    const char *owner[20] = {0};\n    for (int i = 0; i \u003c 20; i++) {\n        nextBlock[i] = -2;\n    }\n\n    for (int f = 0; f \u003c 3; f++) {\n        for (int i = 0; i \u003c files[f].count; i++) {\n            int block = files[f].blocks[i];\n            owner[block] = files[f].name;\n            nextBlock[block] = (i + 1 \u003c files[f].count) ? files[f].blocks[i + 1] : -1;\n        }\n    }\n\n    printf(\"Linked File Allocation\\n\");\n    for (int f = 0; f \u003c 3; f++) {\n        printf(\"%s: \", files[f].name);\n        for (int i = 0; i \u003c files[f].count; i++) {\n            int block = files[f].blocks[i];\n            printf(\"%d\", block);\n            if (nextBlock[block] != -1) {\n                printf(\" -\u003e \");\n            }\n        }\n        printf(\" -\u003e EOF\\n\");\n    }\n\n    printf(\"\\nBlock Pointer Table\\n\");\n    for (int block = 0; block \u003c 20; block++) {\n        if (nextBlock[block] != -2) {\n            printf(\"Block %d (%s) -\u003e \", block, owner[block]);\n            if (nextBlock[block] == -1) {\n                printf(\"EOF\");\n            }\n            else {\n                printf(\"%d\", nextBlock[block]);\n            }\n            printf(\"\\n\");\n        }\n    }\n\n    printf(\"\\nLab No.: 4(b)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Linked File Allocation\nalpha.txt: 4 -\u003e 7 -\u003e 9 -\u003e 12 -\u003e EOF\nbeta.dat: 2 -\u003e 5 -\u003e 8 -\u003e EOF\ngamma.log: 13 -\u003e 16 -\u003e EOF\n\nBlock Pointer Table\nBlock 2 (beta.dat) -\u003e 5\nBlock 4 (alpha.txt) -\u003e 7\nBlock 5 (beta.dat) -\u003e 8\nBlock 7 (alpha.txt) -\u003e 9\nBlock 8 (beta.dat) -\u003e EOF\nBlock 9 (alpha.txt) -\u003e 12\nBlock 12 (alpha.txt) -\u003e EOF\nBlock 13 (gamma.log) -\u003e 16\nBlock 16 (gamma.log) -\u003e EOF\n\nLab No.: 4(b)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "4(c)", "title": "File Allocation Table Technique", "question": "WAP to simulate File Allocation using File Allocation Table.", "theory": ["File Allocation Table stores block chaining information in a central table. A directory entry keeps the first block, and the FAT records each block's next block or EOF."], "algorithm": ["Initialize every FAT entry as free.", "Allocate a set of blocks for each file.", "For each file, link every block to the next block in the FAT.", "Mark the last block with EOF and print file chains."], "filename": "lab_4c_fat_allocation.c", "code": "#include \u003cstdio.h\u003e\n\ntypedef struct {\n    const char *name;\n    int blocks[5];\n    int count;\n} File;\n\nint main() {\n    const int FREE = -1, EOF_MARK = -2;\n    int fat[18];\n    for (int i = 0; i \u003c 18; i++) {\n        fat[i] = FREE;\n    }\n    File files[] = {\n        {\"alpha.txt\", {3, 6, 11}, 3},\n        {\"beta.dat\", {1, 8, 10, 14}, 4},\n        {\"gamma.log\", {5, 15}, 2}\n    };\n\n    for (int f = 0; f \u003c 3; f++) {\n        for (int i = 0; i \u003c files[f].count; i++) {\n            int block = files[f].blocks[i];\n            fat[block] = (i + 1 \u003c files[f].count) ? files[f].blocks[i + 1] : EOF_MARK;\n        }\n    }\n\n    printf(\"File Allocation Table\\n\");\n    for (int f = 0; f \u003c 3; f++) {\n        printf(\"%s starts at block %d: \", files[f].name, files[f].blocks[0]);\n        for (int i = 0; i \u003c files[f].count; i++) {\n            int block = files[f].blocks[i];\n            printf(\"%d\", block);\n            if (fat[block] != EOF_MARK) {\n                printf(\" -\u003e \");\n            }\n        }\n        printf(\" -\u003e EOF\\n\");\n    }\n\n    printf(\"\\nFAT Entries\\n\");\n    for (int i = 0; i \u003c 18; i++) {\n        printf(\"FAT[%d] = \", i);\n        if (fat[i] == FREE) {\n            printf(\"FREE\");\n        }\n        else if (fat[i] == EOF_MARK) {\n            printf(\"EOF\");\n        }\n        else {\n            printf(\"%d\", fat[i]);\n        }\n        printf(\"\\n\");\n    }\n\n    printf(\"\\nLab No.: 4(c)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "File Allocation Table\nalpha.txt starts at block 3: 3 -\u003e 6 -\u003e 11 -\u003e EOF\nbeta.dat starts at block 1: 1 -\u003e 8 -\u003e 10 -\u003e 14 -\u003e EOF\ngamma.log starts at block 5: 5 -\u003e 15 -\u003e EOF\n\nFAT Entries\nFAT[0] = FREE\nFAT[1] = 8\nFAT[2] = FREE\nFAT[3] = 6\nFAT[4] = FREE\nFAT[5] = 15\nFAT[6] = 11\nFAT[7] = FREE\nFAT[8] = 10\nFAT[9] = FREE\nFAT[10] = 14\nFAT[11] = EOF\nFAT[12] = FREE\nFAT[13] = FREE\nFAT[14] = EOF\nFAT[15] = EOF\nFAT[16] = FREE\nFAT[17] = FREE\n\nLab No.: 4(c)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "4(d)", "title": "Inode File Allocation Technique", "question": "WAP to simulate File Allocation using Inode.", "theory": ["Inode allocation keeps file metadata and block addresses inside an inode. Direct block pointers store small files, and indirect pointers can address additional blocks."], "algorithm": ["Create an inode record for each file.", "Store file size and direct block addresses.", "Use an indirect block when direct pointers are insufficient.", "Display the inode table and the blocks owned by each file."], "filename": "lab_4d_inode_allocation.c", "code": "#include \u003cstdio.h\u003e\n\ntypedef struct {\n    int number;\n    const char *fileName;\n    int size;\n    int direct[4];\n    int directCount;\n    int indirectBlock;\n    int indirect[3];\n    int indirectCount;\n} Inode;\n\nint main() {\n    Inode inodes[] = {\n        {101, \"alpha.txt\", 4096, {2, 5, 9}, 3, -1, {0}, 0},\n        {102, \"beta.dat\", 8192, {4, 8, 12, 13}, 4, 18, {20, 21}, 2},\n        {103, \"gamma.log\", 2048, {6}, 1, -1, {0}, 0}\n    };\n\n    printf(\"Inode File Allocation\\n\");\n    for (int i = 0; i \u003c 3; i++) {\n        printf(\"Inode %d for %s\\n\", inodes[i].number, inodes[i].fileName);\n        printf(\"Size: %d bytes\\n\", inodes[i].size);\n        printf(\"Direct blocks: \");\n        for (int j = 0; j \u003c inodes[i].directCount; j++) {\n            printf(\"%d \", inodes[i].direct[j]);\n        }\n        printf(\"\\n\");\n        if (inodes[i].indirectBlock != -1) {\n            printf(\"Indirect block: %d -\u003e \", inodes[i].indirectBlock);\n            for (int j = 0; j \u003c inodes[i].indirectCount; j++) {\n                printf(\"%d \", inodes[i].indirect[j]);\n            }\n            printf(\"\\n\");\n        } else {\n            printf(\"Indirect block: Not used\\n\");\n        }\n        printf(\"\\n\");\n    }\n\n    printf(\"\\nLab No.: 4(d)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Inode File Allocation\nInode 101 for alpha.txt\nSize: 4096 bytes\nDirect blocks: 2 5 9 \nIndirect block: Not used\n\nInode 102 for beta.dat\nSize: 8192 bytes\nDirect blocks: 4 8 12 13 \nIndirect block: 18 -\u003e 20 21 \n\nInode 103 for gamma.log\nSize: 2048 bytes\nDirect blocks: 6 \nIndirect block: Not used\n\n\nLab No.: 4(d)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "5(a)", "title": "Free Space Management Using Bitmaps", "question": "WAP to simulate Free Space Management using Bitmaps.", "theory": ["Bitmap free-space management uses one bit per disk block. A value of 1 can represent a free block and 0 can represent an allocated block."], "algorithm": ["Initialize a bitmap for the disk blocks.", "Mark allocated blocks with 0 and free blocks with 1.", "To allocate space, find enough free bits and mark them allocated.", "To release space, set the corresponding bit back to 1."], "filename": "lab_5a_bitmap_free_space.c", "code": "#include \u003cstdio.h\u003e\n\nvoid printBitmap(int bitmap[], int n) {\n    printf(\"Bitmap: \");\n    for (int i = 0; i \u003c n; i++) {\n        printf(\"%d \", bitmap[i]);\n    }\n    printf(\"\\n\");\n}\n\nint main() {\n    int bitmap[16];\n    int allocated[] = {2, 3, 5, 8, 9};\n    for (int i = 0; i \u003c 16; i++) {\n        bitmap[i] = 1;\n    }\n    for (int i = 0; i \u003c 5; i++) {\n        bitmap[allocated[i]] = 0;\n    }\n\n    printf(\"Free Space Management using Bitmap\\n\");\n    printBitmap(bitmap, 16);\n\n    printf(\"Allocating 3 free blocks: \");\n    int needed = 3;\n    for (int i = 0; i \u003c 16 \u0026\u0026 needed \u003e 0; i++) {\n        if (bitmap[i] == 1) {\n            bitmap[i] = 0;\n            needed--;\n            printf(\"%d \", i);\n        }\n    }\n    printf(\"\\n\");\n    printBitmap(bitmap, 16);\n\n    printf(\"Freeing block 5\\n\");\n    bitmap[5] = 1;\n    printBitmap(bitmap, 16);\n\n    printf(\"\\nLab No.: 5(a)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Free Space Management using Bitmap\nBitmap: 1 1 0 0 1 0 1 1 0 0 1 1 1 1 1 1 \nAllocating 3 free blocks: 0 1 4 \nBitmap: 0 0 0 0 0 0 1 1 0 0 1 1 1 1 1 1 \nFreeing block 5\nBitmap: 0 0 0 0 0 1 1 1 0 0 1 1 1 1 1 1 \n\nLab No.: 5(a)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "5(b)", "title": "Free Space Management Using Linked List", "question": "WAP to simulate Free Space Management using Linked List.", "theory": ["Linked-list free-space management connects all free disk blocks in a list. Allocation removes blocks from the list, and deallocation inserts released blocks back into it."], "algorithm": ["Keep all free blocks in a linked-list representation.", "Allocate a block by removing it from the front of the free list.", "Free a block by adding it back into the list.", "Display the list after every allocation and deallocation operation."], "filename": "lab_5b_linked_list_free_space.c", "code": "#include \u003cstdio.h\u003e\n\nvoid printList(int freeList[], int count) {\n    printf(\"Free List: \");\n    for (int i = 0; i \u003c count; i++) {\n        printf(\"%d -\u003e \", freeList[i]);\n    }\n    printf(\"NULL\\n\");\n}\n\nint main() {\n    int freeList[20] = {1, 4, 6, 7, 10, 12, 14};\n    int count = 7;\n\n    printf(\"Free Space Management using Linked List\\n\");\n    printList(freeList, count);\n\n    printf(\"Allocating two blocks: \");\n    for (int i = 0; i \u003c 2; i++) {\n        printf(\"%d \", freeList[i]);\n    }\n    printf(\"\\n\");\n    for (int i = 2; i \u003c count; i++) {\n        freeList[i - 2] = freeList[i];\n    }\n    count -= 2;\n    printList(freeList, count);\n\n    printf(\"Freeing block 3\\n\");\n    int block = 3, pos = count;\n    for (int i = 0; i \u003c count; i++) if (freeList[i] \u003e block) { pos = i; break; }\n    for (int i = count; i \u003e pos; i--) {\n        freeList[i] = freeList[i - 1];\n    }\n    freeList[pos] = block;\n    count++;\n    printList(freeList, count);\n\n    printf(\"\\nLab No.: 5(b)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "Free Space Management using Linked List\nFree List: 1 -\u003e 4 -\u003e 6 -\u003e 7 -\u003e 10 -\u003e 12 -\u003e 14 -\u003e NULL\nAllocating two blocks: 1 4 \nFree List: 6 -\u003e 7 -\u003e 10 -\u003e 12 -\u003e 14 -\u003e NULL\nFreeing block 3\nFree List: 3 -\u003e 6 -\u003e 7 -\u003e 10 -\u003e 12 -\u003e 14 -\u003e NULL\n\nLab No.: 5(b)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "6(a)", "title": "FCFS Disk Scheduling Algorithm", "question": "WAP to simulate FCFS Disk Scheduling Algorithm.", "theory": ["FCFS disk scheduling services disk requests in the exact order in which they arrive. It is fair but can create high seek time."], "algorithm": ["Start from the current head position.", "Visit each request in input order.", "Add the absolute difference between current head and requested cylinder to total seek time.", "Move the head to the requested cylinder."], "filename": "lab_6a_fcfs_disk.c", "code": "#include \u003cstdlib.h\u003e\n#include \u003cstdio.h\u003e\n\nint main() {\n    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};\n    int head = 53, totalSeek = 0;\n    printf(\"FCFS Disk Scheduling\\nOrder: %d\", head);\n    for (int i = 0; i \u003c 8; i++) {\n        totalSeek += abs(head - requests[i]);\n        head = requests[i];\n        printf(\" -\u003e %d\", head);\n    }\n    printf(\"\\nTotal Seek Time: %d\\n\", totalSeek);\n\n    printf(\"\\nLab No.: 6(a)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "FCFS Disk Scheduling\nOrder: 53 -\u003e 98 -\u003e 183 -\u003e 37 -\u003e 122 -\u003e 14 -\u003e 124 -\u003e 65 -\u003e 67\nTotal Seek Time: 640\n\nLab No.: 6(a)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "6(b)", "title": "SSTF Disk Scheduling Algorithm", "question": "WAP to simulate SSTF Disk Scheduling Algorithm.", "theory": ["Shortest Seek Time First chooses the pending request nearest to the current head position. It usually reduces seek time but may starve far requests."], "algorithm": ["Keep all disk requests as unvisited.", "From the current head, select the unvisited request with minimum absolute distance.", "Move the head to that request and add the distance to total seek time.", "Repeat until all requests have been serviced."], "filename": "lab_6b_sstf_disk.c", "code": "#include \u003climits.h\u003e\n#include \u003cstdlib.h\u003e\n#include \u003cstdio.h\u003e\n\nint main() {\n    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};\n    int done[8] = {0}, head = 53, totalSeek = 0;\n    printf(\"SSTF Disk Scheduling\\nOrder: %d\", head);\n    for (int count = 0; count \u003c 8; count++) {\n        int selected = -1, best = INT_MAX;\n        for (int i = 0; i \u003c 8; i++) {\n            int distance = abs(head - requests[i]);\n            if (!done[i] \u0026\u0026 distance \u003c best) {\n                best = distance;\n                selected = i;\n            }\n        }\n        done[selected] = 1;\n        totalSeek += abs(head - requests[selected]);\n        head = requests[selected];\n        printf(\" -\u003e %d\", head);\n    }\n    printf(\"\\nTotal Seek Time: %d\\n\", totalSeek);\n\n    printf(\"\\nLab No.: 6(b)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "SSTF Disk Scheduling\nOrder: 53 -\u003e 65 -\u003e 67 -\u003e 37 -\u003e 14 -\u003e 98 -\u003e 122 -\u003e 124 -\u003e 183\nTotal Seek Time: 236\n\nLab No.: 6(b)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "6(c)", "title": "SCAN Disk Scheduling Algorithm", "question": "WAP to simulate SCAN Disk Scheduling Algorithm.", "theory": ["SCAN disk scheduling moves the disk arm in one direction servicing requests, reaches the end of the disk, and then reverses direction."], "algorithm": ["Separate requests smaller and greater than the initial head.", "Sort both groups.", "Move first in the selected direction and service all requests on that side.", "Go to the disk end, reverse, and service requests on the other side."], "filename": "lab_6c_scan_disk.c", "code": "#include \u003cstdlib.h\u003e\n#include \u003cstdio.h\u003e\n\nvoid sort(int a[], int n) {\n    for (int i = 0; i \u003c n - 1; i++) {\n        for (int j = i + 1; j \u003c n; j++) {\n            if (a[i] \u003e a[j]) {\n                int t = a[i];\n                a[i] = a[j];\n                a[j] = t;\n            }\n        }\n    }\n}\n\nint main() {\n    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};\n    int head = 53, diskEnd = 199, totalSeek = 0;\n    int left[8], right[8], l = 0, r = 0;\n    for (int i = 0; i \u003c 8; i++) {\n        if (requests[i] \u003c head) {\n            left[l++] = requests[i];\n        }\n        else {\n            right[r++] = requests[i];\n        }\n    }\n    sort(left, l);\n    sort(right, r);\n    printf(\"SCAN Disk Scheduling (moving right first)\\nOrder: %d\", head);\n    for (int i = 0; i \u003c r; i++) {\n        totalSeek += abs(head - right[i]);\n        head = right[i];\n        printf(\" -\u003e %d\", head);\n    }\n    totalSeek += abs(head - diskEnd);\n    head = diskEnd;\n    printf(\" -\u003e %d\", head);\n    for (int i = l - 1; i \u003e= 0; i--) {\n        totalSeek += abs(head - left[i]);\n        head = left[i];\n        printf(\" -\u003e %d\", head);\n    }\n    printf(\"\\nTotal Seek Time: %d\\n\", totalSeek);\n\n    printf(\"\\nLab No.: 6(c)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "SCAN Disk Scheduling (moving right first)\nOrder: 53 -\u003e 65 -\u003e 67 -\u003e 98 -\u003e 122 -\u003e 124 -\u003e 183 -\u003e 199 -\u003e 37 -\u003e 14\nTotal Seek Time: 331\n\nLab No.: 6(c)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "6(d)", "title": "C-SCAN Disk Scheduling Algorithm", "question": "WAP to simulate C-SCAN Disk Scheduling Algorithm.", "theory": ["C-SCAN services requests in one direction only. After reaching the end, the head jumps to the beginning and continues servicing requests in the same direction."], "algorithm": ["Split requests around the initial head position.", "Service all requests greater than or equal to the head in ascending order.", "Move to the disk end, jump to the beginning, and count the movement.", "Service the remaining requests in ascending order."], "filename": "lab_6d_cscan_disk.c", "code": "#include \u003cstdlib.h\u003e\n#include \u003cstdio.h\u003e\n\nvoid sort(int a[], int n) {\n    for (int i = 0; i \u003c n - 1; i++) {\n        for (int j = i + 1; j \u003c n; j++) {\n            if (a[i] \u003e a[j]) {\n                int t = a[i];\n                a[i] = a[j];\n                a[j] = t;\n            }\n        }\n    }\n}\n\nint main() {\n    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};\n    int head = 53, diskStart = 0, diskEnd = 199, totalSeek = 0;\n    int left[8], right[8], l = 0, r = 0;\n    for (int i = 0; i \u003c 8; i++) {\n        if (requests[i] \u003c head) {\n            left[l++] = requests[i];\n        }\n        else {\n            right[r++] = requests[i];\n        }\n    }\n    sort(left, l);\n    sort(right, r);\n    printf(\"C-SCAN Disk Scheduling (moving right)\\nOrder: %d\", head);\n    for (int i = 0; i \u003c r; i++) {\n        totalSeek += abs(head - right[i]);\n        head = right[i];\n        printf(\" -\u003e %d\", head);\n    }\n    totalSeek += abs(head - diskEnd);\n    head = diskEnd;\n    printf(\" -\u003e %d\", head);\n    totalSeek += abs(head - diskStart);\n    head = diskStart;\n    printf(\" -\u003e %d\", head);\n    for (int i = 0; i \u003c l; i++) {\n        totalSeek += abs(head - left[i]);\n        head = left[i];\n        printf(\" -\u003e %d\", head);\n    }\n    printf(\"\\nTotal Seek Time: %d\\n\", totalSeek);\n\n    printf(\"\\nLab No.: 6(d)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "C-SCAN Disk Scheduling (moving right)\nOrder: 53 -\u003e 65 -\u003e 67 -\u003e 98 -\u003e 122 -\u003e 124 -\u003e 183 -\u003e 199 -\u003e 0 -\u003e 14 -\u003e 37\nTotal Seek Time: 382\n\nLab No.: 6(d)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "6(e)", "title": "LOOK Disk Scheduling Algorithm", "question": "WAP to simulate LOOK Disk Scheduling Algorithm.", "theory": ["LOOK scheduling is similar to SCAN, but it reverses at the last request in the current direction instead of going to the physical end of the disk."], "algorithm": ["Split requests around the initial head.", "Sort the left and right sides.", "Move in the selected direction and service all requests on that side.", "Reverse at the last request and service the other side."], "filename": "lab_6e_look_disk.c", "code": "#include \u003cstdlib.h\u003e\n#include \u003cstdio.h\u003e\n\nvoid sort(int a[], int n) {\n    for (int i = 0; i \u003c n - 1; i++) {\n        for (int j = i + 1; j \u003c n; j++) {\n            if (a[i] \u003e a[j]) {\n                int t = a[i];\n                a[i] = a[j];\n                a[j] = t;\n            }\n        }\n    }\n}\n\nint main() {\n    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};\n    int head = 53, totalSeek = 0;\n    int left[8], right[8], l = 0, r = 0;\n    for (int i = 0; i \u003c 8; i++) {\n        if (requests[i] \u003c head) {\n            left[l++] = requests[i];\n        }\n        else {\n            right[r++] = requests[i];\n        }\n    }\n    sort(left, l);\n    sort(right, r);\n    printf(\"LOOK Disk Scheduling (moving right first)\\nOrder: %d\", head);\n    for (int i = 0; i \u003c r; i++) {\n        totalSeek += abs(head - right[i]);\n        head = right[i];\n        printf(\" -\u003e %d\", head);\n    }\n    for (int i = l - 1; i \u003e= 0; i--) {\n        totalSeek += abs(head - left[i]);\n        head = left[i];\n        printf(\" -\u003e %d\", head);\n    }\n    printf(\"\\nTotal Seek Time: %d\\n\", totalSeek);\n\n    printf(\"\\nLab No.: 6(e)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "LOOK Disk Scheduling (moving right first)\nOrder: 53 -\u003e 65 -\u003e 67 -\u003e 98 -\u003e 122 -\u003e 124 -\u003e 183 -\u003e 37 -\u003e 14\nTotal Seek Time: 299\n\nLab No.: 6(e)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}, {"no": "6(f)", "title": "C-LOOK Disk Scheduling Algorithm", "question": "WAP to simulate C-LOOK Disk Scheduling Algorithm.", "theory": ["C-LOOK services requests in one direction and then jumps to the lowest pending request instead of the physical beginning of the disk."], "algorithm": ["Separate requests less than and greater than the initial head.", "Service the greater requests in ascending order.", "Jump from the highest serviced request to the lowest pending request.", "Continue servicing the lower-side requests in ascending order."], "filename": "lab_6f_clook_disk.c", "code": "#include \u003cstdlib.h\u003e\n#include \u003cstdio.h\u003e\n\nvoid sort(int a[], int n) {\n    for (int i = 0; i \u003c n - 1; i++) {\n        for (int j = i + 1; j \u003c n; j++) {\n            if (a[i] \u003e a[j]) {\n                int t = a[i];\n                a[i] = a[j];\n                a[j] = t;\n            }\n        }\n    }\n}\n\nint main() {\n    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};\n    int head = 53, totalSeek = 0;\n    int left[8], right[8], l = 0, r = 0;\n    for (int i = 0; i \u003c 8; i++) {\n        if (requests[i] \u003c head) {\n            left[l++] = requests[i];\n        }\n        else {\n            right[r++] = requests[i];\n        }\n    }\n    sort(left, l);\n    sort(right, r);\n    printf(\"C-LOOK Disk Scheduling (moving right)\\nOrder: %d\", head);\n    for (int i = 0; i \u003c r; i++) {\n        totalSeek += abs(head - right[i]);\n        head = right[i];\n        printf(\" -\u003e %d\", head);\n    }\n    if (l \u003e 0) {\n        totalSeek += abs(head - left[0]);\n        head = left[0];\n        printf(\" -\u003e %d\", head);\n        for (int i = 1; i \u003c l; i++) {\n            totalSeek += abs(head - left[i]);\n            head = left[i];\n            printf(\" -\u003e %d\", head);\n        }\n    }\n    printf(\"\\nTotal Seek Time: %d\\n\", totalSeek);\n\n    printf(\"\\nLab No.: 6(f)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n\n    return 0;\n}\n", "output": "C-LOOK Disk Scheduling (moving right)\nOrder: 53 -\u003e 65 -\u003e 67 -\u003e 98 -\u003e 122 -\u003e 124 -\u003e 183 -\u003e 14 -\u003e 37\nTotal Seek Time: 322\n\nLab No.: 6(f)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"}]</script>
+  <script>
+    const REPORT_ITEMS = JSON.parse(document.getElementById("report-data").textContent);
+
+    function esc(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function attr(value) {
+      return esc(value).replace(/"/g, "&quot;");
+    }
+
+    function decodeCodeEntities(value) {
+      let decoded = String(value || "");
+      for (let i = 0; i < 2; i++) {
+        const textarea = document.createElement("textarea");
+        textarea.innerHTML = decoded;
+        if (textarea.value === decoded) break;
+        decoded = textarea.value;
+      }
+      return decoded;
+    }
+
+    function getValue(id, fallback) {
+      const input = document.getElementById(id);
+      const value = input ? input.value.trim() : "";
+      return value || fallback;
+    }
+
+    function buildTokens(student) {
+      return {
+        "{NAME}": student.name,
+        "{ROLL}": student.roll,
+        "{SECTION}": student.section
+      };
+    }
+
+    function fill(text, tokens) {
+      let value = String(text || "");
+      Object.keys(tokens).forEach((key) => {
+        value = value.split(key).join(tokens[key]);
+      });
+      return value;
+    }
+
+    function makeBlock(html, extraClass) {
+      const block = document.createElement("div");
+      block.className = "content-block" + (extraClass ? " " + extraClass : "");
+      block.innerHTML = html;
+      return block;
+    }
+
+    function slug(text) {
+      const clean = String(text || "student").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+      return clean || "student";
+    }
+
+    function executableName(filename) {
+      const clean = String(filename || "program").replace(/\.[^/.\\]+$/, "");
+      return `${clean || "program"}.exe`;
+    }
+
+    function currentStudent() {
+      return {
+        name: getValue("nameIn", "______________________________"),
+        roll: getValue("rollIn", "______________"),
+        section: getValue("sectionIn", "________")
+      };
+    }
+
+    function currentTheme() {
+      return document.getElementById("themeIn").checked ? "dark" : "light";
+    }
+
+    function createPage(container) {
+      const page = document.createElement("section");
+      page.className = "report-page";
+      const inner = document.createElement("div");
+      inner.className = "page-inner";
+      inner.innerHTML = '<div class="page-content"></div>';
+      page.appendChild(inner);
+      container.appendChild(page);
+      return inner.querySelector(".page-content");
+    }
+
+    function paginate(container, blocks) {
+      let content = createPage(container);
+      blocks.forEach((block) => {
+        content.appendChild(block);
+        if (content.scrollHeight > content.clientHeight + 2) {
+          content.removeChild(block);
+          content = createPage(container);
+          content.appendChild(block);
+        }
+      });
+    }
+
+    function theoryHtml(item) {
+      if (!item.theory || !item.theory.length) return "";
+      return `
+        <div class="section-title">Theory:</div>
+        <div class="info-box">${item.theory.map((p) => `<p>${esc(p)}</p>`).join("")}</div>`;
+    }
+
+    function algorithmHtml(item) {
+      if (!item.algorithm || !item.algorithm.length) return "";
+      return `
+        <div class="section-title">Algorithm / Steps:</div>
+        <div class="algo-box"><ol>${item.algorithm.map((step) => `<li>${esc(step)}</li>`).join("")}</ol></div>`;
+    }
+
+    function codeLineHtml(line, index) {
+      const decodedLine = decodeCodeEntities(line);
+      const codeLine = decodedLine === "" ? "&nbsp;" : esc(decodedLine);
+      return `${index === 0 ? '<div class="section-title">Source Code:</div>' : ''}<pre class="plain-code">${codeLine}</pre>`;
+    }
+
+    function terminalBlockHtml(item, outputText, theme) {
+      const title = `C:\\${slug(getValue("nameIn", "student"))}\\os\\${executableName(item.filename)}`;
+      return `
+        <div class="section-title">Output:</div>
+        <div class="win-terminal ${theme}">
+          <div class="win-titlebar">
+            <div class="win-title-text">${esc(title)}</div>
+            <div class="win-btns">
+              <div class="win-btn"><svg viewBox="0 0 10 1" fill="currentColor"><rect width="10" height="1"></rect></svg></div>
+              <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="9" height="9"></rect></svg></div>
+              <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="1" y1="1" x2="9" y2="9"></line><line x1="9" y1="1" x2="1" y2="9"></line></svg></div>
+            </div>
+          </div>
+          <pre class="t-body">${esc(outputText)}${outputText.trim() ? "\n\n" : ""}<span class="t-process">Process exited after 0.0234 seconds with return value 0</span>
+<span class="t-press">Press any key to continue . . .</span></pre>
+        </div>`;
+    }
+
+    function buildItemBlocks(item, tokens, theme) {
+      const blocks = [];
+      blocks.push(makeBlock(`<p class="question">${esc(item.question)}</p>`));
+
+      const theory = theoryHtml(item);
+      if (theory) blocks.push(makeBlock(theory));
+      const algorithm = algorithmHtml(item);
+      if (algorithm) blocks.push(makeBlock(algorithm, "algorithm-block"));
+
+      if (item.code) {
+        const filledCode = fill(item.code, tokens);
+        filledCode.split("\n").forEach((line, index) => {
+          blocks.push(makeBlock(codeLineHtml(line, index), index === 0 ? "source-code-first-block" : "code-line-block"));
+        });
+      }
+
+      if (item.output && item.output.trim()) {
+        const filledOutput = fill(item.output, tokens);
+        blocks.push(makeBlock(terminalBlockHtml(item, filledOutput, theme), "output-block"));
+      }
+
+      return blocks;
+    }
+
+    function buildIndexBlocks() {
+      return [makeBlock(`
+        <h2 class="index-title">Contents Page</h2>
+        <div class="index-subtitle">Subject: Operating System<br>List of Lab Works</div>
+        <table class="index-table">
+          <thead>
+            <tr><th>Lab No.</th><th>Title</th><th>Date</th><th>Signature/Remarks</th></tr>
+          </thead>
+          <tbody>${REPORT_ITEMS.map((item) => `
+            <tr>
+              <td>${esc(item.no)}</td>
+              <td>${esc(item.title)}</td>
+              <td class="submitted-date-cell">2083/04/__</td>
+              <td class="signature-cell"></td>
+            </tr>`).join("")}</tbody>
+        </table>`)];
+    }
+
+    function renderReport() {
+      const student = currentStudent();
+      const tokens = buildTokens(student);
+      const theme = currentTheme();
+      const container = document.getElementById("pages");
+      container.innerHTML = "";
+
+      paginate(container, buildIndexBlocks());
+      REPORT_ITEMS.forEach((item) => {
+        paginate(container, buildItemBlocks(item, tokens, theme));
+      });
+    }
+
+    ["nameIn", "rollIn", "sectionIn", "themeIn"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", renderReport);
+      document.getElementById(id).addEventListener("change", renderReport);
+    });
+
+    renderReport();
+  </script>
+</body>
+</html>

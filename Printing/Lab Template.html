@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSA Lab Report Generator</title>
+  <meta name="description" content="Data Structure & Algorithm Lab Report Generator — 16 Programs">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+
+  <style>
+    :root {
+      --bg-deep: #07080c;
+      --bg-surface: #0d0f15;
+      --bg-elevated: #12151e;
+      --bg-card: #161925;
+      --border-subtle: rgba(255,255,255,0.05);
+      --border-medium: rgba(255,255,255,0.08);
+      --accent: #4f7df5;
+      --accent-warm: #f59e42;
+      --accent-mint: #34d399;
+      --text-primary: #e8eaf0;
+      --text-secondary: #8b92a8;
+      --text-muted: #555d75;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(ellipse 60% 50% at 15% 10%, rgba(79,125,245,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 60% at 85% 80%, rgba(245,158,66,0.035) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(52,211,153,0.025) 0%, transparent 50%);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(79,125,245,0.2); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(79,125,245,0.4); }
+
+    /* Layout */
+    .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; position: relative; z-index: 1; }
+
+    /* Accent line */
+    .accent-line { height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.35; }
+
+    /* Header */
+    .header { margin-bottom: 40px; animation: entrance 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+    .header h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .header h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-mint));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-family: monospace;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    .header-meta .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-mint); animation: shimmer 3s ease-in-out infinite; }
+    .header-sub { color: var(--text-secondary); font-size: 14px; margin-top: 6px; max-width: 420px; line-height: 1.6; }
+
+    /* Inputs */
+    .inputs-section { margin-bottom: 32px; animation: entrance 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+    .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .section-label {
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .divider { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-medium), transparent); }
+    .inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .inputs-grid { grid-template-columns: 1fr; } }
+    .field-label {
+      display: block;
+      font-family: monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .field-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .field-input::placeholder { color: var(--text-muted); }
+    .field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,125,245,0.1); }
+
+    /* Tabs */
+    .tabs-wrap { animation: entrance 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+    .tab-bar { display: flex; align-items: center; border-bottom: 1px solid var(--border-subtle); }
+    .tab-btn {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.25s;
+    }
+    .tab-btn:hover { color: var(--text-secondary); }
+    .tab-btn.active { color: var(--text-primary); }
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .tab-btn.active::after { transform: scaleX(1); }
+
+    /* Output controls */
+    .output-controls {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+      padding-right: 4px;
+    }
+    .output-controls.visible { display: flex; }
+    .ctrl-label { font-family: monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+    .toggle-group { display: flex; align-items: center; gap: 6px; }
+    .toggle-icon { width: 14px; height: 14px; opacity: 0.6; }
+    .toggle-track {
+      width: 44px; height: 24px;
+      background: #2a2e3f;
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+      border: 1px solid var(--border-medium);
+    }
+    .toggle-track.active { background: var(--accent); border-color: var(--accent); }
+    .toggle-knob {
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px; left: 2px;
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .toggle-track.active .toggle-knob { transform: translateX(20px); }
+    .ctrl-sep { width: 1px; height: 18px; background: var(--border-medium); }
+    .btn-pdf {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-pdf:hover { background: #5d8af7; box-shadow: 0 4px 16px rgba(79,125,245,0.2); }
+    .btn-pdf svg { width: 12px; height: 12px; }
+
+    /* Content area */
+    .content-area { max-height: 80vh; overflow-y: auto; }
+
+    /* Program cards */
+    .cards-list { padding: 16px 0; display: flex; flex-direction: column; gap: 10px; }
+    .program-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .program-card:hover { border-color: var(--border-medium); }
+    .card-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .card-header:hover .card-title { color: #fff; }
+    .card-num {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.6;
+      width: 22px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex: 1;
+      transition: color 0.2s;
+    }
+    .card-arrow {
+      width: 14px; height: 14px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+    .card-arrow.open { transform: rotate(180deg); }
+
+    /* Accordion body */
+    .card-body { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .card-body.open { max-height: 8000px; }
+    .card-body-inner { padding: 0 16px 16px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 12px; }
+
+    /* Question */
+    .question { padding-top: 12px; font-size: 13px; font-weight: 500; color: var(--accent); line-height: 1.5; }
+
+    /* Info box */
+    .info-box { padding: 12px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); }
+    .info-box-label { font-weight: 700; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+    .info-box-label.theory { color: var(--accent-warm); }
+    .info-box-label.algo { color: var(--accent-mint); }
+    .info-box p, .info-box li { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+    .info-box ol { padding-left: 18px; display: flex; flex-direction: column; gap: 2px; }
+    .info-box ol li::marker { color: rgba(52,211,153,0.4); }
+
+    /* Code block */
+    .code-wrap { border-radius: 8px; overflow: hidden; border: 1px solid var(--border-subtle); }
+    .code-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px;
+      background: #1e1e2e;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .code-filename { font-family: monospace; font-size: 10px; color: var(--text-muted); }
+    .btn-copy {
+      display: flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      background: none; border: none;
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .btn-copy:hover { color: var(--text-secondary); background: rgba(255,255,255,0.05); }
+    .btn-copy svg { width: 12px; height: 12px; }
+    .code-body { background: #11111b; padding: 16px; overflow-x: auto; }
+    .code-body pre { margin: 0 !important; padding: 0 !important; background: transparent !important; }
+    .code-body code {
+      font-family: monospace !important;
+      font-size: 0.78rem !important;
+      line-height: 1.75 !important;
+    }
+
+    /* =============================== */
+    /*      WINDOWS TERMINAL           */
+    /* =============================== */
+    .terminals-list { padding: 16px 0; display: flex; flex-direction: column; gap: 16px; }
+
+    .win-terminal {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    /* Dark terminal */
+    .win-terminal.dark { background: #0c0c0c; color: #cccccc; }
+    .win-terminal.dark .win-titlebar { background: #1f1f1f; border-bottom: 1px solid #333; }
+    .win-terminal.dark .win-title-text { color: #999; }
+    .win-terminal.dark .win-btn { color: #999; }
+    .win-terminal.dark .win-btn:hover { background: #333; }
+    .win-terminal.dark .win-btn.close:hover { background: #e81123; color: #fff; }
+    .win-terminal.dark .t-process { color: #e5c07b; }
+    .win-terminal.dark .t-press { color: #555; }
+
+    /* Light terminal */
+    .win-terminal.light { background: #fff; color: #1e1e1e; border: 1px solid #d4d4d4; }
+    .win-terminal.light .win-titlebar { background: #f3f3f3; border-bottom: 1px solid #e0e0e0; }
+    .win-terminal.light .win-title-text { color: #555; }
+    .win-terminal.light .win-btn { color: #666; }
+    .win-terminal.light .win-btn:hover { background: #e0e0e0; }
+    .win-terminal.light .win-btn.close:hover { background: #e81123; color: #fff; }
+    .win-terminal.light .t-process { color: #b5850f; }
+    .win-terminal.light .t-press { color: #888; }
+
+    /* Titlebar */
+    .win-titlebar { display: flex; align-items: center; height: 32px; user-select: none; }
+    .win-titlebar-icon {
+      width: 36px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; padding-left: 8px;
+    }
+    .win-titlebar-icon svg { width: 14px; height: 14px; }
+    .win-title-text {
+      flex: 1;
+      font-family: 'Segoe UI', 'DM Sans', sans-serif;
+      font-size: 12px;
+      padding-left: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .win-btns { display: flex; height: 100%; }
+    .win-btn {
+      width: 46px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none; cursor: default;
+      transition: background 0.1s;
+    }
+    .win-btn svg { width: 10px; height: 10px; }
+
+    /* Terminal body */
+    .t-body {
+      padding: 14px 18px;
+      font-family: 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Footer */
+    .footer { margin-top: 32px; text-align: center; }
+    .footer p { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; }
+
+    /* Animations */
+    @keyframes entrance {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Print */
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="accent-line"></div>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-bottom: 2px solid var(--border-medium); padding-bottom: 12px; margin-bottom: 24px;">
+        <h1 style="font-size: 2.25rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: -0.015em; font-family: inherit;">DSA Lab Report</h1>
+        <span style="font-size: 1.1rem; color: var(--text-secondary); font-family: monospace; font-weight: 600;">16 Programs</span>
+      </div>
+    </header>
+
+    <!-- STUDENT INPUTS -->
+    <section class="inputs-section" style="margin-bottom: 20px; animation: entrance 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;">
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 180px;">
+          <span style="font-family: monospace; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;">Name:</span>
+          <input type="text" id="studentName" class="field-input" placeholder="Your full name" oninput="render()" style="padding: 8px 12px; font-size: 13px;">
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 180px;">
+          <span style="font-family: monospace; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;">Roll / Sec:</span>
+          <input type="text" id="studentRoll" class="field-input" placeholder="e.g. 45/A" oninput="render()" style="padding: 8px 12px; font-size: 13px;">
+        </div>
+      </div>
+    </section>
+
+    <!-- TABS -->
+    <section class="tabs-wrap">
+      <div class="tab-bar no-print">
+        <button id="tabCode" class="tab-btn active" onclick="switchTab('code')">Theory + Code</button>
+        <button id="tabOutput" class="tab-btn" onclick="switchTab('output')">Output</button>
+
+        <div id="outputControls" class="output-controls">
+          <span class="ctrl-label">Theme</span>
+          <div class="toggle-group">
+            <svg class="toggle-icon" viewBox="0 0 20 20" fill="#f59e42"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/></svg>
+            <div id="modeToggle" class="toggle-track active" onclick="toggleMode()">
+              <div class="toggle-knob"></div>
+            </div>
+            <svg class="toggle-icon" viewBox="0 0 20 20" fill="#4f7df5"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+          </div>
+          <div class="ctrl-sep"></div>
+          <button class="btn-pdf" onclick="generatePDF()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            PDF
+          </button>
+        </div>
+      </div>
+
+      <div id="contentArea" class="content-area">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer no-print">
+      <div class="divider" style="margin-bottom:12px"></div>
+      <p>DSA LAB SHEET #3 · UNIT 5–8 · 16 PROGRAMS · PMC</p>
+    </footer>
+  </div>
+
+  <script>
+    // ==================== DATA ====================
+    const P = [
+      {
+        id:'1', title:'List using Array & Linked List',
+        q:'1. Write a program to implement list using array and linked list.',
+        th:'A list is a linear data structure that can be implemented using arrays (static) or linked lists (dynamic). Arrays provide O(1) random access but fixed size, while linked lists allow dynamic memory allocation with O(n) access time.',
+        al:['Initialize the list data structure','Insert elements into the list','Display all elements','Perform traversal operations'],
+        code:(nm,rl)=>`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node { int data; struct Node* next; } Node;
+
+void arrayList() {
+    int arr[5] = {10, 20, 30, 40, 50};
+    printf("Array List: ");
+    for(int i=0; i<5; i++) printf("%d ", arr[i]);
+    printf("\\n");
+}
+
+void linkedList() {
+    Node *head=NULL, *temp, *newNode;
+    int vals[] = {10, 20, 30, 40, 50};
+    for(int i=0; i<5; i++) {
+        newNode = (Node*)malloc(sizeof(Node));
+        newNode->data = vals[i];
+        newNode->next = NULL;
+        if(!head) head = newNode;
+        else { temp = head; while(temp->next) temp=temp->next; temp->next=newNode; }
+    }
+    printf("Linked List: ");
+    temp = head;
+    while(temp) { printf("%d ", temp->data); temp=temp->next; }
+    printf("\\n");
+}
+
+int main() {
+    arrayList();
+    linkedList();
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Array List: 10 20 30 40 50
+Linked List: 10 20 30 40 50
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'2', title:'Insert in Singly Linked List',
+        q:'2. Write a program to insert a node in a singly linked list (beginning, position, end).',
+        th:'Insertion in a singly linked list can be performed at the beginning (O(1)), at a specific position (O(n)), or at the end (O(n)). Each operation involves creating a new node and adjusting pointers accordingly.',
+        al:['Create a new node with the given data','For beginning: point new node to head, update head','For position: traverse to position-1, adjust pointers','For end: traverse to last node, link new node'],
+        code:(nm,rl)=>`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node { int data; struct Node* next; } Node;
+
+Node* create(int d) { Node* n = (Node*)malloc(sizeof(Node)); n->data=d; n->next=NULL; return n; }
+
+void display(Node* h) { while(h) { printf("%d ", h->data); h=h->next; } printf("\\n"); }
+
+Node* insertBegin(Node* h, int d) { Node* n=create(d); n->next=h; return n; }
+
+Node* insertEnd(Node* h, int d) {
+    Node* n=create(d);
+    if(!h) return n;
+    Node* t=h; while(t->next) t=t->next; t->next=n; return h;
+}
+
+Node* insertPos(Node* h, int d, int p) {
+    Node* n=create(d);
+    if(p==1) { n->next=h; return n; }
+    Node* t=h; for(int i=1; i<p-1 && t; i++) t=t->next;
+    if(t) { n->next=t->next; t->next=n; }
+    return h;
+}
+
+int main() {
+    Node* head = create(20);
+    head->next = create(30);
+    head->next->next = create(40);
+    printf("Original: "); display(head);
+    head = insertBegin(head, 10);
+    printf("After insert at beginning (10): "); display(head);
+    head = insertPos(head, 25, 3);
+    printf("After insert at position 3 (25): "); display(head);
+    head = insertEnd(head, 50);
+    printf("After insert at end (50): "); display(head);
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Original: 20 30 40
+After insert at beginning (10): 10 20 30 40
+After insert at position 3 (25): 10 20 25 30 40
+After insert at end (50): 10 20 25 30 40 50
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'3', title:'Linked Stack Implementation',
+        q:'3. Write a program for linked implementation of stack.',
+        th:'A stack is a LIFO (Last In First Out) data structure. Using a linked list implementation, push and pop operations are performed at the head, both achieving O(1) time complexity.',
+        al:['Create a new node for push operation','Point new node to current top, update top','For pop: save top node, move top to next, free saved node','Display by traversing from top to bottom'],
+        code:(nm,rl)=>`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node { int data; struct Node* next; } Node;
+Node* top = NULL;
+
+void push(int d) { Node* n=(Node*)malloc(sizeof(Node)); n->data=d; n->next=top; top=n; printf("Pushed %d\\n", d); }
+
+void pop() { if(!top) { printf("Stack Empty\\n"); return; } Node* t=top; printf("Popped %d\\n", t->data); top=top->next; free(t); }
+
+void display() { if(!top) { printf("Stack Empty\\n"); return; } Node* t=top; printf("Stack: "); while(t) { printf("%d ", t->data); t=t->next; } printf("\\n"); }
+
+int main() {
+    push(10); push(20); push(30);
+    display();
+    pop(); pop();
+    display();
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Pushed 10
+Pushed 20
+Pushed 30
+Stack: 30 20 10
+Popped 30
+Popped 20
+Stack: 10
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'4', title:'Linked Queue Implementation',
+        q:'4. Write a program for linked implementation of a queue.',
+        th:'A queue is a FIFO (First In First Out) data structure. In linked list implementation, enqueue adds at rear and dequeue removes from front, both in O(1) time with front and rear pointers.',
+        al:['Create a new node for enqueue','Add new node at rear, update rear pointer','For dequeue: save front, move front to next, free saved','Display by traversing from front to rear'],
+        code:(nm,rl)=>`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node { int data; struct Node* next; } Node;
+Node *front=NULL, *rear=NULL;
+
+void enqueue(int d) {
+    Node* n=(Node*)malloc(sizeof(Node)); n->data=d; n->next=NULL;
+    if(!rear) { front=rear=n; } else { rear->next=n; rear=n; }
+    printf("Enqueued %d\\n", d);
+}
+
+void dequeue() {
+    if(!front) { printf("Queue Empty\\n"); return; }
+    Node* t=front; printf("Dequeued %d\\n", t->data);
+    front=front->next; if(!front) rear=NULL; free(t);
+}
+
+void display() {
+    if(!front) { printf("Queue Empty\\n"); return; }
+    Node* t=front; printf("Queue: "); while(t) { printf("%d ", t->data); t=t->next; } printf("\\n");
+}
+
+int main() {
+    enqueue(10); enqueue(20); enqueue(30);
+    display();
+    dequeue(); dequeue();
+    display();
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Enqueued 10
+Enqueued 20
+Enqueued 30
+Queue: 10 20 30
+Dequeued 10
+Dequeued 20
+Queue: 30
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'5', title:'Bubble Sort',
+        q:'5. Write a program to implement bubble sort.',
+        th:'Bubble sort repeatedly steps through the list, compares adjacent elements, and swaps them if in wrong order. Time complexity O(n\u00B2) average and worst case.',
+        al:['Iterate through the array n-1 times','Compare each pair of adjacent elements','Swap if current element is greater than next','Largest unsorted element bubbles to its position each pass'],
+        code:(nm,rl)=>`#include <stdio.h>
+
+void bubble(int a[], int n) {
+    for(int i=0; i<n-1; i++)
+        for(int j=0; j<n-i-1; j++)
+            if(a[j]>a[j+1]) { int t=a[j]; a[j]=a[j+1]; a[j+1]=t; }
+}
+
+int main() {
+    int a[] = {64, 34, 25, 12, 22, 11, 90}, n=7;
+    printf("Original: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    bubble(a, n);
+    printf("Sorted: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Original: 64 34 25 12 22 11 90
+Sorted: 11 12 22 25 34 64 90
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'6', title:'Selection Sort',
+        q:'6. Write a program to implement selection sort.',
+        th:'Selection sort divides the array into sorted and unsorted parts. Finds the minimum from unsorted and places it at the beginning. Time complexity O(n\u00B2).',
+        al:['Find the minimum element in unsorted part','Swap it with the first unsorted element','Move boundary of sorted part one position right','Repeat until array is sorted'],
+        code:(nm,rl)=>`#include <stdio.h>
+
+void selection(int a[], int n) {
+    for(int i=0; i<n-1; i++) {
+        int min=i;
+        for(int j=i+1; j<n; j++) if(a[j]<a[min]) min=j;
+        int t=a[i]; a[i]=a[min]; a[min]=t;
+    }
+}
+
+int main() {
+    int a[] = {64, 25, 12, 22, 11}, n=5;
+    printf("Original: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    selection(a, n);
+    printf("Sorted: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Original: 64 25 12 22 11
+Sorted: 11 12 22 25 64
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'7', title:'Insertion Sort',
+        q:'7. Write a program to implement insertion sort.',
+        th:'Insertion sort builds the sorted array one element at a time by inserting elements at their correct position. Best case O(n), worst case O(n\u00B2).',
+        al:['Take the next element from unsorted portion','Compare with elements in sorted portion right to left','Shift larger elements one position right','Insert the element at its correct position'],
+        code:(nm,rl)=>`#include <stdio.h>
+
+void insertion(int a[], int n) {
+    for(int i=1; i<n; i++) {
+        int k=a[i], j=i-1;
+        while(j>=0 && a[j]>k) { a[j+1]=a[j]; j--; }
+        a[j+1]=k;
+    }
+}
+
+int main() {
+    int a[] = {12, 11, 13, 5, 6}, n=5;
+    printf("Original: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    insertion(a, n);
+    printf("Sorted: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Original: 12 11 13 5 6
+Sorted: 5 6 11 12 13
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'8', title:'Quick Sort',
+        q:'8. Write a program to implement quick sort.',
+        th:'Quick sort uses divide-and-conquer by selecting a pivot and partitioning the array around it. Average O(n log n), worst O(n\u00B2).',
+        al:['Choose the last element as pivot','Partition: smaller elements left, larger right','Recursively sort left and right subarrays','Base case: subarray with 0 or 1 elements'],
+        code:(nm,rl)=>`#include <stdio.h>
+
+void swap(int* a, int* b) { int t=*a; *a=*b; *b=t; }
+
+int partition(int a[], int l, int h) {
+    int p=a[h], i=l-1;
+    for(int j=l; j<h; j++) if(a[j]<p) swap(&a[++i], &a[j]);
+    swap(&a[i+1], &a[h]);
+    return i+1;
+}
+
+void quick(int a[], int l, int h) {
+    if(l<h) { int p=partition(a,l,h); quick(a,l,p-1); quick(a,p+1,h); }
+}
+
+int main() {
+    int a[] = {10, 7, 8, 9, 1, 5}, n=6;
+    printf("Original: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    quick(a, 0, n-1);
+    printf("Sorted: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Original: 10 7 8 9 1 5
+Sorted: 1 5 7 8 9 10
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'9', title:'Merge Sort',
+        q:'9. Write a program to implement merge sort.',
+        th:'Merge sort divides the array into halves, recursively sorts them, and merges sorted halves. O(n log n) in all cases, requires O(n) extra space.',
+        al:['Divide the array into two halves','Recursively sort the left half','Recursively sort the right half','Merge two sorted halves into one sorted array'],
+        code:(nm,rl)=>`#include <stdio.h>
+
+void merge(int a[], int l, int m, int r) {
+    int n1=m-l+1, n2=r-m, L[n1], R[n2];
+    for(int i=0; i<n1; i++) L[i]=a[l+i];
+    for(int j=0; j<n2; j++) R[j]=a[m+1+j];
+    int i=0, j=0, k=l;
+    while(i<n1 && j<n2) a[k++] = (L[i]<=R[j]) ? L[i++] : R[j++];
+    while(i<n1) a[k++]=L[i++];
+    while(j<n2) a[k++]=R[j++];
+}
+
+void mergeSort(int a[], int l, int r) {
+    if(l<r) { int m=l+(r-l)/2; mergeSort(a,l,m); mergeSort(a,m+1,r); merge(a,l,m,r); }
+}
+
+int main() {
+    int a[] = {12, 11, 13, 5, 6, 7}, n=6;
+    printf("Original: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    mergeSort(a, 0, n-1);
+    printf("Sorted: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Original: 12 11 13 5 6 7
+Sorted: 5 6 7 11 12 13
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'10', title:'Sequential Search',
+        q:'10. Write a program to perform sequential search.',
+        th:'Sequential search checks each element one by one until the target is found or the array ends. Time complexity O(n). Works on unsorted arrays.',
+        al:['Start from the first element','Compare current element with target key','If match found, return the index','If end reached without match, return -1'],
+        code:(nm,rl)=>`#include <stdio.h>
+
+int sequential(int a[], int n, int k) {
+    for(int i=0; i<n; i++) if(a[i]==k) return i;
+    return -1;
+}
+
+int main() {
+    int a[] = {64, 34, 25, 12, 22, 11, 90}, n=7;
+    int k = 22;
+    printf("Array: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    int r = sequential(a, n, k);
+    if(r != -1) printf("Element %d found at index %d\\n", k, r);
+    else printf("Element %d not found\\n", k);
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Array: 64 34 25 12 22 11 90
+Element 22 found at index 4
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'11', title:'Binary Search',
+        q:'11. Write a program to perform binary search.',
+        th:'Binary search finds an element in a sorted array by repeatedly halving the search interval. Time complexity O(log n). Requires sorted input.',
+        al:['Set low=0, high=n-1','Calculate mid = (low + high) / 2','If a[mid] == key, return mid','If a[mid] < key, search right; else left'],
+        code:(nm,rl)=>`#include <stdio.h>
+
+int binary(int a[], int l, int r, int k) {
+    while(l<=r) {
+        int m = l+(r-l)/2;
+        if(a[m]==k) return m;
+        if(a[m]<k) l=m+1; else r=m-1;
+    }
+    return -1;
+}
+
+int main() {
+    int a[] = {2, 3, 4, 10, 40, 50, 60}, n=7;
+    int k = 10;
+    printf("Sorted Array: "); for(int i=0; i<n; i++) printf("%d ", a[i]); printf("\\n");
+    int r = binary(a, 0, n-1, k);
+    if(r != -1) printf("Element %d found at index %d\\n", k, r);
+    else printf("Element %d not found\\n", k);
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Sorted Array: 2 3 4 10 40 50 60
+Element 10 found at index 3
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'12', title:'Hashing Function',
+        q:'12. Write a program to implement hashing function and display hash table.',
+        th:'Hashing maps keys to array indices using a hash function for O(1) average retrieval. Collisions are handled via linear probing.',
+        al:['Define hash function: h(k) = k % SIZE','Compute index, handle collision with linear probing','Insert key at available slot','Display the hash table'],
+        code:(nm,rl)=>`#include <stdio.h>
+#define SIZE 10
+
+int hash(int k) { return k % SIZE; }
+
+void insert(int ht[], int k) {
+    int idx = hash(k);
+    while(ht[idx] != -1) idx = (idx+1) % SIZE;
+    ht[idx] = k;
+}
+
+int main() {
+    int ht[SIZE], keys[] = {12, 25, 35, 26, 15, 8};
+    for(int i=0; i<SIZE; i++) ht[i] = -1;
+
+    printf("Inserting keys: ");
+    for(int i=0; i<6; i++) { printf("%d ", keys[i]); insert(ht, keys[i]); }
+
+    printf("\\n\\nHash Table:\\n");
+    for(int i=0; i<SIZE; i++) {
+        if(ht[i] != -1) printf("Index %d: %d\\n", i, ht[i]);
+        else printf("Index %d: Empty\\n", i);
+    }
+
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Inserting keys: 12 25 35 26 15 8
+
+Hash Table:
+Index 0: Empty
+Index 1: Empty
+Index 2: 12
+Index 3: Empty
+Index 4: Empty
+Index 5: 25
+Index 6: 35
+Index 7: 26
+Index 8: 15
+Index 9: 8
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'13', title:'Adjacency Matrix',
+        q:'13. Write a program to implement adjacency matrix representation of a graph.',
+        th:'An adjacency matrix represents a graph using a 2D array where matrix[i][j] = 1 indicates an edge. Uses O(V\u00B2) space, allows O(1) edge lookup.',
+        al:['Create a V\u00D7V matrix initialized to 0','For each edge (i,j), set matrix[i][j] = matrix[j][i] = 1','Display the matrix with labels'],
+        code:(nm,rl)=>`#include <stdio.h>
+#define V 5
+
+void addEdge(int mat[][V], int i, int j) { mat[i][j] = mat[j][i] = 1; }
+
+void display(int mat[][V]) {
+    printf("Adjacency Matrix:\\n   ");
+    for(int i=0; i<V; i++) printf("%d ", i);
+    printf("\\n");
+    for(int i=0; i<V; i++) {
+        printf("%d: ", i);
+        for(int j=0; j<V; j++) printf("%d ", mat[i][j]);
+        printf("\\n");
+    }
+}
+
+int main() {
+    int mat[V][V] = {0};
+    addEdge(mat, 0, 1); addEdge(mat, 0, 4);
+    addEdge(mat, 1, 2); addEdge(mat, 1, 3);
+    addEdge(mat, 1, 4); addEdge(mat, 2, 3);
+    addEdge(mat, 3, 4);
+
+    printf("Graph edges: (0,1) (0,4) (1,2) (1,3) (1,4) (2,3) (3,4)\\n\\n");
+    display(mat);
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Graph edges: (0,1) (0,4) (1,2) (1,3) (1,4) (2,3) (3,4)
+
+Adjacency Matrix:
+   0 1 2 3 4
+0: 0 1 0 0 1
+1: 1 0 1 1 1
+2: 0 1 0 1 0
+3: 0 1 1 0 1
+4: 1 1 0 1 0
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'14', title:'Incidence Matrix',
+        q:'14. Write a program to implement incidence matrix representation of a graph.',
+        th:'Incidence matrix uses rows for vertices and columns for edges. If vertex i is incident on edge j, matrix[i][j] = 1. Uses O(V\u00D7E) space.',
+        al:['Create a V\u00D7E matrix initialized to 0','For each edge, mark both incident vertices as 1','Display with vertex and edge labels'],
+        code:(nm,rl)=>`#include <stdio.h>
+#define V 4
+#define E 5
+
+void display(int mat[][E]) {
+    printf("Incidence Matrix (Vertices x Edges):\\n     ");
+    for(int j=0; j<E; j++) printf("E%d ", j);
+    printf("\\n");
+    for(int i=0; i<V; i++) {
+        printf("V%d:  ", i);
+        for(int j=0; j<E; j++) printf("%2d ", mat[i][j]);
+        printf("\\n");
+    }
+}
+
+int main() {
+    int mat[V][E] = {0};
+    mat[0][0]=1; mat[1][0]=1;
+    mat[0][1]=1; mat[2][1]=1;
+    mat[1][2]=1; mat[2][2]=1;
+    mat[1][3]=1; mat[3][3]=1;
+    mat[2][4]=1; mat[3][4]=1;
+
+    printf("Graph: E0(0-1) E1(0-2) E2(1-2) E3(1-3) E4(2-3)\\n\\n");
+    display(mat);
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Graph: E0(0-1) E1(0-2) E2(1-2) E3(1-3) E4(2-3)
+
+Incidence Matrix (Vertices x Edges):
+     E0 E1 E2 E3 E4
+V0:   1  1  0  0  0
+V1:   1  0  1  1  0
+V2:   0  1  1  0  1
+V3:   0  0  0  1  1
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'15', title:"Kruskal's MST",
+        q:"15. Write a program to find MST using Kruskal's algorithm.",
+        th:"Kruskal's finds the Minimum Spanning Tree by sorting edges and greedily adding the smallest edge that doesn't form a cycle. Uses Union-Find. O(E log E).",
+        al:['Sort all edges in ascending order of weight','Initialize each vertex as its own set','For each edge: if endpoints in different sets, add to MST','Unite sets; repeat until V-1 edges added'],
+        code:(nm,rl)=>`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct { int u, v, w; } Edge;
+int parent[10];
+
+int cmp(const void* a, const void* b) { return ((Edge*)a)->w - ((Edge*)b)->w; }
+int find(int i) { return parent[i]==i ? i : (parent[i]=find(parent[i])); }
+void unite(int x, int y) { parent[find(x)] = find(y); }
+
+int main() {
+    Edge edges[] = {{0,1,10},{0,2,6},{0,3,5},{1,3,15},{2,3,4}};
+    int V=4, E=5;
+
+    qsort(edges, E, sizeof(Edge), cmp);
+    for(int i=0; i<V; i++) parent[i]=i;
+
+    printf("Kruskal's MST:\\n");
+    int cost=0;
+    for(int i=0; i<E; i++) {
+        int u=edges[i].u, v=edges[i].v, w=edges[i].w;
+        if(find(u) != find(v)) {
+            printf("Edge %d-%d weight %d\\n", u, v, w);
+            cost += w;
+            unite(u, v);
+        }
+    }
+    printf("\\nTotal MST cost: %d\\n", cost);
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Kruskal's MST:
+Edge 2-3 weight 4
+Edge 0-3 weight 5
+Edge 0-1 weight 10
+
+Total MST cost: 19
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id:'16', title:"Dijkstra's Shortest Path",
+        q:"16. Write a program to find shortest path using Dijkstra's algorithm.",
+        th:"Dijkstra's finds shortest path from source to all vertices in a weighted graph with non-negative edges. Greedy approach, O(V\u00B2) or O(E log V) with priority queue.",
+        al:['Initialize all distances to infinity, source to 0','Pick unvisited vertex with minimum distance','Update distances of adjacent unvisited vertices','Mark visited; repeat until all vertices visited'],
+        code:(nm,rl)=>`#include <stdio.h>
+#include <limits.h>
+#define V 5
+#define INF INT_MAX
+
+int minDist(int d[], int vis[]) {
+    int min=INF, idx;
+    for(int v=0; v<V; v++) if(!vis[v] && d[v]<=min) min=d[v], idx=v;
+    return idx;
+}
+
+void dijkstra(int g[][V], int src) {
+    int d[V], vis[V]={0};
+    for(int i=0; i<V; i++) d[i]=INF;
+    d[src]=0;
+
+    for(int c=0; c<V-1; c++) {
+        int u = minDist(d, vis);
+        vis[u] = 1;
+        for(int v=0; v<V; v++)
+            if(!vis[v] && g[u][v] && d[u]!=INF && d[u]+g[u][v]<d[v])
+                d[v] = d[u] + g[u][v];
+    }
+
+    printf("Shortest paths from vertex %d:\\n", src);
+    for(int i=0; i<V; i++) printf("To %d: %d\\n", i, d[i]);
+}
+
+int main() {
+    int g[V][V] = {
+        {0,10,0,30,100},
+        {10,0,50,0,0},
+        {0,50,0,20,10},
+        {30,0,20,0,60},
+        {100,0,10,60,0}
+    };
+    dijkstra(g, 0);
+    printf("\\nName: ${nm}  Roll: ${rl}\\n");
+    return 0;
+}`,
+        out:(nm,rl)=>`Shortest paths from vertex 0:
+To 0: 0
+To 1: 10
+To 2: 50
+To 3: 30
+To 4: 60
+
+Name: ${nm}  Roll: ${rl}`
+      }
+    ];
+
+    // ==================== STATE ====================
+    let tab = 'code';
+    let darkMode = true;
+    let expanded = new Set(P.map(p => p.id));
+
+    // ==================== HELPERS ====================
+    function gn() { return document.getElementById('studentName').value || '[YOUR NAME]'; }
+    function gr() { return document.getElementById('studentRoll').value || '[YOUR ROLL]'; }
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // ==================== TABS ====================
+    function switchTab(t) {
+      tab = t;
+      document.getElementById('tabCode').classList.toggle('active', t==='code');
+      document.getElementById('tabOutput').classList.toggle('active', t==='output');
+      document.getElementById('outputControls').classList.toggle('visible', t==='output');
+      render();
+    }
+
+    function toggleMode() {
+      darkMode = !darkMode;
+      document.getElementById('modeToggle').classList.toggle('active', darkMode);
+      render();
+    }
+
+    function toggleCard(id) {
+      var b = document.getElementById('body-'+id);
+      var a = document.getElementById('arr-'+id);
+      if (expanded.has(id)) { expanded.delete(id); b.classList.remove('open'); a.classList.remove('open'); }
+      else { expanded.add(id); b.classList.add('open'); a.classList.add('open'); }
+    }
+
+    function copyCode(id) {
+      var prog = P.find(function(p){return p.id===id;});
+      if (!prog) return;
+      navigator.clipboard.writeText(prog.code(gn(), gr())).then(function() {
+        var btn = document.getElementById('cp-'+id);
+        if (btn) {
+          btn.textContent = '\u2713 Copied';
+          btn.style.color = '#34d399';
+          setTimeout(function() { btn.textContent = 'Copy'; btn.style.color = ''; }, 1500);
+        }
+      });
+    }
+
+    // SVGs as strings
+    var svgChevron = '<svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9l-7 7-7-7"/></svg>';
+    var svgCopy = '<svg style="width:12px;height:12px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>';
+    var svgCmd = '<svg viewBox="0 0 16 16" fill="currentColor" style="color:#ccc"><path d="M2 3h12v10H2V3zm1 1v8h10V4H3zm1.5 1.5l3 2.5-3 2.5V5.5zm4 4.5h3v1h-3v-1z"/></svg>';
+
+    // ==================== RENDER ====================
+    function render() {
+      var area = document.getElementById('contentArea');
+      var nm = gn(), rl = gr();
+
+      if (tab === 'code') {
+        var html = '<div class="cards-list">';
+        for (var i = 0; i < P.length; i++) {
+          var p = P[i];
+          var isOpen = expanded.has(p.id);
+          html += '<div class="program-card">' +
+            '<div class="card-header" onclick="toggleCard(\'' + p.id + '\')">' +
+              '<span class="card-title" style="font-weight: 500; font-size: 13.5px; line-height: 1.5;">' + p.q + '</span>' +
+              '<svg id="arr-' + p.id + '" class="card-arrow' + (isOpen?' open':'') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>' +
+            '</div>' +
+            '<div id="body-' + p.id + '" class="card-body' + (isOpen?' open':'') + '">' +
+              '<div class="card-body-inner">' +
+                '<div class="info-box"><div class="info-box-label theory">Theory</div><p>' + p.th + '</p></div>' +
+                '<div class="info-box"><div class="info-box-label algo">Algorithm</div><ol>' + p.al.map(function(s){return '<li>'+s+'</li>';}).join('') + '</ol></div>' +
+                '<div class="code-wrap">' +
+                  '<div class="code-bar"><span class="code-filename">program' + p.id + '.c</span>' +
+                    '<button id="cp-' + p.id + '" class="btn-copy" onclick="event.stopPropagation();copyCode(\'' + p.id + '\')">' + svgCopy + ' Copy</button>' +
+                  '</div>' +
+                  '<div class="code-body"><pre><code class="language-c">' + esc(p.code(nm, rl)) + '</code></pre></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }
+        html += '</div>';
+        area.innerHTML = html;
+
+        // Highlight
+        var blocks = area.querySelectorAll('.code-body code');
+        for (var j = 0; j < blocks.length; j++) {
+          if (typeof hljs !== 'undefined') hljs.highlightElement(blocks[j]);
+        }
+
+      } else {
+        // OUTPUT — Windows Terminal
+        var v = darkMode ? 'dark' : 'light';
+        var pathName = gn().trim().toLowerCase().replace(/\s+/g,'_') || 'student';
+
+        var html = '<div class="terminals-list">';
+        for (var i = 0; i < P.length; i++) {
+          var p = P[i];
+          html += '<div class="win-terminal ' + v + '">' +
+            '<div class="win-titlebar">' +
+              '<div class="win-title-text" style="padding-left:12px;">C:\\' + pathName + '\\dsa\\program' + p.id + '.exe</div>' +
+              '<div class="win-btns">' +
+                '<div class="win-btn"><svg viewBox="0 0 10 1" fill="currentColor"><rect width="10" height="1"/></svg></div>' +
+                '<div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="9" height="9"/></svg></div>' +
+                '<div class="win-btn close"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="t-body">' + p.out(nm, rl) + '\n\n<span class="t-process">Process exited after 0.0234 seconds with return value 0</span>\n<span class="t-press">Press any key to continue . . .</span></div>' +
+          '</div>';
+        }
+        html += '</div>';
+        area.innerHTML = html;
+      }
+    }
+
+    // ==================== PDF (packed 2-col A4) ====================
+    function generatePDF() {
+      var nm = gn(), rl = gr();
+      var isDark = darkMode;
+      var pathName = nm.trim().toLowerCase().replace(/\s+/g,'_') || 'student';
+
+      // Theme colors — matching the actual terminal in the Output tab
+      var titlebarBg, titlebarText, titlebarBorder, bodyBg, bodyText, processColor, pressColor, btnColor, closeBtnHoverBg;
+      if (isDark) {
+        titlebarBg = '#1f1f1f'; titlebarText = '#999'; titlebarBorder = '#333';
+        bodyBg = '#0c0c0c'; bodyText = '#cccccc';
+        processColor = '#e5c07b'; pressColor = '#555';
+        btnColor = '#999';
+      } else {
+        titlebarBg = '#f3f3f3'; titlebarText = '#555'; titlebarBorder = '#e0e0e0';
+        bodyBg = '#ffffff'; bodyText = '#1e1e1e';
+        processColor = '#b5850f'; pressColor = '#888';
+        btnColor = '#666';
+      }
+      var monoFont = "'Cascadia Code','JetBrains Mono','Consolas',monospace";
+
+      // --- Measurement container (off-screen) ---
+      var measure = document.createElement('div');
+      measure.style.cssText = 'position:fixed;left:-99999px;top:0;width:' + mmToPx(210) + 'px;padding:0;margin:0;visibility:hidden;pointer-events:none;';
+      document.body.appendChild(measure);
+
+      var padPx = mmToPx(6);
+      var gapPx = mmToPx(6);
+      var pageWPx = mmToPx(210);
+      var pageHPx = mmToPx(297);
+      var contentWPx = pageWPx - (2 * padPx);
+      var colWPx = (contentWPx - gapPx) / 2;
+      var maxColHPx = pageHPx - (2 * padPx);
+
+      // --- Build & measure each terminal block (matching Output tab) ---
+      var items = [];
+      for (var i = 0; i < P.length; i++) {
+        var p = P[i];
+
+        // Outer wrapper — the terminal window
+        var block = document.createElement('div');
+        block.style.cssText = 'border-radius:6px;overflow:hidden;width:' + colWPx + 'px;' +
+          'box-shadow:0 2px 8px rgba(0,0,0,0.3);' +
+          (isDark ? '' : 'border:1px solid #d4d4d4;');
+
+        // Titlebar
+        var titlebar = document.createElement('div');
+        titlebar.style.cssText = 'display:flex;align-items:center;height:24px;' +
+          'background:' + titlebarBg + ';border-bottom:1px solid ' + titlebarBorder + ';padding:0;';
+
+        // Title text
+        var titleText = document.createElement('div');
+        titleText.style.cssText = 'flex:1;font-family:"Segoe UI","DM Sans",sans-serif;font-size:9px;' +
+          'color:' + titlebarText + ';padding-left:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+        titleText.textContent = 'C:\\' + pathName + '\\dsa\\program' + p.id + '.exe';
+        titlebar.appendChild(titleText);
+
+        // Window buttons
+        var btnsWrap = document.createElement('div');
+        btnsWrap.style.cssText = 'display:flex;height:100%;';
+
+        // Minimize
+        var btnMin = document.createElement('div');
+        btnMin.style.cssText = 'width:34px;height:24px;display:flex;align-items:center;justify-content:center;';
+        btnMin.innerHTML = '<svg viewBox="0 0 10 1" fill="' + btnColor + '" style="width:8px;height:8px;"><rect width="10" height="1"/></svg>';
+        btnsWrap.appendChild(btnMin);
+
+        // Maximize
+        var btnMax = document.createElement('div');
+        btnMax.style.cssText = 'width:34px;height:24px;display:flex;align-items:center;justify-content:center;';
+        btnMax.innerHTML = '<svg viewBox="0 0 10 10" fill="none" stroke="' + btnColor + '" stroke-width="1" style="width:8px;height:8px;"><rect x="0.5" y="0.5" width="9" height="9"/></svg>';
+        btnsWrap.appendChild(btnMax);
+
+        // Close
+        var btnClose = document.createElement('div');
+        btnClose.style.cssText = 'width:34px;height:24px;display:flex;align-items:center;justify-content:center;';
+        btnClose.innerHTML = '<svg viewBox="0 0 10 10" fill="none" stroke="' + btnColor + '" stroke-width="1.2" style="width:8px;height:8px;"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg>';
+        btnsWrap.appendChild(btnClose);
+
+        titlebar.appendChild(btnsWrap);
+        block.appendChild(titlebar);
+
+        // Terminal body
+        var body = document.createElement('div');
+        body.style.cssText = 'background:' + bodyBg + ';color:' + bodyText + ';' +
+          'font-family:' + monoFont + ';font-size:10px;line-height:1.4;' +
+          'padding:10px 12px;white-space:pre-wrap;word-wrap:break-word;';
+
+        // Output text
+        var outputText = document.createTextNode(p.out(nm, rl) + '\n\n');
+        body.appendChild(outputText);
+
+        // Process exit line
+        var processSpan = document.createElement('span');
+        processSpan.style.color = processColor;
+        processSpan.textContent = 'Process exited after 0.0234 seconds with return value 0';
+        body.appendChild(processSpan);
+
+        // Press any key line
+        var pressSpan = document.createElement('span');
+        pressSpan.style.color = pressColor;
+        pressSpan.textContent = '\nPress any key to continue . . .';
+        body.appendChild(pressSpan);
+
+        block.appendChild(body);
+
+        // Measure
+        measure.appendChild(block);
+        var h = block.offsetHeight;
+        measure.removeChild(block);
+
+        items.push({ block: block, h: h });
+      }
+
+      // Sort biggest-first for best packing
+      items.sort(function(a, b) { return b.h - a.h; });
+
+      // --- Pack into pages ---
+      var printRoot = document.createElement('div');
+
+      function newPage() {
+        var pg = document.createElement('div');
+        pg.style.cssText = 'width:210mm;height:297mm;position:relative;overflow:hidden;background:#fff;page-break-after:always;';
+        printRoot.appendChild(pg);
+        return pg;
+      }
+
+      var page = newPage();
+      var yLeft = 0, yRight = 0;
+
+      function place(item, col) {
+        var left = padPx + (col === 0 ? 0 : (colWPx + gapPx));
+        var top = padPx + (col === 0 ? yLeft : yRight);
+        item.block.style.position = 'absolute';
+        item.block.style.left = left + 'px';
+        item.block.style.top = top + 'px';
+        item.block.style.width = colWPx + 'px';
+        page.appendChild(item.block);
+        if (col === 0) yLeft += item.h + 8; else yRight += item.h + 8;
+      }
+
+      for (var j = 0; j < items.length; j++) {
+        var item = items[j];
+        var fitsLeft = (yLeft + item.h) <= maxColHPx;
+        var fitsRight = (yRight + item.h) <= maxColHPx;
+
+        if (!fitsLeft && !fitsRight) {
+          page = newPage();
+          yLeft = 0; yRight = 0;
+        }
+
+        var canLeft = (yLeft + item.h) <= maxColHPx;
+        var canRight = (yRight + item.h) <= maxColHPx;
+
+        if (canLeft && canRight) {
+          if ((maxColHPx - (yLeft + item.h)) <= (maxColHPx - (yRight + item.h))) place(item, 0);
+          else place(item, 1);
+        } else if (canLeft) {
+          place(item, 0);
+        } else if (canRight) {
+          place(item, 1);
+        } else {
+          place(item, 0);
+        }
+      }
+
+      // Remove last page-break
+      if (printRoot.lastChild) printRoot.lastChild.style.pageBreakAfter = 'auto';
+
+      document.body.removeChild(measure);
+
+      // --- Build print document ---
+      var css = '*{box-sizing:border-box;margin:0;padding:0}' +
+        'body{margin:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
+        '@page{size:A4;margin:0;}';
+
+      var iframe = document.createElement('iframe');
+      iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:none;';
+      document.body.appendChild(iframe);
+      var iDoc = iframe.contentWindow.document;
+      iDoc.open();
+      iDoc.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DSA Output - ' + nm + '</title><style>' + css + '</style></head><body></body></html>');
+      iDoc.close();
+
+      // Move all pages into iframe
+      while (printRoot.firstChild) {
+        iDoc.body.appendChild(iDoc.adoptNode(printRoot.firstChild));
+      }
+
+      iframe.onload = function() {};
+      setTimeout(function() {
+        iframe.contentWindow.print();
+        setTimeout(function() { document.body.removeChild(iframe); }, 1000);
+      }, 600);
+    }
+
+    function mmToPx(mm) { return (mm * 96) / 25.4; }
+
+    // ==================== INIT ====================
+    render();
+  </script>
+</body>
+</html>

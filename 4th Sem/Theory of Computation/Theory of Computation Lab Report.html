@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theory of Computation Lab Report Generator</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --screen-bg: #101217;
+      --panel: #181c24;
+      --panel-2: #202633;
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #eef2f6;
+      --muted: #9aa6b5;
+      --orange: #f47b20;
+      --blue: #5294d0;
+      --green: #2bb673;
+      --paper: #ffffff;
+      --ink: #121212;
+      --paper-width: 210mm;
+      --paper-height: 297mm;
+      --paper-padding: 10mm;
+      --page-border-padding: 5.5mm;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(79, 125, 245, 0.08), transparent 34%),
+        linear-gradient(315deg, rgba(52, 211, 153, 0.10), transparent 36%),
+        var(--screen-bg);
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .controls {
+      max-width: 1120px;
+      margin: 22px auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(24, 28, 36, 0.94);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+    }
+
+    .controls-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    .controls h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: 0;
+    }
+
+    .controls p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: var(--panel-2);
+      color: var(--text);
+      outline: none;
+      font-size: 13px;
+    }
+
+    .field input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(82, 148, 208, 0.16);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .print-btn {
+      border: 0;
+      border-radius: 6px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .print-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      user-select: none;
+    }
+
+    .theme-toggle input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .switch {
+      width: 46px;
+      height: 25px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #343b49;
+      position: relative;
+      transition: background 0.2s ease;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      width: 19px;
+      height: 19px;
+      top: 2px;
+      left: 2px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.32);
+      transition: transform 0.2s ease;
+    }
+
+    .theme-toggle input:checked + .switch {
+      background: var(--blue);
+    }
+
+    .theme-toggle input:checked + .switch::after {
+      transform: translateX(21px);
+    }
+
+    .pages {
+      padding: 10px 0 36px;
+      overflow-x: auto;
+    }
+
+    .report-page {
+      width: var(--paper-width);
+      height: var(--paper-height);
+      margin: 24px auto;
+      padding: var(--paper-padding);
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.36);
+      font-family: "Times New Roman", Times, serif;
+      overflow: hidden;
+    }
+
+    .page-inner {
+      height: 100%;
+      border: 2px solid #202020;
+      padding: var(--page-border-padding);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      min-height: 0;
+    }
+
+    .student-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 10mm;
+      border-top: 1px solid #111;
+      padding-top: 2.4mm;
+      margin-top: 3mm;
+      font-size: 11.5pt;
+      line-height: 1.25;
+      color: #111;
+    }
+
+    .student-footer span {
+      display: inline-block;
+      min-width: 44mm;
+      border-bottom: 1px solid #111;
+      padding-left: 2mm;
+    }
+
+    .page-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .content-block {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      margin: 0 0 4.2mm;
+    }
+
+    .content-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .algorithm-block {
+      margin-bottom: 1.8mm;
+    }
+
+    .question {
+      margin: 0;
+      font-size: 13pt;
+      line-height: 1.38;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 12pt;
+      font-weight: 700;
+      font-style: italic;
+      margin: 0 0 1.7mm;
+      color: #111;
+    }
+
+    .info-box,
+    .algo-box {
+      border: 1px solid #d3d6dc;
+      border-radius: 5px;
+      background: #f7f8fa;
+      padding: 3.5mm;
+      font-size: 12.5pt;
+      line-height: 1.45;
+    }
+
+    .info-box p {
+      margin: 0 0 2mm;
+    }
+
+    .info-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .algo-box ol,
+    .algo-box ul {
+      margin: 0;
+      padding-left: 5.2mm;
+    }
+
+    .algo-box li {
+      margin: 0 0 1.3mm;
+    }
+
+    .plain-code {
+      margin: 0;
+      padding: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: normal;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 10pt;
+      line-height: 1.26;
+      color: #111;
+      background: transparent;
+      border: 0;
+    }
+
+    .source-code-first-block,
+    .code-line-block {
+      margin: 0;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .source-code-first-block .section-title {
+      margin-bottom: 1.2mm;
+    }
+
+    .output-block {
+      margin-top: 5mm;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .win-terminal {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24), 0 2px 8px rgba(0, 0, 0, 0.16);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .win-terminal.dark {
+      background: #0c0c0c;
+      color: #cccccc;
+    }
+
+    .win-terminal.dark .win-titlebar {
+      background: #1f1f1f;
+      border-bottom: 1px solid #333;
+    }
+
+    .win-terminal.dark .win-title-text,
+    .win-terminal.dark .win-btn {
+      color: #999;
+    }
+
+    .win-terminal.dark .t-process {
+      color: #e5c07b;
+    }
+
+    .win-terminal.dark .t-press {
+      color: #666;
+    }
+
+    .win-terminal.light {
+      background: #fff;
+      color: #1e1e1e;
+      border: 1px solid #d4d4d4;
+      box-shadow: none;
+    }
+
+    .win-terminal.light .win-titlebar {
+      background: #f3f3f3;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .win-terminal.light .win-title-text,
+    .win-terminal.light .win-btn {
+      color: #666;
+    }
+
+    .win-terminal.light .t-process {
+      color: #9a6a00;
+    }
+
+    .win-terminal.light .t-press {
+      color: #7a7a7a;
+    }
+
+    .win-titlebar {
+      display: flex;
+      align-items: center;
+      height: 30px;
+      user-select: none;
+    }
+
+    .win-title-text {
+      flex: 1;
+      font-size: 11px;
+      padding-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .win-btns {
+      display: flex;
+      height: 100%;
+    }
+
+    .win-btn {
+      width: 38px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+    }
+
+    .win-btn svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .t-body {
+      margin: 0;
+      padding: 3mm 3.6mm;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9.4pt;
+      line-height: 1.34;
+    }
+
+    .index-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12pt;
+      line-height: 1.3;
+    }
+
+    .index-title {
+      margin: 0 0 5mm;
+      text-align: center;
+      font-size: 17pt;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .index-table th,
+    .index-table td {
+      border: 1px solid #cfd4dc;
+      padding: 1.6mm 2.6mm;
+      vertical-align: middle;
+    }
+
+    .index-table th {
+      background: #f0f3f7;
+      text-align: left;
+    }
+
+    .index-table th:first-child,
+    .index-table td:first-child {
+      width: 24mm;
+      text-align: center;
+    }
+
+    .index-table th:last-child,
+    .index-table td:last-child {
+      width: 36mm;
+      text-align: center;
+    }
+
+    .submitted-date-cell {
+      width: 34mm;
+      text-align: center;
+    }
+
+    .signature-cell {
+      height: 7.5mm;
+    }
+
+    @media (max-width: 900px) {
+      .controls {
+        margin: 12px;
+      }
+
+      .controls-head {
+        display: block;
+      }
+
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .report-page {
+        width: var(--paper-width);
+        height: var(--paper-height);
+        min-height: 0;
+        margin: 12px 0;
+      }
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .pages {
+        padding: 0;
+      }
+
+      .report-page {
+        width: var(--paper-width);
+        height: var(--paper-height);
+        margin: 0;
+        box-shadow: none;
+        overflow: hidden;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .report-page:last-child {
+        page-break-after: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="controls no-print">
+    <div class="controls-head">
+      <div>
+        <h1>Theory of Computation Lab Report Generator</h1>
+        <p>Enter student details, choose output theme, then print or save as PDF.</p>
+      </div>
+      <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <div class="input-grid">
+      <div class="field">
+        <label for="nameIn">Student Name</label>
+        <input id="nameIn" type="text" placeholder="Your full name">
+      </div>
+      <div class="field">
+        <label for="rollIn">Roll / Sec</label>
+        <input id="rollIn" type="text" placeholder="e.g. 45/A">
+      </div>
+    </div>
+    <div class="actions">
+      <label class="theme-toggle">
+        <input id="themeIn" type="checkbox" checked>
+        <span class="switch"></span>
+        <span>Dark output theme</span>
+      </label>
+    </div>
+  </section>
+
+  <main id="pages" class="pages"></main>
+
+  <script>
+    // ==================== DATA ====================
+    const P = [
+      {
+        id: '1',
+        title: 'Count lines and characters in a file',
+        q: '1. Write a C/C++ program to read a file and Count number of lines and characters in a file.',
+        th: 'File handling in C involves opening a file using fopen(), reading its contents character-by-character using fgetc(), and closing it using fclose(). The character count is incremented for every byte read (including whitespaces and control characters), while the line count is incremented every time a newline character (\'\n\') is encountered.',
+        code: (nm, rl) => `#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *fp = fopen("test.txt", "w");
+    if (fp != NULL) {
+        fprintf(fp, "Theory of Computation\\nLab Report\\nPatan Multiple Campus\\n");
+        fclose(fp);
+    }
+    fp = fopen("test.txt", "r");
+    if (fp == NULL) {
+        printf("Error opening file.\\n");
+        return 1;
+    }
+    int chars = 0, lines = 0;
+    char ch;
+    while ((ch = fgetc(fp)) != EOF) {
+        chars++;
+        if (ch == '\\n') {
+            lines++;
+        }
+    }
+    fclose(fp);
+    printf("Total Characters: %d\\n", chars);
+    printf("Total Lines: %d\\n", lines);
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Total Characters: 55
+Total Lines: 3
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '2',
+        title: 'Substring from specified position up to n length',
+        q: '2. Write a program to find the substring of a string from specified given position up to n length.',
+        th: 'A substring is a contiguous sequence of characters within a string. Extracting a substring from a specified position requires validating that the starting position is within the bounds of the original string and copying up to n characters or until the null terminator is reached.',
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+void get_substring(const char *src, int pos, int len, char *dest) {
+    int src_len = strlen(src);
+    int j = 0;
+    if (pos >= 0 && pos < src_len) {
+        for (int i = pos; i < pos + len && src[i] != '\\0'; i++) {
+            dest[j++] = src[i];
+        }
+    }
+    dest[j] = '\\0';
+}
+
+int main() {
+    char str[] = "TheoryOfComputation";
+    char sub[100];
+    int pos = 8, len = 11;
+    get_substring(str, pos, len, sub);
+    printf("Original String: %s\\n", str);
+    printf("Substring from index %d of length %d: %s\\n", pos, len, sub);
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Original String: TheoryOfComputation
+Substring from index 8 of length 11: Computation
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '3',
+        title: 'Find all substrings of a given string',
+        q: '3. Write a program in C/C++ to find all the substrings of a given string.',
+        th: 'A string of length L contains L*(L+1)/2 non-empty substrings. Finding all substrings involves systematically varying the starting index of the substring and its length, generating every possible contiguous sequence of characters.',
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str[] = "TOC";
+    int len = strlen(str);
+    printf("Original String: %s\\n", str);
+    printf("All Substrings:\\n");
+    for (int i = 0; i < len; i++) {
+        for (int j = i; j < len; j++) {
+            for (int k = i; k <= j; k++) {
+                printf("%c", str[k]);
+            }
+            printf("\\n");
+        }
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Original String: TOC
+All Substrings:
+T
+TO
+TOC
+O
+OC
+C
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '4',
+        title: 'List all prefixes of a string',
+        q: '4. Write C/C++ program for List out the All Prefix of a String.',
+        th: 'A prefix is a substring that starts at the first character of the string. A string of length L has L prefixes (excluding the empty string). Prefix list is obtained by taking substrings starting at index 0 of lengths from 1 to L.',
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str[] = "Patan";
+    int len = strlen(str);
+    printf("Original String: %s\\n", str);
+    printf("All Prefixes:\\n");
+    for (int i = 1; i <= len; i++) {
+        for (int j = 0; j < i; j++) {
+            printf("%c", str[j]);
+        }
+        printf("\\n");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Original String: Patan
+All Prefixes:
+P
+Pa
+Pat
+Pata
+Patan
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '5',
+        title: 'List all suffixes of a string',
+        q: '5. Write a C/C++ program for Listing out the all suffix of a String.',
+        th: 'A suffix is a substring that ends at the last character of the original string. A string of length L has L suffixes (excluding the empty string). Suffixes are obtained by taking substrings starting at index i (where i ranges from L-1 down to 0) extending to the end of the string.',
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str[] = "Campus";
+    int len = strlen(str);
+    printf("Original String: %s\\n", str);
+    printf("All Suffixes:\\n");
+    for (int i = len - 1; i >= 0; i--) {
+        printf("%s\\n", &str[i]);
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Original String: Campus
+All Suffixes:
+s
+us
+pus
+mpus
+ampus
+Campus
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '6',
+        title: 'Leftmost, rightmost, and mid-substring extraction',
+        q: '6. Write a program in C or C++ that accepts a string and print the substrings: leftmost of length n, rightmost of length n, and from position m to n.',
+        th: 'Leftmost extraction copies characters from index 0 of length n. Rightmost extraction copies n characters starting from length-n. Mid-substring extraction copies characters starting from index m up to index n.',
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+void leftmost(const char *str, int n, char *dest) {
+    int i;
+    for (i = 0; i < n && str[i] != '\\0'; i++) {
+        dest[i] = str[i];
+    }
+    dest[i] = '\\0';
+}
+
+void rightmost(const char *str, int n, char *dest) {
+    int len = strlen(str);
+    int start = len - n;
+    if (start < 0) start = 0;
+    strcpy(dest, &str[start]);
+}
+
+void mid_substring(const char *str, int m, int n, char *dest) {
+    int j = 0;
+    for (int i = m; i <= n && str[i] != '\\0'; i++) {
+        dest[j++] = str[i];
+    }
+    dest[j] = '\\0';
+}
+
+int main() {
+    char str[] = "TheoryOfComputation";
+    char dest[100];
+    
+    printf("Original String: %s\\n", str);
+    
+    leftmost(str, 6, dest);
+    printf("Leftmost substring of length 6: %s\\n", dest);
+    
+    rightmost(str, 11, dest);
+    printf("Rightmost substring of length 11: %s\\n", dest);
+    
+    mid_substring(str, 8, 18, dest);
+    printf("Substring from position 8 to 18: %s\\n", dest);
+    
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Original String: TheoryOfComputation
+Leftmost substring of length 6: Theory
+Rightmost substring of length 11: Computation
+Substring from position 8 to 18: Computation
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '7',
+        title: 'DFA: Set of strings ending at \'b\' from alphabet {a, b}',
+        q: '7a. DFA: Set of strings ending at \'b\' from alphabet {a, b}.',
+        th: 'A Deterministic Finite Automaton (DFA) consists of states and transition rules. For strings ending in \'b\', the DFA starts in q0 (not ending in \'b\'). If it reads \'a\', it stays in q0. If it reads \'b\', it transitions to q1 (ending in \'b\', accepting state). From q1, reading \'a\' goes back to q0, while \'b\' stays in q1.',
+        al: ["Define transition logic where state q0 is initial/reject and q1 is accepting.","Read each character of the input string sequentially.","If character is 'a', transition current state to q0; if 'b', transition to q1.","After processing all characters, check if the final state is q1.","Accept the string if final state is q1, otherwise reject."],
+        code: (nm, rl) => `#include <stdio.h>
+
+int dfa_ends_in_b(const char *str) {
+    int state = 0;
+    for (int i = 0; str[i] != '\\0'; i++) {
+        char c = str[i];
+        if (c == 'a') {
+            state = 0;
+        } else if (c == 'b') {
+            state = 1;
+        } else {
+            return -1;
+        }
+    }
+    return (state == 1);
+}
+
+int main() {
+    const char *test_cases[] = {"ab", "aab", "ba", "b", "aba"};
+    printf("DFA Simulation (Ends in 'b' over {a, b}):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = dfa_ends_in_b(test_cases[i]);
+        printf("String: %-5s -> %s\\n", test_cases[i], res == 1 ? "Accepted" : (res == 0 ? "Rejected" : "Invalid Input"));
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `DFA Simulation (Ends in 'b' over {a, b}):
+String: ab    -> Accepted
+String: aab   -> Accepted
+String: ba    -> Rejected
+String: b     -> Accepted
+String: aba   -> Rejected
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '8',
+        title: 'DFA: Set of strings ending with \'01\' from alphabet {0, 1}',
+        q: '7b. DFA: Set of strings ending with \'01\' from alphabet {0, 1}.',
+        th: 'To accept strings ending with \'01\', a DFA requires three states: q0 (initial/non-matching), q1 (after reading \'0\'), and q2 (after reading \'01\', accepting state). Transitions: q0 on \'0\'->q1, on \'1\'->q0; q1 on \'0\'->q1, on \'1\'->q2; q2 on \'0\'->q1, on \'1\'->q0.',
+        al: ["Set initial state to q0 (0).","Read the input string character-by-character.","Update states: if character is '0', state becomes q1; if character is '1', state becomes q2 if previous was q1, else q0.","If the final state after processing the entire string is q2, accept; else reject."],
+        code: (nm, rl) => `#include <stdio.h>
+
+int dfa_ends_in_01(const char *str) {
+    int state = 0;
+    for (int i = 0; str[i] != '\\0'; i++) {
+        char c = str[i];
+        if (c == '0') {
+            state = 1;
+        } else if (c == '1') {
+            if (state == 1) {
+                state = 2;
+            } else {
+                state = 0;
+            }
+        } else {
+            return -1;
+        }
+    }
+    return (state == 2);
+}
+
+int main() {
+    const char *test_cases[] = {"01", "101", "00", "010", "1101"};
+    printf("DFA Simulation (Ends with '01' over {0, 1}):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = dfa_ends_in_01(test_cases[i]);
+        printf("String: %-5s -> %s\\n", test_cases[i], res == 1 ? "Accepted" : (res == 0 ? "Rejected" : "Invalid Input"));
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `DFA Simulation (Ends with '01' over {0, 1}):
+String: 01    -> Accepted
+String: 101   -> Accepted
+String: 00    -> Rejected
+String: 010   -> Rejected
+String: 1101  -> Accepted
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '9',
+        title: 'DFA: Set of strings containing substring \'010\' from alphabet {0, 1}',
+        q: '7c. DFA: Set of strings containing substring \'010\' from alphabet {0, 1}.',
+        th: 'A DFA for substring \'010\' requires four states. Once \'010\' is found, the machine transitions to q3 (accepting/trap state) and remains there. States: q0 (start), q1 (after \'0\'), q2 (after \'01\'), q3 (after \'010\'). Transitions: q0 on \'0\'->q1, \'1\'->q0; q1 on \'0\'->q1, \'1\'->q2; q2 on \'0\'->q3, \'1\'->q0; q3 on \'0\'/\'1\'->q3.',
+        al: ["Initialize state to q0.","For each character of the string, apply DFA state transition equations.","If state reaches q3, it acts as a trap state and remains in q3.","Accept the string if the final state is q3; else reject."],
+        code: (nm, rl) => `#include <stdio.h>
+
+int dfa_contains_010(const char *str) {
+    int state = 0;
+    for (int i = 0; str[i] != '\\0'; i++) {
+        char c = str[i];
+        if (state == 0) {
+            if (c == '0') state = 1;
+            else if (c == '1') state = 0;
+            else return -1;
+        } else if (state == 1) {
+            if (c == '0') state = 1;
+            else if (c == '1') state = 2;
+            else return -1;
+        } else if (state == 2) {
+            if (c == '0') state = 3;
+            else if (c == '1') state = 0;
+            else return -1;
+        } else if (state == 3) {
+            if (c == '0' || c == '1') state = 3;
+            else return -1;
+        }
+    }
+    return (state == 3);
+}
+
+int main() {
+    const char *test_cases[] = {"010", "10101", "0011", "111010", "01"};
+    printf("DFA Simulation (Contains '010' over {0, 1}):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = dfa_contains_010(test_cases[i]);
+        printf("String: %-6s -> %s\\n", test_cases[i], res == 1 ? "Accepted" : (res == 0 ? "Rejected" : "Invalid Input"));
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `DFA Simulation (Contains '010' over {0, 1}):
+String: 010    -> Accepted
+String: 10101  -> Accepted
+String: 0011   -> Rejected
+String: 111010 -> Accepted
+String: 01     -> Rejected
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '10',
+        title: 'NFA: Set of strings starting with \'01\' from alphabet {0, 1}',
+        q: '8a. NFA: Set of strings starting with \'01\' from alphabet {0, 1}.',
+        th: 'An NFA can transition to multiple states. For strings starting with \'01\', the transition must immediately check if the first two characters are \'0\' and \'1\'. If they are, it goes to an accepting trap state. If not, it transitions to a dead state.',
+        al: ["Initialize state to q0 (start).","First character must be '0' to transition to q1; otherwise go to dead state.","Second character must be '1' to transition to q2 (accepting); otherwise go to dead state.","Subsequent characters maintain state q2 (accepting).","Accept if the final state is q2."],
+        code: (nm, rl) => `#include <stdio.h>
+
+int nfa_starts_with_01(const char *str) {
+    int state = 0;
+    for (int i = 0; str[i] != '\\0'; i++) {
+        char c = str[i];
+        if (state == 0) {
+            if (c == '0') state = 1;
+            else state = 3;
+        } else if (state == 1) {
+            if (c == '1') state = 2;
+            else state = 3;
+        } else if (state == 2) {
+            // stays in q2
+        }
+    }
+    return (state == 2);
+}
+
+int main() {
+    const char *test_cases[] = {"01", "0110", "101", "0", "010"};
+    printf("NFA Simulation (Starts with '01' over {0, 1}):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = nfa_starts_with_01(test_cases[i]);
+        printf("String: %-5s -> %s\\n", test_cases[i], res == 1 ? "Accepted" : "Rejected");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `NFA Simulation (Starts with '01' over {0, 1}):
+String: 01    -> Accepted
+String: 0110  -> Accepted
+String: 101   -> Rejected
+String: 0     -> Rejected
+String: 010   -> Accepted
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '11',
+        title: 'NFA: Set of strings containing substring \'abb\' from alphabet {a, b}',
+        q: '8b. NFA: Set of strings containing substring \'abb\' from alphabet {a, b}.',
+        th: 'An NFA can be in multiple states at once. The states for this NFA are: q0 (initial, loops on \'a\',\'b\'), q1 (after seeing \'a\'), q2 (after seeing \'ab\'), and q3 (after seeing \'abb\', trap/accepting state). The program simulates this by maintaining active flags for each state.',
+        al: ["Initialize state flags: q0 is active, q1, q2, q3 are inactive.","For each character, calculate next state flags based on current flags.","q0 is always active. If current character is 'a', activate q1.","If current character is 'b', activate q2 if q1 was active, and activate q3 if q2 was active.","Accept if q3 is active at the end of the string."],
+        code: (nm, rl) => `#include <stdio.h>
+
+int nfa_contains_abb(const char *str) {
+    int q0 = 1;
+    int q1 = 0;
+    int q2 = 0;
+    int q3 = 0;
+
+    for (int i = 0; str[i] != '\\0'; i++) {
+        char c = str[i];
+        int next_q1 = 0, next_q2 = 0, next_q3 = q3;
+        
+        if (c == 'a') {
+            next_q1 = q0;
+        } else if (c == 'b') {
+            if (q1) next_q2 = 1;
+            if (q2) next_q3 = 1;
+        } else {
+            return -1;
+        }
+
+        q1 = next_q1;
+        q2 = next_q2;
+        q3 = next_q3;
+    }
+    return q3;
+}
+
+int main() {
+    const char *test_cases[] = {"abb", "aabb", "bba", "ababb", "aba"};
+    printf("NFA Simulation (Contains 'abb' over {a, b}):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = nfa_contains_abb(test_cases[i]);
+        printf("String: %-5s -> %s\\n", test_cases[i], res == 1 ? "Accepted" : (res == 0 ? "Rejected" : "Invalid Input"));
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `NFA Simulation (Contains 'abb' over {a, b}):
+String: abb   -> Accepted
+String: aabb  -> Accepted
+String: bba   -> Rejected
+String: ababb -> Accepted
+String: aba   -> Rejected
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '12',
+        title: 'Regex Validation: Valid C language identifiers',
+        q: '9a. Regex Validation: Valid C language identifiers.',
+        th: 'The regular expression for a C identifier is [a-zA-Z_][a-zA-Z0-9_]*. The first character must be an alphabet or an underscore, followed by zero or more alphabets, digits, or underscores.',
+        al: ["Check if the string is empty; if so, reject.","Examine the first character. If it is not a letter or '_', reject.","Examine subsequent characters. If any character is not alphanumeric and not '_', reject.","If all characters pass, accept the string as a valid identifier."],
+        code: (nm, rl) => `#include <stdio.h>
+#include <ctype.h>
+
+int validate_identifier(const char *str) {
+    if (str[0] == '\\0') return 0;
+    if (!isalpha(str[0]) && str[0] != '_') {
+        return 0;
+    }
+    for (int i = 1; str[i] != '\\0'; i++) {
+        if (!isalnum(str[i]) && str[i] != '_') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int main() {
+    const char *test_cases[] = {"temp_val", "_count", "2count", "int", "value\$"};
+    printf("Lexical Validation of C Identifiers:\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = validate_identifier(test_cases[i]);
+        printf("Identifier: %-10s -> %s\\n", test_cases[i], res ? "Valid" : "Invalid");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Lexical Validation of C Identifiers:
+Identifier: temp_val   -> Valid
+Identifier: _count     -> Valid
+Identifier: 2count     -> Invalid
+Identifier: int        -> Valid
+Identifier: value\$     -> Invalid
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '13',
+        title: 'Regex Validation: Valid email addresses',
+        q: '9b. Regex Validation: Valid email addresses.',
+        th: 'A simplified email validation regular expression is: [a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}. It matches a local part, an \'@\' symbol, a domain part, a \'.\', and a Top-Level Domain (TLD) of at least 2 characters.',
+        al: ["Find the index of '@' in the string (must be exactly one '@' present).","Verify the local part contains only valid alphanumeric and special characters.","Find the last dot '.' after the '@' symbol.","Ensure the TLD after the dot consists of at least 2 alphabetic characters.","Ensure there are no invalid characters in the domain part."],
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int validate_email(const char *email) {
+    int len = strlen(email);
+    int at_index = -1;
+    int dot_index = -1;
+
+    for (int i = 0; i < len; i++) {
+        if (email[i] == '@') {
+            if (at_index != -1) return 0;
+            at_index = i;
+        }
+    }
+    if (at_index == -1 || at_index == 0 || at_index == len - 1) return 0;
+
+    for (int i = at_index + 1; i < len; i++) {
+        if (email[i] == '.') {
+            dot_index = i;
+        }
+    }
+    if (dot_index == -1 || dot_index == at_index + 1 || dot_index == len - 1) return 0;
+
+    for (int i = 0; i < at_index; i++) {
+        char c = email[i];
+        if (!isalnum(c) && c != '.' && c != '_' && c != '%' && c != '+' && c != '-') {
+            return 0;
+        }
+    }
+
+    for (int i = at_index + 1; i < len; i++) {
+        char c = email[i];
+        if (!isalnum(c) && c != '.' && c != '-') {
+            return 0;
+        }
+    }
+
+    int tld_len = len - 1 - dot_index;
+    if (tld_len < 2) return 0;
+    for (int i = dot_index + 1; i < len; i++) {
+        if (!isalpha(email[i])) return 0;
+    }
+
+    return 1;
+}
+
+int main() {
+    const char *test_cases[] = {
+        "user@domain.com",
+        "first.last@school.edu",
+        "invalid@domain",
+        "user@.com",
+        "@domain.com"
+    };
+    printf("Email Address Validation:\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = validate_email(test_cases[i]);
+        printf("Email: %-22s -> %s\\n", test_cases[i], res ? "Valid" : "Invalid");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Email Address Validation:
+Email: user@domain.com        -> Valid
+Email: first.last@school.edu  -> Valid
+Email: invalid@domain         -> Invalid
+Email: user@.com              -> Invalid
+Email: @domain.com            -> Invalid
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '14',
+        title: 'Regex Pattern Occurrences Count in a Text',
+        q: '10. Regex Pattern Occurrences Count in a Text.',
+        th: 'Pattern matching searches for all instances of a substring (or regular expression) within a body of text. We can perform search and count by scanning the text and attempting to match the pattern at each character offset.',
+        al: ["Input the source text and the search pattern.","Loop through the text from index 0 to text_length - pattern_length.","At each position, check if the substring matches the pattern.","If a match is found, increment the count and advance the pointer past the match.","Return the total count of matches."],
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+int count_pattern(const char *text, const char *pattern) {
+    int count = 0;
+    int text_len = strlen(text);
+    int pat_len = strlen(pattern);
+    
+    if (pat_len == 0) return 0;
+    
+    for (int i = 0; i <= text_len - pat_len; i++) {
+        int match = 1;
+        for (int j = 0; j < pat_len; j++) {
+            if (text[i + j] != pattern[j]) {
+                match = 0;
+                break;
+            }
+        }
+        if (match) {
+            count++;
+            i += pat_len - 1;
+        }
+    }
+    return count;
+}
+
+int main() {
+    const char *text = "the theory of computation is the study of computational models";
+    const char *pattern = "comp";
+    int count = count_pattern(text, pattern);
+    printf("Text: \\"%s\\"\\n", text);
+    printf("Pattern: \\"%s\\"\\n", pattern);
+    printf("Occurrences: %d\\n", count);
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Text: "the theory of computation is the study of computational models"
+Pattern: "comp"
+Occurrences: 2
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '15',
+        title: 'PDA Simulation: Equal number of a\'s and b\'s over alphabet {a, b}',
+        q: '11a. PDA Simulation: Equal number of a\'s and b\'s over alphabet {a, b}.',
+        th: 'A Pushdown Automaton (PDA) uses a stack to store symbols. To check for equal number of \'a\'s and \'b\'s, we push a symbol when it matches the stack\'s top symbol (or if stack only has bottom marker Z0) and pop when they are opposite. If stack is back to only Z0 at the end, the string is accepted.',
+        al: ["Initialize a stack and push the start marker 'Z'.","Read each character of the input string.","If char is 'a' and stack top is 'b', pop. Otherwise, push 'a'.","If char is 'b' and stack top is 'a', pop. Otherwise, push 'b'.","After processing, accept if stack contains only 'Z' (meaning equal counts)."],
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+typedef struct {
+    char items[MAX];
+    int top;
+} Stack;
+
+void init(Stack *s) {
+    s->top = -1;
+}
+
+void push(Stack *s, char val) {
+    if (s->top < MAX - 1) {
+        s->items[++(s->top)] = val;
+    }
+}
+
+char pop(Stack *s) {
+    if (s->top >= 0) {
+        return s->items[(s->top)--];
+    }
+    return '\\0';
+}
+
+char peek(Stack *s) {
+    if (s->top >= 0) {
+        return s->items[s->top];
+    }
+    return '\\0';
+}
+
+int pda_equal_as_bs(const char *str) {
+    Stack s;
+    init(&s);
+    push(&s, 'Z');
+    
+    for (int i = 0; str[i] != '\\0'; i++) {
+        char c = str[i];
+        char top = peek(&s);
+        
+        if (c == 'a') {
+            if (top == 'b') {
+                pop(&s);
+            } else {
+                push(&s, 'a');
+            }
+        } else if (c == 'b') {
+            if (top == 'a') {
+                pop(&s);
+            } else {
+                push(&s, 'b');
+            }
+        } else {
+            return -1;
+        }
+    }
+    
+    int accepted = (peek(&s) == 'Z' && s.top == 0);
+    return accepted;
+}
+
+int main() {
+    const char *test_cases[] = {"ab", "aabb", "abab", "aba", "a", ""};
+    printf("PDA Simulation (Equal a's & b's over {a, b}):\\n");
+    for (int i = 0; i < 6; i++) {
+        int res = pda_equal_as_bs(test_cases[i]);
+        printf("String: %-6s -> %s\\n", test_cases[i], res == 1 ? "Accepted" : (res == 0 ? "Rejected" : "Invalid Input"));
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `PDA Simulation (Equal a's & b's over {a, b}):
+String: ab     -> Accepted
+String: aabb   -> Accepted
+String: abab   -> Accepted
+String: aba    -> Rejected
+String: a      -> Rejected
+String:        -> Accepted
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '16',
+        title: 'PDA Simulation: L = {0^n 1^n | n >= 1}',
+        q: '11b. PDA Simulation: L = {0^n 1^n | n >= 1}.',
+        th: 'The language L={0^n 1^n | n>=1} requires matching a sequence of 0s followed by an equal number of 1s. The PDA pushes all incoming \'0\'s onto the stack. When \'1\'s start, it pops a \'0\' for each \'1\'. The stack must become empty exactly when the input string ends.',
+        al: ["Initialize an empty stack.","Scan through '0's and push them onto the stack.","Ensure there was at least one '0' pushed.","For each subsequent character, verify it is '1' and pop '0' from stack.","Accept if the string is fully processed and the stack is empty."],
+        code: (nm, rl) => `#include <stdio.h>
+
+#define MAX 100
+
+typedef struct {
+    char items[MAX];
+    int top;
+} Stack;
+
+void init(Stack *s) {
+    s->top = -1;
+}
+
+void push(Stack *s, char val) {
+    if (s->top < MAX - 1) {
+        s->items[++(s->top)] = val;
+    }
+}
+
+char pop(Stack *s) {
+    if (s->top >= 0) {
+        return s->items[(s->top)--];
+    }
+    return '\\0';
+}
+
+int pda_0n_1n(const char *str) {
+    Stack s;
+    init(&s);
+    
+    int i = 0;
+    while (str[i] == '0') {
+        push(&s, '0');
+        i++;
+    }
+    if (i == 0) return 0;
+    while (str[i] == '1') {
+        if (pop(&s) != '0') return 0;
+        i++;
+    }
+    return (str[i] == '\\0' && s.top == -1);
+}
+
+int main() {
+    const char *test_cases[] = {"01", "0011", "000111", "011", "001", "0"};
+    printf("PDA Simulation (L = {0^n 1^n | n >= 1}):\\n");
+    for (int i = 0; i < 6; i++) {
+        int res = pda_0n_1n(test_cases[i]);
+        printf("String: %-6s -> %s\\n", test_cases[i], res ? "Accepted" : "Rejected");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `PDA Simulation (L = {0^n 1^n | n >= 1}):
+String: 01     -> Accepted
+String: 0011   -> Accepted
+String: 000111 -> Accepted
+String: 011    -> Rejected
+String: 001    -> Rejected
+String: 0      -> Rejected
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '17',
+        title: 'PDA Simulation: Balanced parentheses',
+        q: '11c. PDA Simulation: Balanced parentheses.',
+        th: 'Balanced parentheses validation can be simulated by a PDA. An opening parenthesis \'(\' is pushed onto the stack. A closing parenthesis \')\' triggers a pop operation. If a \')\' is encountered when stack is empty, or if stack is not empty at string end, it is rejected.',
+        al: ["Initialize an empty stack.","Scan the input string character-by-character.","If character is '(', push it onto the stack.","If character is ')', pop from stack. If stack is empty during pop, reject.","At the end of string, accept if stack is empty; else reject."],
+        code: (nm, rl) => `#include <stdio.h>
+
+#define MAX 100
+
+typedef struct {
+    char items[MAX];
+    int top;
+} Stack;
+
+void init(Stack *s) {
+    s->top = -1;
+}
+
+void push(Stack *s, char val) {
+    if (s->top < MAX - 1) {
+        s->items[++(s->top)] = val;
+    }
+}
+
+char pop(Stack *s) {
+    if (s->top >= 0) {
+        return s->items[(s->top)--];
+    }
+    return '\\0';
+}
+
+int pda_balanced_parentheses(const char *str) {
+    Stack s;
+    init(&s);
+    for (int i = 0; str[i] != '\\0'; i++) {
+        char c = str[i];
+        if (c == '(') {
+            push(&s, '(');
+        } else if (c == ')') {
+            if (pop(&s) != '(') {
+                return 0;
+            }
+        }
+    }
+    return s.top == -1;
+}
+
+int main() {
+    const char *test_cases[] = {"((()))", "()()", "(()", "())", "(()())"};
+    printf("PDA Simulation (Balanced Parentheses):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = pda_balanced_parentheses(test_cases[i]);
+        printf("String: %-8s -> %s\\n", test_cases[i], res ? "Accepted" : "Rejected");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `PDA Simulation (Balanced Parentheses):
+String: ((()))   -> Accepted
+String: ()()     -> Accepted
+String: (()      -> Rejected
+String: ())      -> Rejected
+String: (()())   -> Accepted
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '18',
+        title: 'Turing Machine Simulation: L = {a^n b^n | n >= 1}',
+        q: '12a. Turing Machine Simulation: L = {a^n b^n | n >= 1}.',
+        th: 'A Turing Machine (TM) reads and writes to tape. For L={a^n b^n}, the TM starts at the leftmost \'a\', replaces it with \'X\', moves right to find the matching \'b\', replaces it with \'Y\', and moves back left to the next \'a\'. This repeats until all \'a\'s and \'b\'s are successfully matched.',
+        al: ["Copy input to tape array.","Scan right to find the first unmarked 'a', replace it with 'X'.","If no 'a' is found, check if any 'b' remains on the tape. If yes, reject; else accept.","After marking 'a', scan right past other characters to find the first unmarked 'b'.","If no matching 'b' is found, reject. Otherwise, mark it with 'Y'.","Move head back to the left of the tape and repeat the cycle."],
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+int tm_an_bn(const char *input) {
+    char tape[100];
+    strcpy(tape, input);
+    int len = strlen(tape);
+    if (len == 0) return 0;
+
+    while (1) {
+        int i = 0;
+        int seen_Y = 0;
+        while (tape[i] != '\\0' && tape[i] != 'a') {
+            if (tape[i] == 'b') return 0;
+            if (tape[i] == 'Y') seen_Y = 1;
+            i++;
+        }
+        if (tape[i] == '\\0') {
+            int j = 0;
+            while (tape[j] != '\\0') {
+                if (tape[j] == 'b') return 0;
+                j++;
+            }
+            break;
+        }
+        
+        if (seen_Y) {
+            return 0;
+        }
+        
+        tape[i] = 'X';
+        
+        int j = i;
+        while (tape[j] != '\\0' && tape[j] != 'b') {
+            j++;
+        }
+        if (tape[j] == '\\0') {
+            return 0;
+        }
+        tape[j] = 'Y';
+    }
+    return 1;
+}
+
+int main() {
+    const char *test_cases[] = {"ab", "aabb", "aaabbb", "aab", "abb"};
+    printf("Turing Machine (L = {a^n b^n | n >= 1}):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = tm_an_bn(test_cases[i]);
+        printf("String: %-7s -> %s\\n", test_cases[i], res ? "Accepted" : "Rejected");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Turing Machine (L = {a^n b^n | n >= 1}):
+String: ab      -> Accepted
+String: aabb    -> Accepted
+String: aaabbb  -> Accepted
+String: aab     -> Rejected
+String: abb     -> Rejected
+
+Name: ${nm}  Roll: ${rl}`
+      },
+      {
+        id: '19',
+        title: 'Turing Machine Simulation: Palindrome checker over {a, b}',
+        q: '12b. Turing Machine Simulation: Palindrome checker over {a, b}.',
+        th: 'A TM palindrome checker reads the first character of the tape, replaces it with \'X\' (blank), moves to the right end of the tape to verify the last character matches, replaces that with \'X\', and then returns to the new leftmost char. This repeats until all chars are matched.',
+        al: ["Copy input string to a tape representation.","Loop while left index is less than right index.","Check if tape[left] equals tape[right]. If not, reject.","Mark tape[left] and tape[right] with 'X' and adjust indexes.","If the loop completes with all matching, accept as a palindrome."],
+        code: (nm, rl) => `#include <stdio.h>
+#include <string.h>
+
+int tm_palindrome(const char *input) {
+    char tape[100];
+    strcpy(tape, input);
+    int len = strlen(tape);
+    if (len == 0) return 1;
+
+    int left = 0;
+    int right = len - 1;
+
+    while (left < right) {
+        char first = tape[left];
+        char last = tape[right];
+        
+        if (first != last) return 0;
+        
+        tape[left] = 'X';
+        tape[right] = 'X';
+        
+        left++;
+        right--;
+    }
+    return 1;
+}
+
+int main() {
+    const char *test_cases[] = {"aba", "abba", "a", "ab", "baab"};
+    printf("Turing Machine (Palindrome Checker over {a, b}):\\n");
+    for (int i = 0; i < 5; i++) {
+        int res = tm_palindrome(test_cases[i]);
+        printf("String: %-5s -> %s\\n", test_cases[i], res ? "Accepted" : "Rejected");
+    }
+    printf("\\nName: [NAME]  Roll: [ROLL]\\n");
+    return 0;
+}`,
+        out: (nm, rl) => `Turing Machine (Palindrome Checker over {a, b}):
+String: aba   -> Accepted
+String: abba  -> Accepted
+String: a     -> Accepted
+String: ab    -> Rejected
+String: baab  -> Accepted
+
+Name: ${nm}  Roll: ${rl}`
+      }
+    ];
+
+    // ==================== STATE / RENDER ====================
+    let renderCycle = 0;
+
+    function esc(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function getValue(id, fallback) {
+      const input = document.getElementById(id);
+      const value = input ? input.value.trim() : "";
+      return value || fallback;
+    }
+
+    function currentStudent() {
+      return {
+        name: getValue("nameIn", "______________________________"),
+        roll: getValue("rollIn", "______________")
+      };
+    }
+
+    function currentTheme() {
+      return document.getElementById("themeIn").checked ? "dark" : "light";
+    }
+
+    function studentFooterHtml(student) {
+      return `
+        <div class="student-footer">
+          <div>Name: <span>${esc(student.name)}</span></div>
+          <div>Roll / Sec: <span>${esc(student.roll)}</span></div>
+        </div>`;
+    }
+
+    function createPage(container, student, showFooter) {
+      const page = document.createElement("section");
+      page.className = "report-page";
+      const inner = document.createElement("div");
+      inner.className = "page-inner";
+      inner.innerHTML = `<div class="page-content"></div>${showFooter ? studentFooterHtml(student) : ""}`;
+      page.appendChild(inner);
+      container.appendChild(page);
+      return inner.querySelector(".page-content");
+    }
+
+    function paginate(container, student, item, blocks) {
+      const showFooter = item.showFooter !== false;
+      let content = createPage(container, student, showFooter);
+
+      blocks.forEach((block) => {
+        content.appendChild(block);
+        if (content.scrollHeight > content.clientHeight + 2) {
+          content.removeChild(block);
+          content = createPage(container, student, showFooter);
+          content.appendChild(block);
+        }
+      });
+    }
+
+    function makeBlock(html, extraClass) {
+      const block = document.createElement("div");
+      block.className = "content-block" + (extraClass ? " " + extraClass : "");
+      block.innerHTML = html;
+      return block;
+    }
+
+    function slug(text) {
+      const clean = String(text || "student").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+      return clean || "student";
+    }
+
+    function executableName(id) {
+      return `program${id}.exe`;
+    }
+
+    function theoryHtml(item) {
+      if (!item.th) return "";
+      return `
+        <div class="section-title">Theory:</div>
+        <div class="info-box">${esc(item.th)}</div>`;
+    }
+
+    function algorithmHtml(item) {
+      if (!item.al || !item.al.length) return "";
+      return `
+        <div class="section-title">Algorithm / Steps:</div>
+        <div class="algo-box"><ol>${item.al.map((step) => `<li>${esc(step)}</li>`).join("")}</ol></div>`;
+    }
+
+    function codeLineHtml(line, index) {
+      const codeLine = line === "" ? "&nbsp;" : esc(line);
+      return `${index === 0 ? '<div class="section-title">Source Code:</div>' : ''}<pre class="plain-code">${codeLine}</pre>`;
+    }
+
+    function terminalBlockHtml(item, outputText, theme, student) {
+      const title = `C:\\${slug(student.name)}\\toc\\${executableName(item.id)}`;
+      return `
+        <div class="section-title">Output:</div>
+        <div class="win-terminal ${theme}">
+          <div class="win-titlebar">
+            <div class="win-title-text">${esc(title)}</div>
+            <div class="win-btns">
+              <div class="win-btn"><svg viewBox="0 0 10 1" fill="currentColor"><rect width="10" height="1"></rect></svg></div>
+              <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="9" height="9"></rect></svg></div>
+              <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="1" y1="1" x2="9" y2="9"></line><line x1="9" y1="1" x2="1" y2="9"></line></svg></div>
+            </div>
+          </div>
+          <pre class="t-body">${esc(outputText)}${outputText.trim() ? "\n\n" : ""}<span class="t-process">Process exited after 0.0234 seconds with return value 0</span>
+<span class="t-press">Press any key to continue . . .</span></pre>
+        </div>`;
+    }
+
+    function buildItemBlocks(item, student, theme) {
+      const blocks = [];
+      blocks.push(makeBlock(`<p class="question">${esc(item.q)}</p>`));
+
+      const theory = theoryHtml(item);
+      if (theory) blocks.push(makeBlock(theory));
+
+      const algorithm = algorithmHtml(item);
+      if (algorithm) blocks.push(makeBlock(algorithm, "algorithm-block"));
+
+      if (item.code) {
+        let filledCode = item.code(student.name, student.roll);
+        filledCode = filledCode.replace(/\[NAME\]/g, student.name).replace(/\[ROLL\]/g, student.roll);
+        filledCode.split("\n").forEach((line, index) => {
+          blocks.push(makeBlock(codeLineHtml(line, index), index === 0 ? "source-code-first-block" : "code-line-block"));
+        });
+      }
+
+      if (item.out) {
+        const filledOutput = item.out(student.name, student.roll);
+        blocks.push(makeBlock(terminalBlockHtml(item, filledOutput, theme, student), "output-block"));
+      }
+
+      return blocks;
+    }
+
+    function buildIndexBlocks() {
+      const blocks = [makeBlock(`
+        <h2 class="index-title">Index</h2>
+        <table class="index-table">
+          <thead>
+            <tr><th>S.No.</th><th>Experiment / Question</th><th>Submitted Date</th><th>Signature</th></tr>
+          </thead>
+          <tbody>${P.map((item) => `
+            <tr>
+              <td>${esc(item.id)}</td>
+              <td>${esc(item.title)}</td>
+              <td class="submitted-date-cell">2083/04/__</td>
+              <td class="signature-cell"></td>
+            </tr>`).join("")}</tbody>
+        </table>`)];
+
+      return blocks;
+    }
+
+    function renderReport() {
+      renderCycle++;
+      const student = currentStudent();
+      const theme = currentTheme();
+      const container = document.getElementById("pages");
+      container.innerHTML = "";
+
+      paginate(container, student, { id: "Index", title: "Index Page", showFooter: false }, buildIndexBlocks());
+      P.forEach((item) => {
+        paginate(container, student, item, buildItemBlocks(item, student, theme));
+      });
+    }
+
+    ["nameIn", "rollIn", "themeIn"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", renderReport);
+      document.getElementById(id).addEventListener("change", renderReport);
+    });
+
+    renderReport();
+  </script>
+</body>
+</html>

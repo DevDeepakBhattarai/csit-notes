@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DBMS Lab Report Generator</title>
+  <meta name="description" content="Database Management System lab report with SQL scripts and XAMPP/phpMyAdmin-style outputs.">
+  <style>
+    :root {
+      --bg-deep: #080a0e;
+      --bg-surface: #10141b;
+      --bg-elevated: #151b24;
+      --bg-card: #19212c;
+      --border-subtle: rgba(255,255,255,0.06);
+      --border-medium: rgba(255,255,255,0.11);
+      --accent: #3b82f6;
+      --accent-cyan: #22d3ee;
+      --accent-orange: #f97316;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --text-primary: #eef2f7;
+      --text-secondary: #a7b0c2;
+      --text-muted: #697386;
+      --paper: #f8fafc;
+      --ink: #1e293b;
+      --pm-blue: #273c75;
+      --pm-border: #cfd7e2;
+      --pm-orange: #f59e0b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+        var(--bg-deep);
+      background-size: 32px 32px;
+      color: var(--text-primary);
+      font-family: "Segoe UI", Candara, Calibri, sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: rgba(59,130,246,0.35); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.35); border-radius: 99px; }
+
+    .accent-line {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-cyan), transparent);
+      opacity: 0.55;
+    }
+
+    .container {
+      width: min(1420px, calc(100vw - 36px));
+      margin: 0 auto;
+      padding: 30px 0 42px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-medium);
+      animation: enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .header h1 {
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1;
+      font-weight: 760;
+      letter-spacing: 0;
+      color: #fff;
+    }
+
+    .header h1 span {
+      color: var(--accent-cyan);
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--text-muted);
+      font: 700 11px/1.2 Consolas, "Cascadia Code", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 8px;
+    }
+
+    .header-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 12px rgba(34,197,94,0.6);
+    }
+
+    .header-count {
+      color: var(--text-secondary);
+      font: 700 1rem/1.2 Consolas, "Cascadia Code", monospace;
+      white-space: nowrap;
+    }
+
+    .inputs-section {
+      margin: 18px 0 20px;
+      animation: enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+    }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-muted);
+      font: 750 10px/1 Consolas, "Cascadia Code", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
+      color: var(--text-primary);
+      outline: none;
+      padding: 10px 12px;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    .tabs-wrap {
+      animation: enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+    }
+
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border-bottom: 1px solid var(--border-subtle);
+      min-height: 46px;
+    }
+
+    .tab-btn,
+    .tool-btn,
+    .link-btn {
+      appearance: none;
+      border: 0;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font: 700 13px/1 "Segoe UI", Candara, Calibri, sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 0 13px;
+      border-radius: 7px;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+      text-decoration: none;
+    }
+
+    .tab-btn {
+      border-radius: 0;
+      min-height: 46px;
+      position: relative;
+    }
+
+    .tab-btn::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: -1px;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active::after { transform: scaleX(1); }
+    .tab-btn:hover,
+    .tool-btn:hover,
+    .link-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .tool-btn,
+    .link-btn {
+      border: 1px solid var(--border-medium);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .tool-btn.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .tool-btn svg,
+    .link-btn svg {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+    }
+
+    .toolbar {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      padding: 5px 0 5px 10px;
+    }
+
+    .content-area {
+      max-height: 78vh;
+      overflow: auto;
+      padding-top: 16px;
+    }
+
+    .cards-list,
+    .outputs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 10px;
+    }
+
+    .lab-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .card-num {
+      width: 50px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(59,130,246,0.1);
+      color: var(--accent-cyan);
+      font: 800 16px/1 Consolas, "Cascadia Code", monospace;
+      border: 1px solid rgba(34,211,238,0.18);
+      flex: 0 0 auto;
+    }
+
+    .card-title h2 {
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .card-title p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+
+    .card-arrow {
+      margin-left: auto;
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: transform 0.25s;
+      flex: 0 0 auto;
+    }
+
+    .card-arrow.open { transform: rotate(180deg); }
+    .card-body { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+    .card-body.open { max-height: 9000px; }
+
+    .card-body-inner {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .code-wrap {
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: #0e1117;
+    }
+
+    .code-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #171c25;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 9px 12px;
+    }
+
+    .code-filename {
+      color: var(--text-muted);
+      font: 700 11px/1 Consolas, "Cascadia Code", monospace;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font: 700 11px/1 Consolas, "Cascadia Code", monospace;
+      padding: 4px 7px;
+      border-radius: 5px;
+    }
+
+    .copy-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .copy-btn svg { width: 13px; height: 13px; }
+
+    pre {
+      overflow: auto;
+      padding: 16px;
+      color: #d7dee9;
+      font: 12.5px/1.62 Consolas, "Cascadia Code", monospace;
+      tab-size: 2;
+      white-space: pre;
+    }
+
+    .sql-key { color: #7dd3fc; font-weight: 700; }
+    .sql-com { color: #78879a; }
+    .sql-str { color: #fbbf24; }
+    .sql-num { color: #a7f3d0; }
+
+    .output-row {
+      display: block;
+    }
+
+    .xampp-window {
+      border: 1px solid #b7c9d7;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+    }
+
+    .pm-body {
+      padding: 0;
+      background: #fff;
+    }
+
+    .query-strip {
+      background: #e6e6e6;
+      border: 0;
+      border-radius: 0;
+      padding: 18px 18px;
+      color: #1f2937;
+      font: 14px/1.5 "Segoe UI", Candara, Calibri, sans-serif;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .query-keyword {
+      color: #8a008a;
+      text-decoration: underline dotted;
+      font-weight: 700;
+    }
+
+    .notice {
+      border: 0;
+      border-radius: 0;
+      padding: 13px 14px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .notice.success {
+      background: #efffaf;
+      color: #111827;
+    }
+
+    .notice.error {
+      background: #ffd7d7;
+      color: #9b111e;
+    }
+
+    .notice.info {
+      background: #e7f0f8;
+      color: #1d4ed8;
+    }
+
+    .profiling-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #d4e0ea;
+      color: #111827;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.35;
+      flex-wrap: wrap;
+    }
+
+    .fake-checkbox {
+      width: 13px;
+      height: 13px;
+      border: 1px solid #9aa7b3;
+      background: #fff;
+      border-radius: 2px;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .pm-link {
+      color: #2b7db7;
+      text-decoration: none;
+    }
+
+    .extra-options {
+      display: inline-block;
+      margin: 8px 0 12px;
+      border: 1px solid #b8b8b8;
+      border-radius: 4px;
+      background: linear-gradient(#fff, #ddd);
+      color: #111;
+      padding: 4px 9px;
+      font: 13px/1.2 "Segoe UI", Candara, Calibri, sans-serif;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+    }
+
+    .pm-result-area {
+      padding: 0 0 18px;
+    }
+
+    .pm-table-wrap {
+      overflow: auto;
+      border: 0;
+      border-radius: 0;
+      margin-top: 0;
+    }
+
+    table.pm-table {
+      width: auto;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 14px;
+      min-width: 0;
+    }
+
+    .pm-table th {
+      background: linear-gradient(#f7f7f7, #dddddd);
+      color: #1f2933;
+      border: 0;
+      padding: 4px 8px;
+      text-align: left;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .pm-table td {
+      border: 0;
+      padding: 4px 8px;
+      color: #2f3a45;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    .pm-table tr:nth-child(even) td { background: #ddd; }
+    .null { color: #8b5cf6; font-style: italic; font-family: Consolas, "Cascadia Code", monospace; }
+    .empty-set { color: #64748b; font-style: italic; padding: 11px; font-size: 12px; }
+    .split-tables { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .table-caption { color: #475569; font-size: 12px; font-weight: 800; margin: 4px 0 6px; }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      text-align: center;
+      font: 700 10px/1.4 Consolas, "Cascadia Code", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 780px) {
+      .container { width: min(100vw - 24px, 1420px); padding-top: 22px; }
+      .header { align-items: flex-start; flex-direction: column; }
+      .inputs-grid { grid-template-columns: 1fr; }
+      .toolbar { width: 100%; margin-left: 0; justify-content: flex-start; padding-left: 0; }
+      .tab-bar { flex-wrap: wrap; }
+      .content-area { max-height: none; overflow: visible; }
+      .split-tables { grid-template-columns: 1fr; }
+      .pm-db { display: none; }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        color: #111827;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .no-print { display: none !important; }
+      .container { width: auto; padding: 0; }
+      .content-area { max-height: none; overflow: visible; }
+      .header,
+      .inputs-section,
+      .footer { color: #111827; }
+      .lab-card {
+        border-color: #d1d5db;
+        background: #fff;
+        color: #111827;
+        break-inside: avoid;
+      }
+      .card-header,
+      .card-body-inner,
+      .card-body { max-height: none !important; overflow: visible !important; }
+      .card-arrow,
+      .copy-btn { display: none !important; }
+      pre { white-space: pre-wrap; color: #111827; background: #fff; }
+      .output-row { break-inside: avoid; margin-bottom: 8px; }
+      .xampp-window { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="accent-line no-print"></div>
+
+  <main class="container">
+    <header class="header">
+      <div>
+        <h1>DBMS <span>Lab Report</span></h1>
+        <div class="header-meta"><span class="header-dot"></span> CSC260 Database Management System</div>
+      </div>
+      <div class="header-count">Labs Split · SQL + Output</div>
+    </header>
+
+    <section class="inputs-section no-print">
+      <div class="inputs-grid">
+        <label>
+          <span class="field-label">Name</span>
+          <input id="studentName" class="field-input" type="text" placeholder="Your full name" oninput="render()">
+        </label>
+        <label>
+          <span class="field-label">Roll / Section</span>
+          <input id="studentRoll" class="field-input" type="text" placeholder="e.g. 45 / A" oninput="render()">
+        </label>
+        <label>
+          <span class="field-label">College</span>
+          <input id="studentCollege" class="field-input" type="text" placeholder="College name" oninput="render()">
+        </label>
+      </div>
+    </section>
+
+    <section class="tabs-wrap">
+      <div class="tab-bar no-print">
+        <button id="tabReport" class="tab-btn active" type="button" onclick="switchTab('report')">Questions + SQL</button>
+        <button id="tabOutput" class="tab-btn" type="button" onclick="switchTab('output')">XAMPP Output</button>
+
+        <div class="toolbar">
+          <button class="tool-btn" type="button" onclick="expandAll()" title="Expand all lab sections">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
+            Expand
+          </button>
+          <button class="tool-btn" type="button" onclick="downloadHtml()" title="Download the current HTML report">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            HTML
+          </button>
+          <a class="link-btn" href="DBMS_Lab_Report_Package.zip" download title="Download the packaged report files">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>
+            Package
+          </a>
+          <button class="tool-btn primary" type="button" onclick="generateOutputPDF()" title="Print only the output panes as a PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+            Output PDF
+          </button>
+        </div>
+      </div>
+
+      <div id="contentArea" class="content-area"></div>
+    </section>
+
+    <footer class="footer no-print">Source decks: DBMS Lab 1.pptx and DBMS Lab 3.pptx · Output style: XAMPP / phpMyAdmin</footer>
+  </main>
+
+  <script>
+    const REPORT_ITEMS = [
+      {
+        id: "1.1",
+        labNo: "1",
+        title: "List Existing Databases",
+        question: "List all existing databases.",
+        filename: "dbms_lab_1_1_show_databases.sql",
+        sql: () => "SHOW DATABASES;"
+      },
+      {
+        id: "1.2",
+        labNo: "1",
+        title: "Create and Verify Database",
+        question: "Create a database named <your-name>dbms1 and verify that it is created.",
+        filename: "dbms_lab_1_2_create_database.sql",
+        sql: c => `CREATE DATABASE IF NOT EXISTS ${c.db1};
+SHOW DATABASES;`
+      },
+      {
+        id: "1.3",
+        labNo: "1",
+        title: "Select Current Database",
+        question: "Select the created database to perform further SQL queries.",
+        filename: "dbms_lab_1_3_use_database.sql",
+        sql: c => `USE ${c.db1};`
+      },
+      {
+        id: "1.4",
+        labNo: "1",
+        title: "Create Student and Teacher Tables",
+        question: "Create student(sid, name, gender, program) and teacher(id, name, address) tables.",
+        filename: "dbms_lab_1_4_create_tables.sql",
+        sql: () => `CREATE TABLE student (
+  sid INT,
+  name VARCHAR(200),
+  gender VARCHAR(200),
+  program VARCHAR(200)
+);
+
+CREATE TABLE teacher (
+  id INT,
+  name VARCHAR(200),
+  address VARCHAR(200)
+);`
+      },
+      {
+        id: "1.5",
+        labNo: "1",
+        title: "Verify and Describe Tables",
+        question: "List all tables in the selected database and check table properties.",
+        filename: "dbms_lab_1_5_verify_tables.sql",
+        sql: () => `SHOW TABLES;
+DESCRIBE student;
+DESCRIBE teacher;`
+      },
+      {
+        id: "1.6",
+        labNo: "1",
+        title: "Add New Columns",
+        question: "Add contactno to student and subject to teacher.",
+        filename: "dbms_lab_1_6_add_columns.sql",
+        sql: () => `ALTER TABLE student ADD COLUMN contactno VARCHAR(20) NULL;
+ALTER TABLE teacher ADD COLUMN subject VARCHAR(50) NULL;
+
+DESCRIBE student;
+DESCRIBE teacher;`
+      },
+      {
+        id: "1.7",
+        labNo: "1",
+        title: "Change Column Data Types",
+        question: "Change contactno of student to INT and address of teacher to INT.",
+        filename: "dbms_lab_1_7_change_datatypes.sql",
+        sql: () => `ALTER TABLE student CHANGE COLUMN contactno contactno INT NULL;
+ALTER TABLE teacher CHANGE COLUMN address address INT NULL;
+
+DESCRIBE student;
+DESCRIBE teacher;`
+      },
+      {
+        id: "1.8",
+        labNo: "1",
+        title: "Drop Columns",
+        question: "Drop gender from student and address from teacher.",
+        filename: "dbms_lab_1_8_drop_columns.sql",
+        sql: () => `ALTER TABLE student DROP COLUMN gender;
+ALTER TABLE teacher DROP COLUMN address;
+
+DESCRIBE student;
+DESCRIBE teacher;`
+      },
+      {
+        id: "1.9",
+        labNo: "1",
+        title: "Rename Columns",
+        question: "Rename name to studentname in student and id to tid in teacher.",
+        filename: "dbms_lab_1_9_rename_columns.sql",
+        sql: () => `ALTER TABLE student CHANGE COLUMN name studentname VARCHAR(100);
+ALTER TABLE teacher CHANGE COLUMN id tid INT;
+
+DESCRIBE student;
+DESCRIBE teacher;`
+      },
+      {
+        id: "1.10",
+        labNo: "1",
+        title: "Drop Tables and Database",
+        question: "Drop student table, teacher table, and the created database.",
+        filename: "dbms_lab_1_10_drop_objects.sql",
+        sql: c => `DROP TABLE student;
+DROP TABLE teacher;
+SHOW TABLES;
+
+DROP DATABASE ${c.db1};`
+      },
+      {
+        id: "2.1",
+        labNo: "2",
+        title: "Create and Select Database",
+        question: "Create a database lab<yourname> and use it as the current database.",
+        filename: "dbms_lab_2_1_create_use_database.sql",
+        sql: lab2CreateDatabaseSql
+      },
+      {
+        id: "2.2",
+        labNo: "2",
+        title: "Create Student Table",
+        question: "Create student(id, name, gender, program, contact_number, address).",
+        filename: "dbms_lab_2_2_create_student_table.sql",
+        sql: lab2CreateStudentTableSql
+      },
+      {
+        id: "2.3",
+        labNo: "2",
+        title: "Create Teacher Table",
+        question: "Create teacher(id, name, subject, contact_number, address, email).",
+        filename: "dbms_lab_2_3_create_teacher_table.sql",
+        sql: lab2CreateTeacherTableSql
+      },
+      {
+        id: "2.4",
+        labNo: "2",
+        title: "Describe Tables",
+        question: "See detail of student and teacher tables.",
+        filename: "dbms_lab_2_4_describe_tables.sql",
+        sql: lab2DescribeTablesSql
+      },
+      {
+        id: "2.5",
+        labNo: "2",
+        title: "Insert Sample Data",
+        question: "Insert sample data into student and teacher tables.",
+        filename: "dbms_lab_2_5_insert_sample_data.sql",
+        sql: lab2InsertSampleDataSql
+      },
+      {
+        id: "2.6",
+        labNo: "2",
+        title: "Check Inserted Data",
+        question: "Check inserted data in both tables.",
+        filename: "dbms_lab_2_6_select_inserted_data.sql",
+        sql: lab2SelectInsertedDataSql
+      },
+      {
+        id: "2.7",
+        labNo: "2",
+        title: "Add NOT NULL Constraints",
+        question: "Add NOT NULL constraints in student and teacher tables for necessary attributes.",
+        filename: "dbms_lab_2_7_not_null_constraints.sql",
+        sql: lab2NotNullSql
+      },
+      {
+        id: "2.8",
+        labNo: "2",
+        title: "Test NOT NULL Violation",
+        question: "Test violation of NOT NULL constraint by inserting NULL values.",
+        filename: "dbms_lab_2_8_not_null_violation.sql",
+        sql: lab2NotNullViolationSql
+      },
+      {
+        id: "2.9",
+        labNo: "2",
+        title: "Add UNIQUE Constraints",
+        question: "Delete duplicate data if required and add UNIQUE constraints.",
+        filename: "dbms_lab_2_9_unique_constraints.sql",
+        sql: lab2UniqueSql
+      },
+      {
+        id: "2.10",
+        labNo: "2",
+        title: "Test UNIQUE Violation",
+        question: "Test violation of UNIQUE constraint by inserting duplicate values.",
+        filename: "dbms_lab_2_10_unique_violation.sql",
+        sql: lab2UniqueViolationSql
+      },
+      {
+        id: "2.11",
+        labNo: "2",
+        title: "Set DEFAULT Values",
+        question: "Add DEFAULT values in student and teacher tables for necessary attributes.",
+        filename: "dbms_lab_2_11_default_values.sql",
+        sql: lab2DefaultSql
+      },
+      {
+        id: "2.12",
+        labNo: "2",
+        title: "Test DEFAULT Values",
+        question: "Test default values after inserting rows without those attributes.",
+        filename: "dbms_lab_2_12_default_test.sql",
+        sql: lab2DefaultTestSql
+      },
+      {
+        id: "2.13",
+        labNo: "2",
+        title: "Set PRIMARY KEYS",
+        question: "Add primary keys in student and teacher tables.",
+        filename: "dbms_lab_2_13_primary_keys.sql",
+        sql: lab2PrimaryKeySql
+      },
+      {
+        id: "2.14",
+        labNo: "2",
+        title: "Add ENUM and CHECK Constraints",
+        question: "Add ENUM and CHECK constraints in student and teacher tables.",
+        filename: "dbms_lab_2_14_enum_check_constraints.sql",
+        sql: lab2EnumCheckSql
+      },
+      {
+        id: "2.15",
+        labNo: "2",
+        title: "Test ENUM and CHECK Violation",
+        question: "Test ENUM and CHECK constraints by inserting invalid values.",
+        filename: "dbms_lab_2_15_check_violation.sql",
+        sql: lab2CheckViolationSql
+      },
+      {
+        id: "2.16",
+        labNo: "2",
+        title: "List All Constraints",
+        question: "List all constraints from information_schema.",
+        filename: "dbms_lab_2_16_list_constraints.sql",
+        sql: lab2ListConstraintsSql
+      },
+      {
+        id: "2.17",
+        labNo: "2",
+        title: "Delete All Constraints",
+        question: "Drop constraints from student and teacher tables.",
+        filename: "dbms_lab_2_17_drop_constraints.sql",
+        sql: lab2DropConstraintsSql
+      },
+      {
+        id: "2.18",
+        labNo: "2",
+        title: "Test Constraint Deletion",
+        question: "Test deletion of constraints by inserting duplicate values.",
+        filename: "dbms_lab_2_18_constraint_deletion_test.sql",
+        sql: lab2ConstraintDeletionTestSql
+      }
+    ];
+
+    let tab = "report";
+    let expanded = new Set(REPORT_ITEMS.map(item => item.id));
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function studentName() {
+      return document.getElementById("studentName").value.trim() || "[YOUR NAME]";
+    }
+
+    function studentRoll() {
+      return document.getElementById("studentRoll").value.trim() || "[YOUR ROLL]";
+    }
+
+    function studentCollege() {
+      return document.getElementById("studentCollege").value.trim() || "[YOUR COLLEGE]";
+    }
+
+    function cleanName() {
+      const raw = document.getElementById("studentName").value.trim().toLowerCase();
+      const cleaned = raw.replace(/[^a-z0-9]+/g, "");
+      return cleaned || "yourname";
+    }
+
+    function ctx() {
+      const base = cleanName();
+      return {
+        name: studentName(),
+        roll: studentRoll(),
+        college: studentCollege(),
+        base,
+        db1: base + "dbms1",
+        db2: "lab" + base
+      };
+    }
+
+    function lab2CreateDatabaseSql(c) {
+      return `CREATE DATABASE IF NOT EXISTS ${c.db2};
+USE ${c.db2};`;
+    }
+
+    function lab2CreateStudentTableSql() {
+      return `CREATE TABLE student (
+  id INT,
+  name VARCHAR(100),
+  gender VARCHAR(10),
+  program VARCHAR(50),
+  contact_number VARCHAR(15),
+  address VARCHAR(100)
+);`;
+    }
+
+    function lab2CreateTeacherTableSql() {
+      return `CREATE TABLE teacher (
+  id INT,
+  name VARCHAR(100),
+  subject VARCHAR(50),
+  contact_number VARCHAR(15),
+  address VARCHAR(100),
+  email VARCHAR(100)
+);`;
+    }
+
+    function lab2DescribeTablesSql() {
+      return `DESCRIBE student;
+DESCRIBE teacher;`;
+    }
+
+    function lab2InsertSampleDataSql() {
+      return `INSERT INTO student VALUES
+  (NULL, 'Sita', 'Female', 'BAM', '9800000001', NULL),
+  (2, NULL, 'Male', 'CSIT', '9800000001', 'Lalitpur'),
+  (2, 'Rita', 'Female', 'BIT', '9800000003', 'Kathmandu');
+
+INSERT INTO teacher VALUES
+  (NULL, 'Hari', 'DBMS', '9811111111', 'Patan', 'hari@example.com'),
+  (2, NULL, 'OS', '9811111111', 'Lalitpur', NULL),
+  (2, 'Gita', 'Network', '9811111113', 'Kathmandu', 'gita@example.com');`;
+    }
+
+    function lab2SelectInsertedDataSql() {
+      return `SELECT * FROM student;
+SELECT * FROM teacher;`;
+    }
+
+    function lab2NotNullSql() {
+      return `-- Clean existing NULL values before adding NOT NULL constraints.
+UPDATE student SET id = 1 WHERE name = 'Sita';
+UPDATE student SET name = 'Ram' WHERE id = 2 AND name IS NULL;
+UPDATE teacher SET id = 1 WHERE name = 'Hari';
+UPDATE teacher SET name = 'Shyam', email = 'shyam@example.com' WHERE id = 2 AND name IS NULL;
+
+ALTER TABLE student MODIFY id INT NOT NULL;
+ALTER TABLE student CHANGE COLUMN name name VARCHAR(100) NOT NULL;
+ALTER TABLE teacher MODIFY id INT NOT NULL;
+ALTER TABLE teacher CHANGE COLUMN name name VARCHAR(100) NOT NULL;`;
+    }
+
+    function lab2NotNullViolationSql() {
+      return `INSERT INTO student (id, name) VALUES (4, NULL);`;
+    }
+
+    function lab2UniqueSql() {
+      return `-- Remove rows causing duplicate id/contact values before UNIQUE and PRIMARY KEY constraints.
+DELETE FROM student WHERE name = 'Ram';
+DELETE FROM teacher WHERE name = 'Shyam';
+UPDATE student SET program = 'BCA' WHERE name = 'Sita';
+
+ALTER TABLE student ADD CONSTRAINT uq_student_contact UNIQUE (contact_number);
+ALTER TABLE teacher ADD CONSTRAINT uq_teacher_contact UNIQUE (contact_number);
+ALTER TABLE teacher ADD CONSTRAINT uq_teacher_email UNIQUE (email);`;
+    }
+
+    function lab2UniqueViolationSql() {
+      return `INSERT INTO student (id, name, contact_number) VALUES (4, 'Nita', '9800000001');`;
+    }
+
+    function lab2DefaultSql() {
+      return `ALTER TABLE student MODIFY program VARCHAR(50) DEFAULT 'CSIT';
+ALTER TABLE teacher MODIFY subject VARCHAR(50) DEFAULT 'DBMS';`;
+    }
+
+    function lab2DefaultTestSql() {
+      return `INSERT INTO student (id, name, gender, contact_number, address)
+VALUES (4, 'Nita', 'Female', '9800000004', 'Bhaktapur');
+
+INSERT INTO teacher (id, name, contact_number, address, email)
+VALUES (4, 'Bikash', '9811111114', 'Bhaktapur', 'bikash@example.com');
+
+SELECT * FROM student;
+SELECT * FROM teacher;`;
+    }
+
+    function lab2PrimaryKeySql() {
+      return `ALTER TABLE student ADD PRIMARY KEY (id);
+ALTER TABLE teacher ADD PRIMARY KEY (id);`;
+    }
+
+    function lab2EnumCheckSql() {
+      return `ALTER TABLE student MODIFY gender ENUM('Male', 'Female', 'Other');
+ALTER TABLE student ADD CONSTRAINT chk_program CHECK (program IN ('CSIT', 'BCA', 'BIT'));
+ALTER TABLE teacher MODIFY subject ENUM('DBMS', 'OS', 'Network');
+ALTER TABLE teacher ADD CONSTRAINT chk_teacher_subject CHECK (subject IN ('DBMS', 'OS', 'Network'));`;
+    }
+
+    function lab2CheckViolationSql() {
+      return `-- Run these invalid INSERT statements separately to test ENUM and CHECK constraints.
+INSERT INTO student (id, name, gender, program, contact_number)
+VALUES (5, 'Kiran', 'Female', 'BBA', '9800000005');
+
+INSERT INTO student (id, name, gender, program, contact_number)
+VALUES (6, 'Mina', 'Unknown', 'CSIT', '9800000006');`;
+    }
+
+    function lab2ListConstraintsSql(c) {
+      return `SELECT CONSTRAINT_NAME, TABLE_NAME, CONSTRAINT_TYPE
+FROM information_schema.TABLE_CONSTRAINTS
+WHERE TABLE_SCHEMA = '${c.db2}';`;
+    }
+
+    function lab2DropConstraintsSql() {
+      return `ALTER TABLE student DROP PRIMARY KEY;
+ALTER TABLE teacher DROP PRIMARY KEY;
+ALTER TABLE student DROP INDEX uq_student_contact;
+ALTER TABLE teacher DROP INDEX uq_teacher_contact;
+ALTER TABLE teacher DROP INDEX uq_teacher_email;
+ALTER TABLE student DROP CONSTRAINT chk_program;
+ALTER TABLE teacher DROP CONSTRAINT chk_teacher_subject;
+ALTER TABLE student MODIFY id INT NULL;
+ALTER TABLE student CHANGE COLUMN name name VARCHAR(100) NULL;
+ALTER TABLE teacher MODIFY id INT NULL;
+ALTER TABLE teacher CHANGE COLUMN name name VARCHAR(100) NULL;
+ALTER TABLE student MODIFY gender VARCHAR(10);
+ALTER TABLE teacher MODIFY subject VARCHAR(50);`;
+    }
+
+    function lab2ConstraintDeletionTestSql() {
+      return `INSERT INTO student (id, name, gender, program, contact_number)
+VALUES (1, 'Duplicate Test', 'Female', 'BBA', '9800000001');
+
+SELECT * FROM student;`;
+    }
+
+    function lab2Sql(c) {
+      return [
+        lab2CreateDatabaseSql(c),
+        lab2CreateStudentTableSql(c),
+        lab2CreateTeacherTableSql(c),
+        lab2DescribeTablesSql(c),
+        lab2InsertSampleDataSql(c),
+        lab2SelectInsertedDataSql(c),
+        lab2NotNullSql(c),
+        lab2NotNullViolationSql(c),
+        lab2UniqueSql(c),
+        lab2UniqueViolationSql(c),
+        lab2DefaultSql(c),
+        lab2DefaultTestSql(c),
+        lab2PrimaryKeySql(c),
+        lab2EnumCheckSql(c),
+        lab2CheckViolationSql(c),
+        lab2ListConstraintsSql(c),
+        lab2DropConstraintsSql(c),
+        lab2ConstraintDeletionTestSql(c)
+      ].join("\\n\\n");
+    }
+
+    function sqlForLab(id, c) {
+      const item = REPORT_ITEMS.find(entry => entry.id === id);
+      return item ? item.sql(c) : "";
+    }
+
+    function highlightSql(sql) {
+      let html = esc(sql);
+      html = html.replace(/(--.*)$/gm, '<span class="sql-com">$1</span>');
+      html = html.replace(/'([^']*)'/g, '<span class="sql-str">\'$1\'</span>');
+      html = html.replace(/\b(NULL|SHOW|DATABASES|CREATE|DATABASE|IF|NOT|EXISTS|USE|TABLE|INT|VARCHAR|DESCRIBE|ALTER|ADD|COLUMN|CHANGE|DROP|RENAME|TO|MODIFY|INSERT|INTO|VALUES|SELECT|FROM|WHERE|UPDATE|SET|DELETE|CONSTRAINT|UNIQUE|PRIMARY|KEY|ENUM|CHECK|DEFAULT|INDEX|INFORMATION_SCHEMA|AND)\b/gi, '<span class="sql-key">$1</span>');
+      html = html.replace(/\b(\d+)\b/g, '<span class="sql-num">$1</span>');
+      return html;
+    }
+
+    function switchTab(next) {
+      tab = next;
+      document.getElementById("tabReport").classList.toggle("active", tab === "report");
+      document.getElementById("tabOutput").classList.toggle("active", tab === "output");
+      render();
+    }
+
+    function toggleCard(id) {
+      const body = document.getElementById("body-" + id);
+      const arrow = document.getElementById("arrow-" + id);
+      if (expanded.has(id)) {
+        expanded.delete(id);
+        body.classList.remove("open");
+        arrow.classList.remove("open");
+      } else {
+        expanded.add(id);
+        body.classList.add("open");
+        arrow.classList.add("open");
+      }
+    }
+
+    function expandAll() {
+      expanded = new Set(REPORT_ITEMS.map(item => item.id));
+      render();
+    }
+
+    function copySql(id) {
+      const c = ctx();
+      navigator.clipboard.writeText(sqlForLab(id, c)).then(() => {
+        const btn = document.getElementById("copy-" + id);
+        if (!btn) return;
+        btn.innerHTML = checkIcon() + "Copied";
+        btn.style.color = "#22c55e";
+        setTimeout(() => {
+          btn.innerHTML = copyIcon() + "Copy SQL";
+          btn.style.color = "";
+        }, 1200);
+      });
+    }
+
+    function copyIcon() {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    }
+
+    function checkIcon() {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>';
+    }
+
+    function renderReport() {
+      const c = ctx();
+      return '<div class="cards-list">' + REPORT_ITEMS.map(item => {
+        const open = expanded.has(item.id);
+        return `
+          <article class="lab-card">
+            <div class="card-header" onclick="toggleCard('${item.id}')">
+              <div class="card-num">${item.id}</div>
+              <div class="card-title">
+                <h2>Lab ${item.id}: ${esc(item.title)}</h2>
+                <p>${esc(item.question)}</p>
+              </div>
+              <svg id="arrow-${item.id}" class="card-arrow${open ? " open" : ""}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+            <div id="body-${item.id}" class="card-body${open ? " open" : ""}">
+              <div class="card-body-inner">
+                <div class="code-wrap">
+                  <div class="code-bar">
+                    <span class="code-filename">${esc(item.filename)}</span>
+                    <button id="copy-${item.id}" class="copy-btn" type="button" onclick="event.stopPropagation(); copySql('${item.id}')">${copyIcon()}Copy SQL</button>
+                  </div>
+                  <pre><code>${highlightSql(sqlForLab(item.id, c))}</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>`;
+      }).join("") + "</div>";
+    }
+
+    function dbRows(c, includeDb1) {
+      const rows = [
+        ["information_schema"],
+        ["mysql"],
+        ["performance_schema"],
+        ["phpmyadmin"],
+        ["test"]
+      ];
+      if (includeDb1) rows.push([c.db1]);
+      return rows;
+    }
+
+    function describeStudentInitial() {
+      return [
+        ["sid", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["gender", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["program", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeTeacherInitial() {
+      return [
+        ["id", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["address", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeStudentAfterAdd() {
+      return [
+        ["sid", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["gender", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["program", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["contactno", "varchar(20)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeTeacherAfterAdd() {
+      return [
+        ["id", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["address", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["subject", "varchar(50)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeStudentAfterTypeChange() {
+      return [
+        ["sid", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["gender", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["program", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["contactno", "int", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeTeacherAfterTypeChange() {
+      return [
+        ["id", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["address", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["subject", "varchar(50)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeStudentAfterDrop() {
+      return [
+        ["sid", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["program", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["contactno", "int", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeTeacherAfterDrop() {
+      return [
+        ["id", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["subject", "varchar(50)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeStudentFinal() {
+      return [
+        ["sid", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["studentname", "varchar(100)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["program", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["contactno", "int", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeTeacherFinal() {
+      return [
+        ["tid", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(200)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["subject", "varchar(50)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeStudentLab2Base() {
+      return [
+        ["id", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(100)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["gender", "varchar(10)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["program", "varchar(50)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["contact_number", "varchar(15)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["address", "varchar(100)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function describeTeacherLab2Base() {
+      return [
+        ["id", "int", "YES", "", '<span class="null">NULL</span>', ""],
+        ["name", "varchar(100)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["subject", "varchar(50)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["contact_number", "varchar(15)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["address", "varchar(100)", "YES", "", '<span class="null">NULL</span>', ""],
+        ["email", "varchar(100)", "YES", "", '<span class="null">NULL</span>', ""]
+      ];
+    }
+
+    function table(headers, rows, options = {}) {
+      if (!rows.length) {
+        return `<div class="pm-table-wrap"><div class="empty-set">MySQL returned an empty result set.</div></div>`;
+      }
+      return `
+        <div class="pm-table-wrap">
+          <table class="pm-table"${options.minWidth ? ` style="min-width:${options.minWidth}px"` : ""}>
+            <thead><tr>${headers.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${rows.map(row => `<tr>${row.map(cell => `<td>${cell === null ? '<span class="null">NULL</span>' : cell}</td>`).join("")}</tr>`).join("")}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    function splitTables(leftTitle, leftHtml, rightTitle, rightHtml) {
+      return `
+        <div class="split-tables">
+          <div><div class="table-caption">${esc(leftTitle)}</div>${leftHtml}</div>
+          <div><div class="table-caption">${esc(rightTitle)}</div>${rightHtml}</div>
+        </div>`;
+    }
+
+    function queryHtml(query) {
+      return esc(query).replace(/\b(SHOW|CREATE|USE|DESCRIBE|ALTER|DROP|SELECT|INSERT|UPDATE|DELETE)\b/g, '<span class="query-keyword">$1</span>');
+    }
+
+    function outputCard(labNo, title, db, query, body, state = "success") {
+      const noticeClass = state === "error" ? "error" : state === "info" ? "info" : "success";
+      const noticeText = state === "error"
+        ? "Error: the SQL query was rejected, as expected for this constraint test."
+        : "Your SQL query has been executed successfully.";
+
+      return `
+        <div class="output-row">
+          <section class="xampp-window">
+            <div class="pm-body">
+              <div class="notice ${noticeClass}">${noticeText}</div>
+              <div class="query-strip">${queryHtml(query)}</div>
+              <div class="profiling-row"><span class="fake-checkbox"></span><span>Profiling</span><span>[ <span class="pm-link">Edit inline</span> ]</span><span>[ <span class="pm-link">Edit</span> ]</span><span>[ <span class="pm-link">Create PHP code</span> ]</span><span>[ <span class="pm-link">Refresh</span> ]</span></div>
+              <div class="pm-result-area">
+                <button class="extra-options" type="button">Extra options</button>
+                ${body}
+              </div>
+            </div>
+          </section>
+        </div>`;
+    }
+
+    function lab1Outputs(c) {
+      return [
+        outputCard("1", "Existing databases before creating lab database", "localhost", "SHOW DATABASES;", table(["Database"], dbRows(c, false), { minWidth: 340 })),
+        outputCard("1", "Database created and verified", c.db1, `CREATE DATABASE ${c.db1};\nSHOW DATABASES;`, table(["Database"], dbRows(c, true), { minWidth: 340 })),
+        outputCard("1", "Database selected", c.db1, `USE ${c.db1};`, table(["Database selected"], [[c.db1]], { minWidth: 320 })),
+        outputCard("1", "Student table created", c.db1, `CREATE TABLE student (
+  sid INT,
+  name VARCHAR(200),
+  gender VARCHAR(200),
+  program VARCHAR(200)
+);
+DESCRIBE student;`, table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeStudentInitial())),
+        outputCard("1", "Teacher table created", c.db1, `CREATE TABLE teacher (
+  id INT,
+  name VARCHAR(200),
+  address VARCHAR(200)
+);
+DESCRIBE teacher;`, table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeTeacherInitial())),
+        outputCard("1", "Created tables verified", c.db1, "SHOW TABLES;", table([`Tables_in_${c.db1}`], [["student"], ["teacher"]], { minWidth: 320 })),
+        outputCard("1", "Added columns verified", c.db1, "ALTER TABLE student ADD COLUMN contactno VARCHAR(20) NULL;\nALTER TABLE teacher ADD COLUMN subject VARCHAR(50) NULL;\nDESCRIBE student;\nDESCRIBE teacher;", splitTables(
+          "student",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeStudentAfterAdd()),
+          "teacher",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeTeacherAfterAdd())
+        )),
+        outputCard("1", "Changed data types verified", c.db1, "ALTER TABLE student CHANGE COLUMN contactno contactno INT NULL;\nALTER TABLE teacher CHANGE COLUMN address address INT NULL;\nDESCRIBE student;\nDESCRIBE teacher;", splitTables(
+          "student",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeStudentAfterTypeChange()),
+          "teacher",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeTeacherAfterTypeChange())
+        )),
+        outputCard("1", "Dropped columns verified", c.db1, "ALTER TABLE student DROP COLUMN gender;\nALTER TABLE teacher DROP COLUMN address;\nDESCRIBE student;\nDESCRIBE teacher;", splitTables(
+          "student",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeStudentAfterDrop()),
+          "teacher",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeTeacherAfterDrop())
+        )),
+        outputCard("1", "Renamed columns verified", c.db1, "ALTER TABLE student CHANGE COLUMN name studentname VARCHAR(200);\nALTER TABLE teacher CHANGE COLUMN id tid INT;\nDESCRIBE student;\nDESCRIBE teacher;", splitTables(
+          "student",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeStudentFinal()),
+          "teacher",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeTeacherFinal())
+        )),
+        outputCard("1", "Tables and database dropped", c.db1, `DROP TABLE student;\nDROP TABLE teacher;\nSHOW TABLES;\nDROP DATABASE ${c.db1};`, table([`Tables_in_${c.db1}`], [], { minWidth: 320 }))
+      ];
+    }
+
+    function studentRowsInitial() {
+      return [
+        [null, "Sita", "Female", "BAM", "9800000001", null],
+        ["2", null, "Male", "CSIT", "9800000001", "Lalitpur"],
+        ["2", "Rita", "Female", "BIT", "9800000003", "Kathmandu"]
+      ];
+    }
+
+    function teacherRowsInitial() {
+      return [
+        [null, "Hari", "DBMS", "9811111111", "Patan", "hari@example.com"],
+        ["2", null, "OS", "9811111111", "Lalitpur", null],
+        ["2", "Gita", "Network", "9811111113", "Kathmandu", "gita@example.com"]
+      ];
+    }
+
+    function studentRowsAfterDefault() {
+      return [
+        ["1", "Sita", "Female", "BCA", "9800000001", null],
+        ["2", "Rita", "Female", "BIT", "9800000003", "Kathmandu"],
+        ["4", "Nita", "Female", "CSIT", "9800000004", "Bhaktapur"]
+      ];
+    }
+
+    function teacherRowsAfterDefault() {
+      return [
+        ["1", "Hari", "DBMS", "9811111111", "Patan", "hari@example.com"],
+        ["2", "Gita", "Network", "9811111113", "Kathmandu", "gita@example.com"],
+        ["4", "Bikash", "DBMS", "9811111114", "Bhaktapur", "bikash@example.com"]
+      ];
+    }
+
+    function constraintsRows() {
+      return [
+        ["PRIMARY", "student", "PRIMARY KEY"],
+        ["uq_student_contact", "student", "UNIQUE"],
+        ["chk_program", "student", "CHECK"],
+        ["PRIMARY", "teacher", "PRIMARY KEY"],
+        ["uq_teacher_contact", "teacher", "UNIQUE"],
+        ["uq_teacher_email", "teacher", "UNIQUE"],
+        ["chk_teacher_subject", "teacher", "CHECK"]
+      ];
+    }
+
+    function studentRowsAfterDrop() {
+      return [
+        ["1", "Sita", "Female", "BCA", "9800000001", null],
+        ["2", "Rita", "Female", "BIT", "9800000003", "Kathmandu"],
+        ["4", "Nita", "Female", "CSIT", "9800000004", "Bhaktapur"],
+        ["1", "Duplicate Test", "Female", "BBA", "9800000001", null]
+      ];
+    }
+
+    function lab2Outputs(c) {
+      return [
+        outputCard("2", "Create and select database", c.db2, lab2CreateDatabaseSql(c), table(["Database selected"], [[c.db2]], { minWidth: 320 })),
+        outputCard("2", "Create student table", c.db2, lab2CreateStudentTableSql(c), table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeStudentLab2Base())),
+        outputCard("2", "Create teacher table", c.db2, lab2CreateTeacherTableSql(c), table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeTeacherLab2Base())),
+        outputCard("2", "Describe tables", c.db2, lab2DescribeTablesSql(c), splitTables(
+          "student",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeStudentLab2Base()),
+          "teacher",
+          table(["Field", "Type", "Null", "Key", "Default", "Extra"], describeTeacherLab2Base())
+        )),
+        outputCard("2", "Insert sample data", c.db2, lab2InsertSampleDataSql(c), table(["Table", "Rows inserted"], [["student", "3"], ["teacher", "3"]], { minWidth: 320 })),
+        outputCard("2", "Check inserted data", c.db2, lab2SelectInsertedDataSql(c), splitTables(
+          "student",
+          table(["id", "name", "gender", "program", "contact_number", "address"], studentRowsInitial()),
+          "teacher",
+          table(["id", "name", "subject", "contact_number", "address", "email"], teacherRowsInitial())
+        )),
+        outputCard("2", "Add NOT NULL constraints", c.db2, lab2NotNullSql(c), table(["Table", "Columns changed to NOT NULL"], [["student", "id, name"], ["teacher", "id, name"]], { minWidth: 420 })),
+        outputCard("2", "Test NOT NULL violation", c.db2, lab2NotNullViolationSql(c), '<div class="notice error" style="margin-bottom:0">#1048 - Column <strong>name</strong> cannot be null.</div>', "error"),
+        outputCard("2", "Add UNIQUE constraints", c.db2, lab2UniqueSql(c), table(["CONSTRAINT_NAME", "TABLE_NAME", "CONSTRAINT_TYPE"], [
+          ["uq_student_contact", "student", "UNIQUE"],
+          ["uq_teacher_contact", "teacher", "UNIQUE"],
+          ["uq_teacher_email", "teacher", "UNIQUE"]
+        ], { minWidth: 500 })),
+        outputCard("2", "Test UNIQUE violation", c.db2, lab2UniqueViolationSql(c), '<div class="notice error" style="margin-bottom:0">#1062 - Duplicate entry <strong>9800000001</strong> for key <strong>uq_student_contact</strong>.</div>', "error"),
+        outputCard("2", "Set DEFAULT values", c.db2, lab2DefaultSql(c), table(["Table", "Default value"], [["student.program", "CSIT"], ["teacher.subject", "DBMS"]], { minWidth: 360 })),
+        outputCard("2", "Test DEFAULT values", c.db2, lab2DefaultTestSql(c), splitTables(
+          "student",
+          table(["id", "name", "gender", "program", "contact_number", "address"], studentRowsAfterDefault()),
+          "teacher",
+          table(["id", "name", "subject", "contact_number", "address", "email"], teacherRowsAfterDefault())
+        )),
+        outputCard("2", "Set PRIMARY KEYS", c.db2, lab2PrimaryKeySql(c), table(["CONSTRAINT_NAME", "TABLE_NAME", "CONSTRAINT_TYPE"], [["PRIMARY", "student", "PRIMARY KEY"], ["PRIMARY", "teacher", "PRIMARY KEY"]], { minWidth: 500 })),
+        outputCard("2", "Add ENUM and CHECK constraints", c.db2, lab2EnumCheckSql(c), table(["CONSTRAINT_NAME", "TABLE_NAME", "CONSTRAINT_TYPE"], [
+          ["chk_program", "student", "CHECK"],
+          ["chk_teacher_subject", "teacher", "CHECK"]
+        ], { minWidth: 500 })),
+        outputCard("2", "Test ENUM and CHECK violation", c.db2, lab2CheckViolationSql(c), '<div class="notice error" style="margin-bottom:6px">#3819 - Check constraint <strong>chk_program</strong> is violated.</div><div class="notice error" style="margin-bottom:0">#1265 - Data truncated for column <strong>gender</strong> because the ENUM value is invalid.</div>', "error"),
+        outputCard("2", "List all constraints", c.db2, lab2ListConstraintsSql(c), table(["CONSTRAINT_NAME", "TABLE_NAME", "CONSTRAINT_TYPE"], constraintsRows(), { minWidth: 500 })),
+        outputCard("2", "Delete all constraints", c.db2, lab2DropConstraintsSql(c), table(["Dropped item", "Table"], [
+          ["PRIMARY", "student"],
+          ["PRIMARY", "teacher"],
+          ["uq_student_contact", "student"],
+          ["uq_teacher_contact", "teacher"],
+          ["uq_teacher_email", "teacher"],
+          ["chk_program", "student"],
+          ["chk_teacher_subject", "teacher"]
+        ], { minWidth: 500 })),
+        outputCard("2", "Test constraint deletion", c.db2, lab2ConstraintDeletionTestSql(c), table(["id", "name", "gender", "program", "contact_number", "address"], studentRowsAfterDrop()))
+      ];
+    }
+
+    function outputCards(c) {
+      return lab1Outputs(c).concat(lab2Outputs(c));
+    }
+
+    function renderOutput() {
+      return `<div class="outputs-list">${outputCards(ctx()).join("")}</div>`;
+    }
+
+    function render() {
+      document.getElementById("contentArea").innerHTML = tab === "report" ? renderReport() : renderOutput();
+    }
+
+    function downloadHtml() {
+      const nameEl = document.getElementById("studentName");
+      const rollEl = document.getElementById("studentRoll");
+      const collegeEl = document.getElementById("studentCollege");
+      nameEl.setAttribute("value", nameEl.value);
+      rollEl.setAttribute("value", rollEl.value);
+      collegeEl.setAttribute("value", collegeEl.value);
+
+      const blob = new Blob(["<!DOCTYPE html>\n" + document.documentElement.outerHTML], { type: "text/html;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "DBMS_Lab_Report.html";
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      document.body.removeChild(a);
+    }
+
+    function generateOutputPDF() {
+      const c = ctx();
+      const css = `
+        *{box-sizing:border-box}
+        body{margin:0;background:#fff;color:#1e293b;font-family:"Segoe UI",Candara,Calibri,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        @page{size:A4;margin:7mm}
+        .pdf-head{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid #cbd5e1;padding-bottom:5px;margin-bottom:8px}
+        .pdf-head h1{font-size:17px;line-height:1;margin:0;color:#111827}
+        .pdf-head p{font-size:10px;margin:4px 0 0;color:#64748b}
+        .outputs-list{display:flex;flex-direction:column;gap:7px}
+        .output-row{display:block;break-inside:avoid;page-break-inside:avoid}
+        .xampp-window{border:1px solid #b7c9d7;border-radius:3px;overflow:hidden;background:#fff;color:#1e293b;box-shadow:none}
+        .pm-body{padding:0;background:#fff}
+        .notice{border:0;border-radius:0;padding:7px 8px;font-size:8.5px;line-height:1.35}.notice.success{background:#efffaf;color:#111827}.notice.error{background:#ffd7d7;color:#9b111e}.notice.info{background:#e7f0f8;color:#1d4ed8}
+        .query-strip{background:#e6e6e6;border:0;border-radius:0;padding:9px 10px;color:#1f2937;font:8px/1.35 "Segoe UI",Candara,Calibri,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}.query-keyword{color:#8a008a;text-decoration:underline dotted;font-weight:700}
+        .profiling-row{display:flex;align-items:center;gap:4px;background:#d4e0ea;color:#111827;padding:5px 7px;font-size:8px;line-height:1.25;flex-wrap:wrap}.fake-checkbox{width:8px;height:8px;border:1px solid #9aa7b3;background:#fff;border-radius:1px;display:inline-block;flex:0 0 auto}.pm-link{color:#2b7db7;text-decoration:none}
+        .pm-result-area{padding:0 0 8px}.extra-options{display:inline-block;margin:5px 0 7px;border:1px solid #b8b8b8;border-radius:3px;background:linear-gradient(#fff,#ddd);color:#111;padding:2px 5px;font:8px/1.2 "Segoe UI",Candara,Calibri,sans-serif;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+        .pm-table-wrap{overflow:hidden;border:0;border-radius:0;margin-top:0}table.pm-table{width:auto;border-collapse:collapse;background:#fff;font-size:7.5px;min-width:auto!important}.pm-table th{background:linear-gradient(#f7f7f7,#ddd);color:#1f2933;border:0;padding:2px 5px;text-align:left;font-weight:650;white-space:nowrap}.pm-table td{border:0;padding:2px 5px;color:#2f3a45;vertical-align:top;white-space:nowrap}.pm-table tr:nth-child(even) td{background:#ddd}.null{color:#8b5cf6;font-style:italic;font-family:Consolas,monospace}.empty-set{color:#64748b;font-style:italic;padding:5px;font-size:8px}.split-tables{display:grid;grid-template-columns:1fr 1fr;gap:6px}.table-caption{color:#475569;font-size:8px;font-weight:800;margin:2px 0 3px}
+      `;
+
+      const iframe = document.createElement("iframe");
+      iframe.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+      document.body.appendChild(iframe);
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DBMS Output PDF</title><style>${css}</style></head><body><div class="pdf-head"><div><h1>DBMS Lab Output</h1><p>${esc(c.name)} · ${esc(c.roll)} · ${esc(c.college)}</p></div><p>Outputs are arranged in question order.</p></div><div class="outputs-list">${outputCards(c).join("")}</div></body></html>`);
+      doc.close();
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        setTimeout(() => document.body.removeChild(iframe), 1000);
+      }, 350);
+    }
+
+    render();
+  </script>
+</body>
+</html>
