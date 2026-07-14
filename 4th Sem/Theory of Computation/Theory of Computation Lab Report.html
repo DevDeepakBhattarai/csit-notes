@@ -1633,8 +1633,20 @@ Name: ${nm}  Roll: ${rl}`
       return `${index === 0 ? '<div class="section-title">Source Code:</div>' : ''}<pre class="plain-code">${codeLine}</pre>`;
     }
 
+    function getExecutionTime(seedStr) {
+      let hash = 0;
+      for (let i = 0; i < seedStr.length; i++) {
+        hash = seedStr.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const absHash = Math.abs(hash);
+      const ms = 5.0 + (absHash % 145); // ranges from 5.0 to 149.0 ms
+      const decimalPart = (absHash % 100) / 10000.0;
+      return ((ms / 1000.0) + decimalPart).toFixed(4);
+    }
+
     function terminalBlockHtml(item, outputText, theme, student) {
       const title = `C:\\${slug(student.name)}\\toc\\${executableName(item.id)}`;
+      const time = getExecutionTime(item.id || "toc");
       return `
         <div class="section-title">Output:</div>
         <div class="win-terminal ${theme}">
@@ -1646,7 +1658,7 @@ Name: ${nm}  Roll: ${rl}`
               <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="1" y1="1" x2="9" y2="9"></line><line x1="9" y1="1" x2="1" y2="9"></line></svg></div>
             </div>
           </div>
-          <pre class="t-body">${esc(outputText)}${outputText.trim() ? "\n\n" : ""}<span class="t-process">Process exited after 0.0234 seconds with return value 0</span>
+          <pre class="t-body">${esc(outputText)}${outputText.trim() ? "\n\n" : ""}<span class="t-process">Process exited after ${time} seconds with return value 0</span>
 <span class="t-press">Press any key to continue . . .</span></pre>
         </div>`;
     }
