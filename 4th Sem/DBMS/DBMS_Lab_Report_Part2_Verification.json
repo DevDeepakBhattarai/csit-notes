@@ -4,7 +4,7 @@
     "lab": 4,
     "group": "A",
     "question": "Project CategoryName from categories.",
-    "sql": "SELECT CategoryName FROM categories ORDER BY CategoryID;",
+    "sql": "SELECT CategoryName FROM categories;",
     "verification_sql": null,
     "columns": [
       "CategoryName"
@@ -34,7 +34,7 @@
     "lab": 4,
     "group": "A",
     "question": "Project Country from customers.",
-    "sql": "SELECT Country FROM customers ORDER BY CustomerID;",
+    "sql": "SELECT Country FROM customers;",
     "verification_sql": null,
     "columns": [
       "Country"
@@ -76,7 +76,7 @@
     "lab": 4,
     "group": "A",
     "question": "Project City, Country from customers.",
-    "sql": "SELECT City, Country FROM customers ORDER BY CustomerID;",
+    "sql": "SELECT City, Country FROM customers;",
     "verification_sql": null,
     "columns": [
       "City",
@@ -146,7 +146,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT CustomerID from customers who are from Germany.",
-    "sql": "SELECT CustomerID FROM customers WHERE Country = 'Germany' ORDER BY CustomerID;",
+    "sql": "SELECT CustomerID FROM customers WHERE Country = 'Germany';",
     "verification_sql": null,
     "columns": [
       "CustomerID"
@@ -167,7 +167,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT CustomerID, CustomerName from customers who are from Germany or Spain.",
-    "sql": "SELECT CustomerID, CustomerName FROM customers WHERE Country IN ('Germany', 'Spain') ORDER BY CustomerID;",
+    "sql": "SELECT CustomerID, CustomerName FROM customers WHERE Country IN ('Germany', 'Spain');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -195,7 +195,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all from customers who are from London and UK.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City = 'London' AND Country = 'UK';",
+    "sql": "SELECT * FROM customers WHERE City = 'London' AND Country = 'UK';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -225,7 +225,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all from customers who are from a city whose name starts with the first letter of your name.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City LIKE '{{FIRST_LETTER}}%' ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE City LIKE '{{FIRST_LETTER}}%';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -245,7 +245,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all from customers who are not from Canada and Belgium.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE Country NOT IN ('Canada', 'Belgium') ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE Country NOT IN ('Canada', 'Belgium');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -347,7 +347,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all from customers who are from G7 Countries (USA, UK, Canada, France, Germany, Italy, Japan).",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE Country IN ('USA', 'UK', 'Canada', 'France', 'Germany', 'Italy', 'Japan') ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE Country IN ('USA', 'UK', 'Canada', 'France', 'Germany', 'Italy', 'Japan');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -413,7 +413,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all from customers who have PostalCode containing 31.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE PostalCode LIKE '%31%' ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE PostalCode LIKE '%31%';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -433,7 +433,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all from customers having PostalCode containing 00 and from Rome or Paris.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE PostalCode LIKE '%00%' AND City IN ('Rome', 'Paris') ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE PostalCode LIKE '%00%' AND City IN ('Rome', 'Paris');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -472,7 +472,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all from customers who are not from Salzburg.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City <> 'Salzburg' ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE City <> 'Salzburg';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -565,7 +565,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all employees who are born in July.",
-    "sql": "SELECT EmployeeID, LastName, FirstName, BirthDate, Notes FROM employees WHERE MONTH(BirthDate) = 7 ORDER BY EmployeeID;",
+    "sql": "SELECT * FROM employees WHERE MONTH(BirthDate) = 7;",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -591,7 +591,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all employees having BA degree in Notes.",
-    "sql": "SELECT EmployeeID, LastName, FirstName, BirthDate, Notes FROM employees WHERE Notes LIKE '%BA%' ORDER BY EmployeeID;",
+    "sql": "SELECT * FROM employees WHERE Notes LIKE '%BA%';",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -631,7 +631,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all suppliers from USA and Japan.",
-    "sql": "SELECT SupplierID, SupplierName, ContactName, Address, City, PostalCode, Country FROM suppliers WHERE Country IN ('USA', 'Japan') ORDER BY SupplierID;",
+    "sql": "SELECT * FROM suppliers WHERE Country IN ('USA', 'Japan');",
     "verification_sql": null,
     "columns": [
       "SupplierID",
@@ -688,7 +688,7 @@
     "lab": 4,
     "group": "A",
     "question": "Find name and count of suppliers from different countries.",
-    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country ORDER BY Country;",
+    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country;",
     "verification_sql": null,
     "columns": [
       "Country",
@@ -720,7 +720,7 @@
     "lab": 4,
     "group": "A",
     "question": "Find name and count of customers from different cities.",
-    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City ORDER BY City;",
+    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City;",
     "verification_sql": null,
     "columns": [
       "City",
@@ -772,7 +772,7 @@
     "lab": 4,
     "group": "A",
     "question": "Find number of orders made by employee along with EmployeeID.",
-    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID ORDER BY EmployeeID;",
+    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID;",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -808,7 +808,7 @@
     "lab": 4,
     "group": "A",
     "question": "Find number of orders made by customers along with CustomerID.",
-    "sql": "SELECT CustomerID, COUNT(*) AS OrderCount FROM orders GROUP BY CustomerID ORDER BY CustomerID;",
+    "sql": "SELECT CustomerID, COUNT(*) AS OrderCount FROM orders GROUP BY CustomerID;",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -844,7 +844,7 @@
     "lab": 4,
     "group": "A",
     "question": "Find all orders that are shipped by shippers having 1 or 3 ShipperID.",
-    "sql": "SELECT OrderID, CustomerID, EmployeeID, OrderDate, ShipperID FROM orders WHERE ShipperID IN (1, 3) ORDER BY OrderID;",
+    "sql": "SELECT * FROM orders WHERE ShipperID IN (1, 3);",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -877,7 +877,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all product having CategoryID 1.",
-    "sql": "SELECT ProductID, ProductName, SupplierID, CategoryID, Unit, Price FROM products WHERE CategoryID = 1 ORDER BY ProductID;",
+    "sql": "SELECT * FROM products WHERE CategoryID = 1;",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -921,7 +921,7 @@
     "lab": 4,
     "group": "A",
     "question": "SELECT all products having ProductName that starts with the first letter of your name.",
-    "sql": "SELECT ProductID, ProductName, SupplierID, CategoryID, Unit, Price FROM products WHERE ProductName LIKE '{{FIRST_LETTER}}%' ORDER BY ProductID;",
+    "sql": "SELECT * FROM products WHERE ProductName LIKE '{{FIRST_LETTER}}%';",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -940,7 +940,7 @@
     "lab": 4,
     "group": "B",
     "question": "Project CategoryName from categories.",
-    "sql": "SELECT CategoryName FROM categories ORDER BY CategoryID;",
+    "sql": "SELECT CategoryName FROM categories;",
     "verification_sql": null,
     "columns": [
       "CategoryName"
@@ -970,7 +970,7 @@
     "lab": 4,
     "group": "B",
     "question": "Project Country from customers.",
-    "sql": "SELECT Country FROM customers ORDER BY CustomerID;",
+    "sql": "SELECT Country FROM customers;",
     "verification_sql": null,
     "columns": [
       "Country"
@@ -1012,7 +1012,7 @@
     "lab": 4,
     "group": "B",
     "question": "Project City, Country from customers.",
-    "sql": "SELECT City, Country FROM customers ORDER BY CustomerID;",
+    "sql": "SELECT City, Country FROM customers;",
     "verification_sql": null,
     "columns": [
       "City",
@@ -1082,7 +1082,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT CustomerID from customers who are from Spain.",
-    "sql": "SELECT CustomerID FROM customers WHERE Country = 'Spain' ORDER BY CustomerID;",
+    "sql": "SELECT CustomerID FROM customers WHERE Country = 'Spain';",
     "verification_sql": null,
     "columns": [
       "CustomerID"
@@ -1100,7 +1100,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT CustomerID, CustomerName from customers who are from Mexico or Italy.",
-    "sql": "SELECT CustomerID, CustomerName FROM customers WHERE Country IN ('Mexico', 'Italy') ORDER BY CustomerID;",
+    "sql": "SELECT CustomerID, CustomerName FROM customers WHERE Country IN ('Mexico', 'Italy');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1124,7 +1124,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all from customers who are from Frankfurt a.M. and Germany.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City = 'Frankfurt a.M.' AND Country = 'Germany';",
+    "sql": "SELECT * FROM customers WHERE City = 'Frankfurt a.M.' AND Country = 'Germany';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1144,7 +1144,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all from customers who are from a city whose name starts with the first letter of your name.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City LIKE '{{FIRST_LETTER}}%' ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE City LIKE '{{FIRST_LETTER}}%';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1164,7 +1164,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all from customers who are not from Venezuela or Argentina.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE Country NOT IN ('Venezuela', 'Argentina') ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE Country NOT IN ('Venezuela', 'Argentina');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1266,7 +1266,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all from customers who are from G7 Countries (USA, UK, Canada, France, Germany, Italy, Japan).",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE Country IN ('USA', 'UK', 'Canada', 'France', 'Germany', 'Italy', 'Japan') ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE Country IN ('USA', 'UK', 'Canada', 'France', 'Germany', 'Italy', 'Japan');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1332,7 +1332,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all from customers who have PostalCode containing 50.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE PostalCode LIKE '%50%' ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE PostalCode LIKE '%50%';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1380,7 +1380,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all from customers having PostalCode containing 31 and from Mexico City or Toulouse.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE PostalCode LIKE '%31%' AND City IN ('Mexico City', 'Toulouse') ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE PostalCode LIKE '%31%' AND City IN ('Mexico City', 'Toulouse');",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1400,7 +1400,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all from customers who are not from Elgin.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City <> 'Elgin' ORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE City <> 'Elgin';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1502,7 +1502,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all employees who are born in July.",
-    "sql": "SELECT EmployeeID, LastName, FirstName, BirthDate, Notes FROM employees WHERE MONTH(BirthDate) = 7 ORDER BY EmployeeID;",
+    "sql": "SELECT * FROM employees WHERE MONTH(BirthDate) = 7;",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -1528,7 +1528,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all employees having BA degree in Notes.",
-    "sql": "SELECT EmployeeID, LastName, FirstName, BirthDate, Notes FROM employees WHERE Notes LIKE '%BA%' ORDER BY EmployeeID;",
+    "sql": "SELECT * FROM employees WHERE Notes LIKE '%BA%';",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -1568,7 +1568,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all suppliers from Australia and Sweden.",
-    "sql": "SELECT SupplierID, SupplierName, ContactName, Address, City, PostalCode, Country FROM suppliers WHERE Country IN ('Australia', 'Sweden') ORDER BY SupplierID;",
+    "sql": "SELECT * FROM suppliers WHERE Country IN ('Australia', 'Sweden');",
     "verification_sql": null,
     "columns": [
       "SupplierID",
@@ -1598,7 +1598,7 @@
     "lab": 4,
     "group": "B",
     "question": "Find name and count of suppliers from different countries.",
-    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country ORDER BY Country;",
+    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country;",
     "verification_sql": null,
     "columns": [
       "Country",
@@ -1630,7 +1630,7 @@
     "lab": 4,
     "group": "B",
     "question": "Find name and count of customers from different cities.",
-    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City ORDER BY City;",
+    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City;",
     "verification_sql": null,
     "columns": [
       "City",
@@ -1682,7 +1682,7 @@
     "lab": 4,
     "group": "B",
     "question": "Find number of orders made by employee along with EmployeeID.",
-    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID ORDER BY EmployeeID;",
+    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID;",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -1718,7 +1718,7 @@
     "lab": 4,
     "group": "B",
     "question": "Find number of orders made by customers along with CustomerID.",
-    "sql": "SELECT CustomerID, COUNT(*) AS OrderCount FROM orders GROUP BY CustomerID ORDER BY CustomerID;",
+    "sql": "SELECT CustomerID, COUNT(*) AS OrderCount FROM orders GROUP BY CustomerID;",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -1754,7 +1754,7 @@
     "lab": 4,
     "group": "B",
     "question": "Find all orders that are shipped by shippers having 2 or 4 ShipperID.",
-    "sql": "SELECT OrderID, CustomerID, EmployeeID, OrderDate, ShipperID FROM orders WHERE ShipperID IN (2, 4) ORDER BY OrderID;",
+    "sql": "SELECT * FROM orders WHERE ShipperID IN (2, 4);",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -1787,7 +1787,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all product having CategoryID 5.",
-    "sql": "SELECT ProductID, ProductName, SupplierID, CategoryID, Unit, Price FROM products WHERE CategoryID = 5 ORDER BY ProductID;",
+    "sql": "SELECT * FROM products WHERE CategoryID = 5;",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -1806,7 +1806,7 @@
     "lab": 4,
     "group": "B",
     "question": "SELECT all products having ProductName that starts with the first letter of your name.",
-    "sql": "SELECT ProductID, ProductName, SupplierID, CategoryID, Unit, Price FROM products WHERE ProductName LIKE '{{FIRST_LETTER}}%' ORDER BY ProductID;",
+    "sql": "SELECT * FROM products WHERE ProductName LIKE '{{FIRST_LETTER}}%';",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -1826,7 +1826,7 @@
     "group": "A",
     "question": "Add two product categories of your choice.",
     "sql": "INSERT INTO categories (CategoryName, Description) VALUES ('Meat/Poultry', 'Prepared meats and poultry'), ('Produce', 'Fresh fruits and vegetables');",
-    "verification_sql": "SELECT CategoryID, CategoryName, Description FROM categories WHERE CategoryName IN ('Meat/Poultry', 'Produce') ORDER BY CategoryID;",
+    "verification_sql": "SELECT CategoryID, CategoryName, Description FROM categories WHERE CategoryName IN ('Meat/Poultry', 'Produce');",
     "columns": [
       "CategoryID",
       "CategoryName",
@@ -1853,7 +1853,7 @@
     "group": "A",
     "question": "Add 3 new suppliers in suppliers table.",
     "sql": "INSERT INTO suppliers (SupplierName, ContactName, Address, City, PostalCode, Country) VALUES ('Himalayan Traders', 'Aarav Sharma', 'Thamel Road', 'Kathmandu', '44600', 'Nepal'), ('Ganga Foods', 'Priya Singh', 'MG Road', 'Delhi', '110001', 'India'), ('Bengal Supplies', 'Rahim Khan', 'Gulshan Avenue', 'Dhaka', '1212', 'Bangladesh');",
-    "verification_sql": "SELECT SupplierID, SupplierName, ContactName, Address, City, PostalCode, Country FROM suppliers WHERE SupplierName IN ('Himalayan Traders', 'Ganga Foods', 'Bengal Supplies') ORDER BY SupplierID;",
+    "verification_sql": "SELECT * FROM suppliers WHERE SupplierName IN ('Himalayan Traders', 'Ganga Foods', 'Bengal Supplies');",
     "columns": [
       "SupplierID",
       "SupplierName",
@@ -1901,7 +1901,7 @@
     "group": "A",
     "question": "Add 5 new customers in customers table.",
     "sql": "INSERT INTO customers (CustomerName, ContactName, Address, City, PostalCode, Country) VALUES ('Everest Mart', 'Suman Rai', 'Lazimpat', 'Kathmandu', '44600', 'Nepal'), ('Lotus Store', 'Anita Shah', 'Connaught Place', 'Delhi', '110001', 'India'), ('Padma Foods', 'Farhan Ali', 'Dhanmondi', 'Dhaka', '1209', 'Bangladesh'), ('Dragon Market', 'Tashi Dorji', 'Norzin Lam', 'Thimphu', '11001', 'Bhutan'), ('Island Grocers', 'Amina Latheef', 'Majeedhee Magu', 'Malé', '20026', 'Maldives');",
-    "verification_sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE CustomerName IN ('Everest Mart', 'Lotus Store', 'Padma Foods', 'Dragon Market', 'Island Grocers') ORDER BY CustomerID;",
+    "verification_sql": "SELECT * FROM customers WHERE CustomerName IN ('Everest Mart', 'Lotus Store', 'Padma Foods', 'Dragon Market', 'Island Grocers');",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -1967,7 +1967,7 @@
     "group": "A",
     "question": "Add 4 products in product table.",
     "sql": "INSERT INTO products (ProductName, SupplierID, CategoryID, Unit, Price) VALUES ('Nepal Tea', 1, 1, '20 tea bags', 12.50), ('Tokyo Noodles', 2, 5, '10 packets', 8.75), ('Cajun Spice Mix', 3, 3, '6 jars', 16.00), ('Nordic Cheese', 5, 4, '12 packs', 24.50);",
-    "verification_sql": "SELECT ProductID, ProductName, SupplierID, CategoryID, Unit, Price FROM products WHERE ProductName IN ('Nepal Tea', 'Tokyo Noodles', 'Cajun Spice Mix', 'Nordic Cheese') ORDER BY ProductID;",
+    "verification_sql": "SELECT * FROM products WHERE ProductName IN ('Nepal Tea', 'Tokyo Noodles', 'Cajun Spice Mix', 'Nordic Cheese');",
     "columns": [
       "ProductID",
       "ProductName",
@@ -2019,7 +2019,7 @@
     "group": "A",
     "question": "Add 3 new employees.",
     "sql": "INSERT INTO employees (LastName, FirstName, BirthDate, Notes) VALUES ('Shrestha', 'Anil', '1995-01-15', 'BSc in Computer Science.'), ('Karki', 'Mina', '1994-05-21', 'MBA in Operations.'), ('Gurung', 'Rita', '1996-11-10', 'BA in Management.');",
-    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate, Notes FROM employees WHERE LastName IN ('Shrestha', 'Karki', 'Gurung') ORDER BY EmployeeID;",
+    "verification_sql": "SELECT * FROM employees WHERE LastName IN ('Shrestha', 'Karki', 'Gurung');",
     "columns": [
       "EmployeeID",
       "LastName",
@@ -2059,7 +2059,7 @@
     "group": "A",
     "question": "Update all customers from Brazil to Singapore.",
     "sql": "UPDATE customers SET Country = 'Singapore' WHERE Country = 'Brazil';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Singapore' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Singapore';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2076,7 +2076,7 @@
     "group": "A",
     "question": "Update customers table changing name of Madrid City to Bangalore.",
     "sql": "UPDATE customers SET City = 'Bangalore' WHERE City = 'Madrid';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Bangalore' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Bangalore';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2100,7 +2100,7 @@
     "group": "A",
     "question": "Update all German customer to Bhutanese customers.",
     "sql": "UPDATE customers SET Country = 'Bhutan' WHERE Country = 'Germany';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Bhutan' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Bhutan';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2130,7 +2130,7 @@
     "group": "A",
     "question": "Convert all Spanish customer to Thai Customers.",
     "sql": "UPDATE customers SET Country = 'Thailand' WHERE Country = 'Spain';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Thailand' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Thailand';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2154,7 +2154,7 @@
     "group": "A",
     "question": "Convert all customers of London to Kathmandu customers and also change the country.",
     "sql": "UPDATE customers SET City = 'Kathmandu', Country = 'Nepal' WHERE City = 'London';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Kathmandu' AND Country = 'Nepal' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Kathmandu' AND Country = 'Nepal';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2178,7 +2178,7 @@
     "group": "A",
     "question": "Convert customers from G7 Countries to SAARC Countries.",
     "sql": "UPDATE customers\nSET Country = CASE Country\n  WHEN 'USA' THEN 'Pakistan'\n  WHEN 'UK' THEN 'India'\n  WHEN 'Canada' THEN 'Sri Lanka'\n  WHEN 'France' THEN 'Bangladesh'\n  WHEN 'Germany' THEN 'Nepal'\n  WHEN 'Italy' THEN 'Bhutan'\n  WHEN 'Japan' THEN 'Maldives'\nEND\nWHERE Country IN ('USA', 'UK', 'Canada', 'France', 'Germany', 'Italy', 'Japan');",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country IN ('Afghanistan', 'Bangladesh', 'Bhutan', 'India', 'Maldives', 'Nepal', 'Pakistan', 'Sri Lanka') ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country IN ('Afghanistan', 'Bangladesh', 'Bhutan', 'India', 'Maldives', 'Nepal', 'Pakistan', 'Sri Lanka');",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2264,7 +2264,7 @@
     "group": "A",
     "question": "DELETE all from customers having PostalCode containing 00 and from Rome or Paris.",
     "sql": "DELETE FROM customers WHERE PostalCode LIKE '%00%' AND City IN ('Rome', 'Paris');",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, PostalCode, Country FROM customers ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, PostalCode, Country FROM customers;",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2332,7 +2332,7 @@
     "group": "A",
     "question": "DELETE all from customers who are not from Salzburg.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN orders AS o ON o.OrderID = od.OrderID\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nWHERE c.City <> 'Salzburg';\n\nDELETE o\nFROM orders AS o\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nWHERE c.City <> 'Salzburg';\n\nDELETE FROM customers WHERE City <> 'Salzburg';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers;",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2356,7 +2356,7 @@
     "group": "A",
     "question": "DELETE all employees who are born in July.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN orders AS o ON o.OrderID = od.OrderID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 7;\n\nDELETE o\nFROM orders AS o\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 7;\n\nDELETE FROM employees WHERE MONTH(BirthDate) = 7;",
-    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees ORDER BY EmployeeID;",
+    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees;",
     "columns": [
       "EmployeeID",
       "LastName",
@@ -2404,7 +2404,7 @@
     "group": "A",
     "question": "DELETE all employees who are born in August.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN orders AS o ON o.OrderID = od.OrderID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 8;\n\nDELETE o\nFROM orders AS o\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 8;\n\nDELETE FROM employees WHERE MONTH(BirthDate) = 8;",
-    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees ORDER BY EmployeeID;",
+    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees;",
     "columns": [
       "EmployeeID",
       "LastName",
@@ -2452,7 +2452,7 @@
     "group": "A",
     "question": "DELETE all product from seafood and beverages categories.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN products AS p ON p.ProductID = od.ProductID\nJOIN categories AS c ON c.CategoryID = p.CategoryID\nWHERE c.CategoryName IN ('Seafood', 'Beverages');\n\nDELETE p\nFROM products AS p\nJOIN categories AS c ON c.CategoryID = p.CategoryID\nWHERE c.CategoryName IN ('Seafood', 'Beverages');",
-    "verification_sql": "SELECT ProductID, ProductName, CategoryID, Price FROM products ORDER BY ProductID;",
+    "verification_sql": "SELECT ProductID, ProductName, CategoryID, Price FROM products;",
     "columns": [
       "ProductID",
       "ProductName",
@@ -2475,7 +2475,7 @@
     "lab": 5,
     "group": "A",
     "question": "Find name and count of suppliers from different countries.",
-    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country ORDER BY Country;",
+    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country;",
     "verification_sql": null,
     "columns": [
       "Country",
@@ -2507,7 +2507,7 @@
     "lab": 5,
     "group": "A",
     "question": "Find name and count of customers from different cities.",
-    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City ORDER BY City;",
+    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City;",
     "verification_sql": null,
     "columns": [
       "City",
@@ -2559,7 +2559,7 @@
     "lab": 5,
     "group": "A",
     "question": "Find number of orders made by employee along with EmployeeID.",
-    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID ORDER BY EmployeeID;",
+    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID;",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -2596,7 +2596,7 @@
     "group": "B",
     "question": "Add two product categories of your choice.",
     "sql": "INSERT INTO categories (CategoryName, Description) VALUES ('Meat/Poultry', 'Prepared meats and poultry'), ('Produce', 'Fresh fruits and vegetables');",
-    "verification_sql": "SELECT CategoryID, CategoryName, Description FROM categories WHERE CategoryName IN ('Meat/Poultry', 'Produce') ORDER BY CategoryID;",
+    "verification_sql": "SELECT CategoryID, CategoryName, Description FROM categories WHERE CategoryName IN ('Meat/Poultry', 'Produce');",
     "columns": [
       "CategoryID",
       "CategoryName",
@@ -2623,7 +2623,7 @@
     "group": "B",
     "question": "Add 3 new suppliers in suppliers table.",
     "sql": "INSERT INTO suppliers (SupplierName, ContactName, Address, City, PostalCode, Country) VALUES ('Himalayan Traders', 'Aarav Sharma', 'Thamel Road', 'Kathmandu', '44600', 'Nepal'), ('Ganga Foods', 'Priya Singh', 'MG Road', 'Delhi', '110001', 'India'), ('Bengal Supplies', 'Rahim Khan', 'Gulshan Avenue', 'Dhaka', '1212', 'Bangladesh');",
-    "verification_sql": "SELECT SupplierID, SupplierName, ContactName, Address, City, PostalCode, Country FROM suppliers WHERE SupplierName IN ('Himalayan Traders', 'Ganga Foods', 'Bengal Supplies') ORDER BY SupplierID;",
+    "verification_sql": "SELECT * FROM suppliers WHERE SupplierName IN ('Himalayan Traders', 'Ganga Foods', 'Bengal Supplies');",
     "columns": [
       "SupplierID",
       "SupplierName",
@@ -2671,7 +2671,7 @@
     "group": "B",
     "question": "Add 5 new customers in customers table.",
     "sql": "INSERT INTO customers (CustomerName, ContactName, Address, City, PostalCode, Country) VALUES ('Everest Mart', 'Suman Rai', 'Lazimpat', 'Kathmandu', '44600', 'Nepal'), ('Lotus Store', 'Anita Shah', 'Connaught Place', 'Delhi', '110001', 'India'), ('Padma Foods', 'Farhan Ali', 'Dhanmondi', 'Dhaka', '1209', 'Bangladesh'), ('Dragon Market', 'Tashi Dorji', 'Norzin Lam', 'Thimphu', '11001', 'Bhutan'), ('Island Grocers', 'Amina Latheef', 'Majeedhee Magu', 'Malé', '20026', 'Maldives');",
-    "verification_sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE CustomerName IN ('Everest Mart', 'Lotus Store', 'Padma Foods', 'Dragon Market', 'Island Grocers') ORDER BY CustomerID;",
+    "verification_sql": "SELECT * FROM customers WHERE CustomerName IN ('Everest Mart', 'Lotus Store', 'Padma Foods', 'Dragon Market', 'Island Grocers');",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2737,7 +2737,7 @@
     "group": "B",
     "question": "Add 4 products in product table.",
     "sql": "INSERT INTO products (ProductName, SupplierID, CategoryID, Unit, Price) VALUES ('Nepal Tea', 1, 1, '20 tea bags', 12.50), ('Tokyo Noodles', 2, 5, '10 packets', 8.75), ('Cajun Spice Mix', 3, 3, '6 jars', 16.00), ('Nordic Cheese', 5, 4, '12 packs', 24.50);",
-    "verification_sql": "SELECT ProductID, ProductName, SupplierID, CategoryID, Unit, Price FROM products WHERE ProductName IN ('Nepal Tea', 'Tokyo Noodles', 'Cajun Spice Mix', 'Nordic Cheese') ORDER BY ProductID;",
+    "verification_sql": "SELECT * FROM products WHERE ProductName IN ('Nepal Tea', 'Tokyo Noodles', 'Cajun Spice Mix', 'Nordic Cheese');",
     "columns": [
       "ProductID",
       "ProductName",
@@ -2789,7 +2789,7 @@
     "group": "B",
     "question": "Add 3 new employees.",
     "sql": "INSERT INTO employees (LastName, FirstName, BirthDate, Notes) VALUES ('Shrestha', 'Anil', '1995-01-15', 'BSc in Computer Science.'), ('Karki', 'Mina', '1994-05-21', 'MBA in Operations.'), ('Gurung', 'Rita', '1996-11-10', 'BA in Management.');",
-    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate, Notes FROM employees WHERE LastName IN ('Shrestha', 'Karki', 'Gurung') ORDER BY EmployeeID;",
+    "verification_sql": "SELECT * FROM employees WHERE LastName IN ('Shrestha', 'Karki', 'Gurung');",
     "columns": [
       "EmployeeID",
       "LastName",
@@ -2829,7 +2829,7 @@
     "group": "B",
     "question": "Update all customers from Mexico to Vietnam.",
     "sql": "UPDATE customers SET Country = 'Vietnam' WHERE Country = 'Mexico';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Vietnam' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Vietnam';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2853,7 +2853,7 @@
     "group": "B",
     "question": "Update customers table changing name of Paris City to Delhi.",
     "sql": "UPDATE customers SET City = 'Delhi' WHERE City = 'Paris';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Delhi' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Delhi';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2877,7 +2877,7 @@
     "group": "B",
     "question": "Update all USA customer to Indian customers.",
     "sql": "UPDATE customers SET Country = 'India' WHERE Country = 'USA';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'India' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'India';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2894,7 +2894,7 @@
     "group": "B",
     "question": "Convert all Brazilian customer to Cambodian Customers.",
     "sql": "UPDATE customers SET Country = 'Cambodia' WHERE Country = 'Brazil';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Cambodia' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Cambodia';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2911,7 +2911,7 @@
     "group": "B",
     "question": "Convert all customers of Madrid to Kathmandu customers and also change the country.",
     "sql": "UPDATE customers SET City = 'Kathmandu', Country = 'Nepal' WHERE City = 'Madrid';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Kathmandu' AND Country = 'Nepal' ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE City = 'Kathmandu' AND Country = 'Nepal';",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -2935,7 +2935,7 @@
     "group": "B",
     "question": "Convert customers from G7 Countries to SAARC Countries.",
     "sql": "UPDATE customers\nSET Country = CASE Country\n  WHEN 'USA' THEN 'Pakistan'\n  WHEN 'UK' THEN 'India'\n  WHEN 'Canada' THEN 'Sri Lanka'\n  WHEN 'France' THEN 'Bangladesh'\n  WHEN 'Germany' THEN 'Nepal'\n  WHEN 'Italy' THEN 'Bhutan'\n  WHEN 'Japan' THEN 'Maldives'\nEND\nWHERE Country IN ('USA', 'UK', 'Canada', 'France', 'Germany', 'Italy', 'Japan');",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country IN ('Afghanistan', 'Bangladesh', 'Bhutan', 'India', 'Maldives', 'Nepal', 'Pakistan', 'Sri Lanka') ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country IN ('Afghanistan', 'Bangladesh', 'Bhutan', 'India', 'Maldives', 'Nepal', 'Pakistan', 'Sri Lanka');",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -3021,7 +3021,7 @@
     "group": "B",
     "question": "DELETE all from customers having PostalCode containing 00 and from Rome or Paris.",
     "sql": "DELETE FROM customers WHERE PostalCode LIKE '%00%' AND City IN ('Rome', 'Paris');",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, PostalCode, Country FROM customers ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, PostalCode, Country FROM customers;",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -3089,7 +3089,7 @@
     "group": "B",
     "question": "DELETE all from customers who are not from Salzburg.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN orders AS o ON o.OrderID = od.OrderID\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nWHERE c.City <> 'Salzburg';\n\nDELETE o\nFROM orders AS o\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nWHERE c.City <> 'Salzburg';\n\nDELETE FROM customers WHERE City <> 'Salzburg';",
-    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers ORDER BY CustomerID;",
+    "verification_sql": "SELECT CustomerID, CustomerName, City, Country FROM customers;",
     "columns": [
       "CustomerID",
       "CustomerName",
@@ -3113,7 +3113,7 @@
     "group": "B",
     "question": "DELETE all employees who are born in July.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN orders AS o ON o.OrderID = od.OrderID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 7;\n\nDELETE o\nFROM orders AS o\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 7;\n\nDELETE FROM employees WHERE MONTH(BirthDate) = 7;",
-    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees ORDER BY EmployeeID;",
+    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees;",
     "columns": [
       "EmployeeID",
       "LastName",
@@ -3161,7 +3161,7 @@
     "group": "B",
     "question": "DELETE all employees who are born in August.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN orders AS o ON o.OrderID = od.OrderID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 8;\n\nDELETE o\nFROM orders AS o\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nWHERE MONTH(e.BirthDate) = 8;\n\nDELETE FROM employees WHERE MONTH(BirthDate) = 8;",
-    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees ORDER BY EmployeeID;",
+    "verification_sql": "SELECT EmployeeID, LastName, FirstName, BirthDate FROM employees;",
     "columns": [
       "EmployeeID",
       "LastName",
@@ -3209,7 +3209,7 @@
     "group": "B",
     "question": "DELETE all suppliers from Singapore and Japan.",
     "sql": "DELETE od\nFROM orderdetails AS od\nJOIN products AS p ON p.ProductID = od.ProductID\nJOIN suppliers AS s ON s.SupplierID = p.SupplierID\nWHERE s.Country IN ('Singapore', 'Japan');\n\nDELETE p\nFROM products AS p\nJOIN suppliers AS s ON s.SupplierID = p.SupplierID\nWHERE s.Country IN ('Singapore', 'Japan');\n\nDELETE FROM suppliers WHERE Country IN ('Singapore', 'Japan');",
-    "verification_sql": "SELECT SupplierID, SupplierName, City, Country FROM suppliers ORDER BY SupplierID;",
+    "verification_sql": "SELECT SupplierID, SupplierName, City, Country FROM suppliers;",
     "columns": [
       "SupplierID",
       "SupplierName",
@@ -3250,7 +3250,7 @@
     "lab": 5,
     "group": "B",
     "question": "Find name and count of suppliers from different countries.",
-    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country ORDER BY Country;",
+    "sql": "SELECT Country, COUNT(*) AS SupplierCount FROM suppliers GROUP BY Country;",
     "verification_sql": null,
     "columns": [
       "Country",
@@ -3282,7 +3282,7 @@
     "lab": 5,
     "group": "B",
     "question": "Find name and count of customers from different cities.",
-    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City ORDER BY City;",
+    "sql": "SELECT City, COUNT(*) AS CustomerCount FROM customers GROUP BY City;",
     "verification_sql": null,
     "columns": [
       "City",
@@ -3334,7 +3334,7 @@
     "lab": 5,
     "group": "B",
     "question": "Find number of orders made by employee along with EmployeeID.",
-    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID ORDER BY EmployeeID;",
+    "sql": "SELECT EmployeeID, COUNT(*) AS OrderCount FROM orders GROUP BY EmployeeID;",
     "verification_sql": null,
     "columns": [
       "EmployeeID",
@@ -3370,7 +3370,7 @@
     "lab": 6,
     "group": "A",
     "question": "Perform UNION of customers and employees relation using compatible attributes.",
-    "sql": "SELECT ContactName AS PersonName, City AS Location\nFROM customers\nUNION\nSELECT CONCAT(FirstName, ' ', LastName) AS PersonName, NULL AS Location\nFROM employees\nORDER BY PersonName;",
+    "sql": "SELECT ContactName AS PersonName, City AS Location\nFROM customers\nUNION\nSELECT CONCAT(FirstName, ' ', LastName) AS PersonName, NULL AS Location\nFROM employees;",
     "verification_sql": null,
     "columns": [
       "PersonName",
@@ -3506,7 +3506,7 @@
     "lab": 6,
     "group": "A",
     "question": "List all customers from Mexico and Austria using UNION.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE Country = 'Mexico'\nUNION\nSELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE Country = 'Austria'\nORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE Country = 'Mexico'\nUNION\nSELECT * FROM customers WHERE Country = 'Austria';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -3545,7 +3545,7 @@
     "lab": 6,
     "group": "A",
     "question": "List all customers of USA not having the same name as customers from UK.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country\nFROM customers AS usa\nWHERE usa.Country = 'USA'\n  AND NOT EXISTS (\n    SELECT 1 FROM customers AS uk\n    WHERE uk.Country = 'UK' AND uk.CustomerName = usa.CustomerName\n  )\nORDER BY usa.CustomerID;",
+    "sql": "SELECT usa.* FROM customers AS usa\nWHERE usa.Country = 'USA'\n  AND NOT EXISTS (\n    SELECT 1 FROM customers AS uk\n    WHERE uk.Country = 'UK' AND uk.CustomerName = usa.CustomerName\n  );",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -3565,7 +3565,7 @@
     "lab": 6,
     "group": "A",
     "question": "Create view cust by selecting only 4 attributes from customers.",
-    "sql": "DROP VIEW IF EXISTS cust;\nCREATE VIEW cust AS\nSELECT CustomerID, CustomerName, City, Country\nFROM customers;\nSELECT * FROM cust ORDER BY CustomerID;",
+    "sql": "DROP VIEW IF EXISTS cust;\nCREATE VIEW cust AS\nSELECT CustomerID, CustomerName, City, Country\nFROM customers;\nSELECT * FROM cust;",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -3637,7 +3637,7 @@
     "lab": 6,
     "group": "A",
     "question": "Join products with categories and suppliers to create productinfo with ProductID, ProductName, Unit, Price and all category/supplier attributes.",
-    "sql": "DROP VIEW IF EXISTS productinfo;\nCREATE VIEW productinfo AS\nSELECT\n  p.ProductID,\n  p.ProductName,\n  p.Unit,\n  p.Price,\n  c.CategoryID,\n  c.CategoryName,\n  c.Description AS CategoryDescription,\n  s.SupplierID,\n  s.SupplierName,\n  s.ContactName AS SupplierContactName,\n  s.Address AS SupplierAddress,\n  s.City AS SupplierCity,\n  s.PostalCode AS SupplierPostalCode,\n  s.Country AS SupplierCountry\nFROM products AS p\nJOIN categories AS c ON c.CategoryID = p.CategoryID\nJOIN suppliers AS s ON s.SupplierID = p.SupplierID;\nSELECT * FROM productinfo ORDER BY ProductID;",
+    "sql": "DROP VIEW IF EXISTS productinfo;\nCREATE VIEW productinfo AS\nSELECT\n  p.ProductID,\n  p.ProductName,\n  p.Unit,\n  p.Price,\n  c.CategoryID,\n  c.CategoryName,\n  c.Description AS CategoryDescription,\n  s.SupplierID,\n  s.SupplierName,\n  s.ContactName AS SupplierContactName,\n  s.Address AS SupplierAddress,\n  s.City AS SupplierCity,\n  s.PostalCode AS SupplierPostalCode,\n  s.Country AS SupplierCountry\nFROM products AS p\nJOIN categories AS c ON c.CategoryID = p.CategoryID\nJOIN suppliers AS s ON s.SupplierID = p.SupplierID;\nSELECT * FROM productinfo;",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -3761,7 +3761,7 @@
     "lab": 6,
     "group": "A",
     "question": "Find name and count of Categories from productinfo.",
-    "sql": "SELECT CategoryName, COUNT(*) AS ProductCount FROM productinfo GROUP BY CategoryName ORDER BY CategoryName;",
+    "sql": "SELECT CategoryName, COUNT(*) AS ProductCount FROM productinfo GROUP BY CategoryName;",
     "verification_sql": null,
     "columns": [
       "CategoryName",
@@ -3789,7 +3789,7 @@
     "lab": 6,
     "group": "A",
     "question": "Find all products that have suppliers from North America in productinfo.",
-    "sql": "SELECT ProductID, ProductName, SupplierName, SupplierCity, SupplierCountry, Price FROM productinfo WHERE SupplierCountry IN ('USA', 'Canada', 'Mexico') ORDER BY ProductID;",
+    "sql": "SELECT ProductID, ProductName, SupplierName, SupplierCity, SupplierCountry, Price FROM productinfo WHERE SupplierCountry IN ('USA', 'Canada', 'Mexico');",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -3817,7 +3817,7 @@
     "lab": 6,
     "group": "A",
     "question": "Find all products that have price lower than Average price from productinfo.",
-    "sql": "SELECT ProductID, ProductName, Price FROM productinfo WHERE Price < (SELECT AVG(Price) FROM productinfo) ORDER BY ProductID;",
+    "sql": "SELECT ProductID, ProductName, Price FROM productinfo WHERE Price < (SELECT AVG(Price) FROM productinfo);",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -3849,7 +3849,7 @@
     "lab": 6,
     "group": "A",
     "question": "Join orders with customers, employees and shippers to create a view as orderinfo.",
-    "sql": "DROP VIEW IF EXISTS orderinfo;\nCREATE VIEW orderinfo AS\nSELECT\n  o.OrderID,\n  o.OrderDate,\n  c.CustomerID,\n  c.CustomerName,\n  c.City AS CustomerCity,\n  c.Country AS CustomerCountry,\n  e.EmployeeID,\n  CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,\n  s.ShipperID,\n  s.ShipperName,\n  s.Phone AS ShipperPhone\nFROM orders AS o\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nJOIN shippers AS s ON s.ShipperID = o.ShipperID;\nSELECT * FROM orderinfo ORDER BY OrderID;",
+    "sql": "DROP VIEW IF EXISTS orderinfo;\nCREATE VIEW orderinfo AS\nSELECT\n  o.OrderID,\n  o.OrderDate,\n  c.CustomerID,\n  c.CustomerName,\n  c.City AS CustomerCity,\n  c.Country AS CustomerCountry,\n  e.EmployeeID,\n  CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,\n  s.ShipperID,\n  s.ShipperName,\n  s.Phone AS ShipperPhone\nFROM orders AS o\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nJOIN shippers AS s ON s.ShipperID = o.ShipperID;\nSELECT * FROM orderinfo;",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -3939,7 +3939,7 @@
     "lab": 6,
     "group": "A",
     "question": "List all order shipment provided by United Package and Swift Shipping from orderinfo.",
-    "sql": "SELECT OrderID, OrderDate, CustomerName, ShipperID, ShipperName FROM orderinfo WHERE ShipperName IN ('United Package', 'Swift Shipping') ORDER BY OrderID;",
+    "sql": "SELECT OrderID, OrderDate, CustomerName, ShipperID, ShipperName FROM orderinfo WHERE ShipperName IN ('United Package', 'Swift Shipping');",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -3972,7 +3972,7 @@
     "lab": 6,
     "group": "A",
     "question": "List all order processed by employee Janet Leverling and Steven Buchanan from orderinfo.",
-    "sql": "SELECT OrderID, OrderDate, CustomerName, EmployeeID, EmployeeName FROM orderinfo WHERE EmployeeName IN ('Janet Leverling', 'Steven Buchanan') ORDER BY OrderID;",
+    "sql": "SELECT OrderID, OrderDate, CustomerName, EmployeeID, EmployeeName FROM orderinfo WHERE EmployeeName IN ('Janet Leverling', 'Steven Buchanan');",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -4005,7 +4005,7 @@
     "lab": 6,
     "group": "A",
     "question": "List all order shipment provider on date August 18, 2023 from orderinfo.",
-    "sql": "SELECT OrderID, OrderDate, ShipperID, ShipperName FROM orderinfo WHERE OrderDate = '2023-08-18' ORDER BY OrderID;",
+    "sql": "SELECT OrderID, OrderDate, ShipperID, ShipperName FROM orderinfo WHERE OrderDate = '2023-08-18';",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -4035,7 +4035,7 @@
     "lab": 6,
     "group": "A",
     "question": "List countries of customers that placed order on August 19, 2023 from orderinfo.",
-    "sql": "SELECT DISTINCT CustomerCountry FROM orderinfo WHERE OrderDate = '2023-08-19' ORDER BY CustomerCountry;",
+    "sql": "SELECT DISTINCT CustomerCountry FROM orderinfo WHERE OrderDate = '2023-08-19';",
     "verification_sql": null,
     "columns": [
       "CustomerCountry"
@@ -4056,7 +4056,7 @@
     "lab": 6,
     "group": "B",
     "question": "Perform UNION of customers and employees relation using compatible attributes.",
-    "sql": "SELECT ContactName AS PersonName, City AS Location\nFROM customers\nUNION\nSELECT CONCAT(FirstName, ' ', LastName) AS PersonName, NULL AS Location\nFROM employees\nORDER BY PersonName;",
+    "sql": "SELECT ContactName AS PersonName, City AS Location\nFROM customers\nUNION\nSELECT CONCAT(FirstName, ' ', LastName) AS PersonName, NULL AS Location\nFROM employees;",
     "verification_sql": null,
     "columns": [
       "PersonName",
@@ -4192,7 +4192,7 @@
     "lab": 6,
     "group": "B",
     "question": "List all customers from Berlin, Germany and Paris, France using UNION.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City = 'Berlin' AND Country = 'Germany'\nUNION\nSELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country FROM customers WHERE City = 'Paris' AND Country = 'France'\nORDER BY CustomerID;",
+    "sql": "SELECT * FROM customers WHERE City = 'Berlin' AND Country = 'Germany'\nUNION\nSELECT * FROM customers WHERE City = 'Paris' AND Country = 'France';",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -4231,7 +4231,7 @@
     "lab": 6,
     "group": "B",
     "question": "List all customers of USA not having the same name as customers from UK.",
-    "sql": "SELECT CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country\nFROM customers AS usa\nWHERE usa.Country = 'USA'\n  AND NOT EXISTS (\n    SELECT 1 FROM customers AS uk\n    WHERE uk.Country = 'UK' AND uk.CustomerName = usa.CustomerName\n  )\nORDER BY usa.CustomerID;",
+    "sql": "SELECT usa.* FROM customers AS usa\nWHERE usa.Country = 'USA'\n  AND NOT EXISTS (\n    SELECT 1 FROM customers AS uk\n    WHERE uk.Country = 'UK' AND uk.CustomerName = usa.CustomerName\n  );",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -4251,7 +4251,7 @@
     "lab": 6,
     "group": "B",
     "question": "Create view cust by selecting only 4 attributes from customers.",
-    "sql": "DROP VIEW IF EXISTS cust;\nCREATE VIEW cust AS\nSELECT CustomerID, CustomerName, City, Country\nFROM customers;\nSELECT * FROM cust ORDER BY CustomerID;",
+    "sql": "DROP VIEW IF EXISTS cust;\nCREATE VIEW cust AS\nSELECT CustomerID, CustomerName, City, Country\nFROM customers;\nSELECT * FROM cust;",
     "verification_sql": null,
     "columns": [
       "CustomerID",
@@ -4323,7 +4323,7 @@
     "lab": 6,
     "group": "B",
     "question": "Join products with categories and suppliers to create productinfo with ProductID, ProductName, Unit, Price and all category/supplier attributes.",
-    "sql": "DROP VIEW IF EXISTS productinfo;\nCREATE VIEW productinfo AS\nSELECT\n  p.ProductID,\n  p.ProductName,\n  p.Unit,\n  p.Price,\n  c.CategoryID,\n  c.CategoryName,\n  c.Description AS CategoryDescription,\n  s.SupplierID,\n  s.SupplierName,\n  s.ContactName AS SupplierContactName,\n  s.Address AS SupplierAddress,\n  s.City AS SupplierCity,\n  s.PostalCode AS SupplierPostalCode,\n  s.Country AS SupplierCountry\nFROM products AS p\nJOIN categories AS c ON c.CategoryID = p.CategoryID\nJOIN suppliers AS s ON s.SupplierID = p.SupplierID;\nSELECT * FROM productinfo ORDER BY ProductID;",
+    "sql": "DROP VIEW IF EXISTS productinfo;\nCREATE VIEW productinfo AS\nSELECT\n  p.ProductID,\n  p.ProductName,\n  p.Unit,\n  p.Price,\n  c.CategoryID,\n  c.CategoryName,\n  c.Description AS CategoryDescription,\n  s.SupplierID,\n  s.SupplierName,\n  s.ContactName AS SupplierContactName,\n  s.Address AS SupplierAddress,\n  s.City AS SupplierCity,\n  s.PostalCode AS SupplierPostalCode,\n  s.Country AS SupplierCountry\nFROM products AS p\nJOIN categories AS c ON c.CategoryID = p.CategoryID\nJOIN suppliers AS s ON s.SupplierID = p.SupplierID;\nSELECT * FROM productinfo;",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -4447,7 +4447,7 @@
     "lab": 6,
     "group": "B",
     "question": "Find name and count of Categories from productinfo.",
-    "sql": "SELECT CategoryName, COUNT(*) AS ProductCount FROM productinfo GROUP BY CategoryName ORDER BY CategoryName;",
+    "sql": "SELECT CategoryName, COUNT(*) AS ProductCount FROM productinfo GROUP BY CategoryName;",
     "verification_sql": null,
     "columns": [
       "CategoryName",
@@ -4475,7 +4475,7 @@
     "lab": 6,
     "group": "B",
     "question": "Find all products that have suppliers from Asia in productinfo.",
-    "sql": "SELECT ProductID, ProductName, SupplierName, SupplierCity, SupplierCountry, Price FROM productinfo WHERE SupplierCountry IN ('Japan', 'China', 'India', 'Nepal', 'Bangladesh', 'Bhutan', 'Pakistan', 'Sri Lanka', 'Maldives', 'Singapore', 'Thailand', 'Vietnam', 'Cambodia', 'South Korea') ORDER BY ProductID;",
+    "sql": "SELECT ProductID, ProductName, SupplierName, SupplierCity, SupplierCountry, Price FROM productinfo WHERE SupplierCountry IN ('Japan', 'China', 'India', 'Nepal', 'Bangladesh', 'Bhutan', 'Pakistan', 'Sri Lanka', 'Maldives', 'Singapore', 'Thailand', 'Vietnam', 'Cambodia', 'South Korea');",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -4511,7 +4511,7 @@
     "lab": 6,
     "group": "B",
     "question": "Find all products that have price lower than Average price from productinfo.",
-    "sql": "SELECT ProductID, ProductName, Price FROM productinfo WHERE Price < (SELECT AVG(Price) FROM productinfo) ORDER BY ProductID;",
+    "sql": "SELECT ProductID, ProductName, Price FROM productinfo WHERE Price < (SELECT AVG(Price) FROM productinfo);",
     "verification_sql": null,
     "columns": [
       "ProductID",
@@ -4543,7 +4543,7 @@
     "lab": 6,
     "group": "B",
     "question": "Join orders with customers, employees and shippers to create a view as orderinfo.",
-    "sql": "DROP VIEW IF EXISTS orderinfo;\nCREATE VIEW orderinfo AS\nSELECT\n  o.OrderID,\n  o.OrderDate,\n  c.CustomerID,\n  c.CustomerName,\n  c.City AS CustomerCity,\n  c.Country AS CustomerCountry,\n  e.EmployeeID,\n  CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,\n  s.ShipperID,\n  s.ShipperName,\n  s.Phone AS ShipperPhone\nFROM orders AS o\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nJOIN shippers AS s ON s.ShipperID = o.ShipperID;\nSELECT * FROM orderinfo ORDER BY OrderID;",
+    "sql": "DROP VIEW IF EXISTS orderinfo;\nCREATE VIEW orderinfo AS\nSELECT\n  o.OrderID,\n  o.OrderDate,\n  c.CustomerID,\n  c.CustomerName,\n  c.City AS CustomerCity,\n  c.Country AS CustomerCountry,\n  e.EmployeeID,\n  CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,\n  s.ShipperID,\n  s.ShipperName,\n  s.Phone AS ShipperPhone\nFROM orders AS o\nJOIN customers AS c ON c.CustomerID = o.CustomerID\nJOIN employees AS e ON e.EmployeeID = o.EmployeeID\nJOIN shippers AS s ON s.ShipperID = o.ShipperID;\nSELECT * FROM orderinfo;",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -4633,7 +4633,7 @@
     "lab": 6,
     "group": "B",
     "question": "List all order shipment provided by Speedy Express and Global Express from orderinfo.",
-    "sql": "SELECT OrderID, OrderDate, CustomerName, ShipperID, ShipperName FROM orderinfo WHERE ShipperName IN ('Speedy Express', 'Global Express') ORDER BY OrderID;",
+    "sql": "SELECT OrderID, OrderDate, CustomerName, ShipperID, ShipperName FROM orderinfo WHERE ShipperName IN ('Speedy Express', 'Global Express');",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -4666,7 +4666,7 @@
     "lab": 6,
     "group": "B",
     "question": "List all order processed by employee Nancy Davolio and Michael Suyama from orderinfo.",
-    "sql": "SELECT OrderID, OrderDate, CustomerName, EmployeeID, EmployeeName FROM orderinfo WHERE EmployeeName IN ('Nancy Davolio', 'Michael Suyama') ORDER BY OrderID;",
+    "sql": "SELECT OrderID, OrderDate, CustomerName, EmployeeID, EmployeeName FROM orderinfo WHERE EmployeeName IN ('Nancy Davolio', 'Michael Suyama');",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -4699,7 +4699,7 @@
     "lab": 6,
     "group": "B",
     "question": "List all order shipment provider on date August 19, 2023 from orderinfo.",
-    "sql": "SELECT OrderID, OrderDate, ShipperID, ShipperName FROM orderinfo WHERE OrderDate = '2023-08-19' ORDER BY OrderID;",
+    "sql": "SELECT OrderID, OrderDate, ShipperID, ShipperName FROM orderinfo WHERE OrderDate = '2023-08-19';",
     "verification_sql": null,
     "columns": [
       "OrderID",
@@ -4729,7 +4729,7 @@
     "lab": 6,
     "group": "B",
     "question": "List countries of customers that placed order on August 17, 2023 from orderinfo.",
-    "sql": "SELECT DISTINCT CustomerCountry FROM orderinfo WHERE OrderDate = '2023-08-17' ORDER BY CustomerCountry;",
+    "sql": "SELECT DISTINCT CustomerCountry FROM orderinfo WHERE OrderDate = '2023-08-17';",
     "verification_sql": null,
     "columns": [
       "CustomerCountry"
