@@ -1,0 +1,39 @@
+[
+  {
+    "no": "I.1",
+    "lab": "Lab I",
+    "language": "C",
+    "title": "BFS Algorithm",
+    "question": "WAP to implement BFS algorithm. The graph should also be drawn in the lab report.",
+    "theory": [
+      "Breadth First Search explores the graph level by level. It uses a queue, marks each visited vertex, and is suitable for finding the shortest path in an unweighted graph.",
+      "The sample graph starts at A and searches for G. The BFS path is A -> B -> E -> G."
+    ],
+    "algorithm": [
+      "Insert the start vertex into a queue and mark it visited.",
+      "Remove the front vertex, visit it, and enqueue all unvisited adjacent vertices.",
+      "Store parent links when a vertex is discovered so the final path can be reconstructed.",
+      "Stop when the goal is found or when the queue becomes empty."
+    ],
+    "diagram": {
+      "title": "Graph used for BFS",
+      "code": "flowchart LR\n  A((A)) --> B((B))\n  A --> C((C))\n  B --> D((D))\n  B --> E((E))\n  C --> F((F))\n  E --> G((G))\n  F --> G\n  classDef start fill:#d8f3dc,stroke:#2d6a4f,stroke-width:2px;\n  classDef goal fill:#ffe8cc,stroke:#e8590c,stroke-width:2px;\n  class A start;\n  class G goal;"
+    },
+    "filename": "lab_i_bfs.c",
+    "code": "#include <stdio.h>\n#include <stdbool.h>\n\nint main() {\n    char vertices[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};\n    int graph[7][7] = {0};\n    graph[0][1] = graph[0][2] = 1;\n    graph[1][3] = graph[1][4] = 1;\n    graph[2][5] = 1;\n    graph[4][6] = graph[5][6] = 1;\n\n    int start = 0, goal = 6;\n    int queue[20], front = 0, rear = 0;\n    int parent[7], order[7], orderCount = 0;\n    bool visited[7] = {false};\n\n    for (int i = 0; i < 7; i++) {\n        parent[i] = -1;\n    }\n    queue[rear++] = start;\n    visited[start] = true;\n    parent[start] = start;\n\n    while (front < rear) {\n        int current = queue[front++];\n        order[orderCount++] = current;\n        if (current == goal) {\n            break;\n        }\n\n        for (int next = 0; next < 7; next++) {\n            if (graph[current][next] && !visited[next]) {\n                visited[next] = true;\n                parent[next] = current;\n                queue[rear++] = next;\n            }\n        }\n    }\n\n    int path[7], count = 0;\n    for (int v = goal; ; v = parent[v]) {\n        path[count++] = v;\n        if (v == start) {\n            break;\n        }\n    }\n\n    printf(\"BFS Traversal: \");\n    for (int i = 0; i < orderCount; i++) {\n        printf(\"%s%c\", i ? \" \" : \"\", vertices[order[i]]);\n    }\n    printf(\"\\nPath: \");\n    for (int i = count - 1; i >= 0; i--) {\n        printf(\"%s%c\", i == count - 1 ? \"\" : \" \", vertices[path[i]]);\n    }\n    printf(\"\\n\\nName: {NAME}\\nRoll No: {ROLL}\\nLab Number: Lab I - BFS\\n\");\n    return 0;\n}",
+    "output": "BFS Traversal: A B C D E F G\nPath: A B E G\n\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab I - BFS"
+  },
+  {
+    "no": "II.2",
+    "lab": "Lab II",
+    "language": "Prolog",
+    "title": "Display Name in Prolog",
+    "question": "Write a program to display your name in Prolog.",
+    "filename": "lab_ii_display_name.pl",
+    "theory": [
+      "The write/1 predicate prints a term, and nl/0 moves the output to the next line. This program prints student details and the lab number."
+    ],
+    "code": "print_identity :-\n    write('Name: {NAME}'), nl,\n    write('Roll No: {ROLL}'), nl,\n    write('Lab Number: Lab II - Display Name'), nl.\n\n:- initialization(print_identity).",
+    "output": "?- print_identity.\nName: {NAME}\nRoll No: {ROLL}\nLab Number: Lab II - Display Name\ntrue."
+  }
+]

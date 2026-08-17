@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{SUBJECT}} Lab Report - Printable Outputs</title>
+<style>
+  @page { size:A4; margin:0; }
+  * { box-sizing:border-box; }
+  :root { --paper-w:210mm; --paper-h:297mm; --paper-padding:10mm; --page-border-padding:5.5mm; }
+  html,body { margin:0; padding:0; }
+  body { font-family:"Segoe UI",Arial,sans-serif; background:#17191d; color:#111; }
+
+  /* ---------- toolbar (screen only) ---------- */
+  .toolbar { position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+             padding:14px 18px; background:rgba(23,25,29,.96); border-bottom:1px solid rgba(255,255,255,.10); color:#fff; }
+  .toolbar .field { display:flex; flex-direction:column; gap:5px; }
+  .toolbar label { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#9ba3af; }
+  .toolbar input[type="text"], .toolbar select { height:36px; min-width:150px; border:1px solid rgba(255,255,255,.16);
+             border-radius:6px; background:#242830; color:#fff; padding:0 10px; font-size:13px; }
+  .stats { display:flex; align-items:center; gap:8px; }
+  .stat { display:flex; align-items:baseline; gap:7px; min-height:36px; padding:8px 11px; border:1px solid rgba(255,255,255,.14); border-radius:6px; background:#242830; }
+  .stat-label { color:#9ba3af; font:700 10px/1 "Segoe UI",sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+  .stat-value { color:#fff; font-size:14px; font-weight:800; font-variant-numeric:tabular-nums; }
+  .print-btn { margin-left:auto; height:36px; border:0; border-radius:6px; background:#fff; color:#111; padding:0 16px; font-size:13px; font-weight:800; cursor:pointer; }
+
+  /* ---------- paper ---------- */
+  .pages { padding:26px 0 48px; overflow-x:auto; }
+  .paper { width:var(--paper-w); height:var(--paper-h); margin:0 auto 26px; padding:var(--paper-padding);
+           background:#fff; box-shadow:0 18px 48px rgba(0,0,0,.38); overflow:hidden; }
+  .page-inner { width:100%; height:100%; border:2px solid #202020; padding:var(--page-border-padding); overflow:hidden; background:#fff; }
+  .page-content { width:100%; height:100%; overflow:hidden; }
+
+  .pair { width:100%; margin:0 0 7mm; break-inside:avoid; page-break-inside:avoid; }
+  .write-space { width:100%; background:#fff; }   /* blank room to hand-write the query */
+
+  /* ---------- phpMyAdmin-style result pane ---------- */
+  .xampp { width:100%; background:#fff; color:#000; border:1px solid #a6a6a6; overflow:hidden; break-inside:avoid; page-break-inside:avoid; }
+  .notice { padding:2mm 2.4mm; background:#e0e0e0; border-bottom:1px solid #b8b8b8; font:600 8.2pt/1.25 Arial,Helvetica,sans-serif; }
+  .query { padding:2mm 2.5mm; background:#f2f2f2; color:#000; border-bottom:1px solid #c4c4c4;
+           white-space:pre-wrap; overflow-wrap:anywhere; font:7.6pt/1.32 Arial,Helvetica,sans-serif; }
+  .query .kw { color:#000; text-decoration:underline dotted; font-weight:700; }
+  .query .str, .query .com { color:#000; }
+  .profile { display:flex; gap:2.2mm; flex-wrap:wrap; padding:1.4mm 2.4mm; background:#eee; border-bottom:1px solid #c8c8c8; font:7.2pt/1.2 Arial,Helvetica,sans-serif; }
+  .result { overflow:visible; padding:1.4mm 0 1.8mm; }
+  .extra { margin:0 0 1.4mm 2mm; padding:.8mm 1.8mm; border:1px solid #555; border-radius:3px; background:linear-gradient(#fff,#d7d7d7); color:#111; font:7pt/1.1 Arial,Helvetica,sans-serif; }
+  .pm-table { border-collapse:collapse; width:max-content; min-width:36mm; max-width:100%; color:#000; background:#fff; font:8pt/1.2 Arial,Helvetica,sans-serif; }
+  .pm-table th, .pm-table td { padding:1.2mm 1.7mm; text-align:left; vertical-align:top; white-space:nowrap; }
+  .pm-table th { background:#d7d7d7; font-weight:700; }
+  .pm-table tr:nth-child(even) td { background:#ededed; }
+  .pm-table.wide-table { width:100%; min-width:0; table-layout:fixed; font-size:6.25pt; line-height:1.10; }
+  .pm-table.wide-table th, .pm-table.wide-table td { padding:.65mm .72mm; white-space:normal; overflow-wrap:anywhere; }
+  .empty { padding:3mm; font:italic 8pt/1.2 Arial,Helvetica,sans-serif; }
+  .null { font-style:italic; }
+
+  @media (max-width:850px) { .paper { margin-left:12px; margin-right:12px; } }
+  @media print {
+    body { background:#fff; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .no-print { display:none !important; }
+    .pages { padding:0; overflow:visible; }
+    .paper { width:210mm; height:297mm; margin:0; padding:10mm; box-shadow:none; page-break-after:always; break-after:page; }
+    .paper:last-child { page-break-after:auto; break-after:auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <div class="field"><label for="studentName">Student Name</label><input id="studentName" type="text" placeholder="Your name" oninput="render()"></div>
+    <div class="field"><label for="density">Writing space</label>
+      <select id="density" onchange="render()">
+        <option value="1.00">Normal</option>
+        <option value="1.18">Roomy</option>
+        <option value="0.85">Tight</option>
+      </select>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="stat-label">Questions</span><span id="questionCount" class="stat-value">0</span></div>
+      <div class="stat"><span class="stat-label">A4 Pages</span><span id="pageCount" class="stat-value">0</span></div>
+    </div>
+    <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <main id="pages" class="pages"></main>
+
+<!-- ===================================================================
+     item = {
+       id, lab, title, question,
+       sql,                       // exactly what the student will hand-write
+       verify,                    // optional follow-up SELECT shown under the answer
+       columns: [...],            // VERIFIED result header (from scripts/verify_sql.py)
+       rows: [[...], ...],        // VERIFIED result rows
+       affected: 0,               // rows changed by DML before the verify SELECT
+       dynamic: null              // "customer_city_initial" style hooks, see DYNAMIC below
+     }
+     ==================================================================== -->
+<script type="application/json" id="report-data">
+[
+  {
+    "id": "4A-01", "lab": 4, "title": "Project Category Names",
+    "question": "Project CategoryName from categories.",
+    "sql": "SELECT CategoryName FROM categories;",
+    "verify": null,
+    "columns": ["CategoryName"],
+    "rows": [["Beverages"], ["Seafood"]],
+    "affected": 0,
+    "dynamic": null
+  }
+]
+</script>
+
+<script>
+  const ITEMS = JSON.parse(document.getElementById("report-data").textContent);
+
+  // Rows that depend on the student's name. Keep the source table here so the
+  // filter can be re-evaluated in the browser when the name changes.
+  const DYNAMIC = {
+    // "customer_city_initial": {
+    //   columns: ["CustomerID","CustomerName","City","Country"],
+    //   rows: [[1,"Alfreds Futterkiste","Berlin","Germany"]],
+    //   match: (row, letter) => String(row[2]).toUpperCase().startsWith(letter)
+    // }
+  };
+
+  const esc = v => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const studentName = () => document.getElementById("studentName").value.trim() || "Student";
+  const firstLetter = () => (studentName()[0] || "S").toUpperCase();
+  const nameSlug = () => studentName().toLowerCase().replace(/[^a-z0-9]+/g, "") || "student";
+  const density = () => parseFloat(document.getElementById("density").value);
+
+  // {{FIRST_LETTER}} -> D, {{NAME_SLUG}} -> deepakbhattarai (safe inside identifiers), {{NAME}} -> Deepak Bhattarai
+  const tokens = sql => String(sql || "")
+    .replaceAll("{{FIRST_LETTER}}", firstLetter())
+    .replaceAll("{{NAME_SLUG}}", nameSlug())
+    .replaceAll("{{NAME}}", studentName());
+
+  function highlight(sql) {
+    let s = esc(sql);
+    s = s.replace(/(--.*)$/gm, '<span class="com">$1</span>');
+    s = s.replace(/'([^']*)'/g, "<span class='str'>'$1'</span>");
+    return s.replace(/\b(SELECT|FROM|WHERE|ORDER|BY|GROUP|HAVING|AS|IN|NOT|AND|OR|LIKE|IS|NULL|DISTINCT|COUNT|SUM|AVG|MIN|MAX|MONTH|YEAR|INSERT|INTO|VALUES|UPDATE|SET|CASE|WHEN|THEN|ELSE|END|DELETE|JOIN|LEFT|RIGHT|INNER|ON|CREATE|TABLE|VIEW|DROP|ALTER|IF|EXISTS|UNION|ALL|CONCAT|LIMIT)\b/gi, '<span class="kw">$1</span>');
+  }
+
+  function effective(item) {
+    const x = { ...item };
+    x.sql = tokens(x.sql);
+    if (x.verify) x.verify = tokens(x.verify);
+    const d = item.dynamic && DYNAMIC[item.dynamic];
+    if (d) { x.columns = d.columns; x.rows = d.rows.filter(r => d.match(r, firstLetter())); }
+    return x;
+  }
+
+  // Blank space to hand-write the answer, scaled to how long the query is.
+  function writeHeight(sql) {
+    const text = String(sql || "");
+    const lines = text.split("\n").length, chars = text.length;
+    let base;
+    if (lines >= 15 || chars >= 700) base = 88;
+    else if (lines >= 9 || chars >= 420) base = 72;
+    else if (lines >= 5 || chars >= 240) base = 58;
+    else if (chars >= 140) base = 48;
+    else base = 38;
+    return base * density();
+  }
+
+  function table(columns, rows) {
+    if (!rows || !rows.length) return '<div class="empty">MySQL returned an empty result set (zero rows).</div>';
+    const cls = columns.length > 6 ? "pm-table wide-table" : "pm-table";
+    return `<table class="${cls}"><thead><tr>${columns.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${
+      rows.map(r => `<tr>${r.map(v => `<td>${v === null ? '<span class="null">NULL</span>' : esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  }
+
+  function outputPane(x) {
+    const count = x.rows ? x.rows.length : 0;
+    const affected = x.affected ? ` &middot; ${x.affected} row(s) affected before verification` : "";
+    const shown = x.verify ? `${x.sql}\n\n-- Verification query\n${x.verify}` : x.sql;
+    return `<div class="xampp">
+      <div class="notice">Your SQL query has been executed successfully. ${count} row(s) returned${affected}${x.continued ? " (continued)" : ""}.</div>
+      <div class="query">${highlight(shown)}</div>
+      <div class="profile"><span>&#9633; Profiling</span><span>[ Edit inline ]</span><span>[ Edit ]</span><span>[ Create PHP code ]</span><span>[ Refresh ]</span></div>
+      <div class="result"><button class="extra" type="button">Extra options</button>${table(x.columns || [], x.rows || [])}</div>
+    </div>`;
+  }
+
+  function makePair(item) {
+    const x = effective(item);
+    const pair = document.createElement("section");
+    pair.className = "pair";
+    const gap = x.continued ? 0 : writeHeight(x.sql);
+    pair.innerHTML = `<div class="write-space" style="height:${gap.toFixed(1)}mm"></div>${outputPane(x)}`;
+    return pair;
+  }
+
+  function createPage(container) {
+    const page = document.createElement("section");
+    page.className = "paper";
+    page.innerHTML = '<div class="page-inner"><div class="page-content"></div></div>';
+    container.appendChild(page);
+    return page.querySelector(".page-content");
+  }
+
+  const fits = content => content.scrollHeight <= content.clientHeight + 2;
+
+  // Places one item, moving to a new page if needed. A result set too tall for a
+  // whole page first loses its writing space, then splits its rows across panes,
+  // so nothing is ever silently clipped at the bottom of a sheet.
+  function addItem(container, content, item) {
+    const pair = makePair(item);
+    content.appendChild(pair);
+    if (fits(content)) return content;
+
+    content.removeChild(pair);
+    content = createPage(container);
+    content.appendChild(pair);
+    if (fits(content)) return content;
+
+    const space = pair.querySelector(".write-space");
+    for (const height of [24, 12, 0]) {
+      space.style.height = height + "mm";
+      if (fits(content)) return content;
+    }
+
+    const x = effective(item);
+    const rows = x.rows || [];
+    if (rows.length > 2) {
+      content.removeChild(pair);
+      const half = Math.ceil(rows.length / 2);
+      const chunk = extra => ({ ...item, dynamic: null, sql: x.sql, verify: x.verify, columns: x.columns, ...extra });
+      content = addItem(container, content, chunk({ rows: rows.slice(0, half) }));
+      return addItem(container, content, chunk({ rows: rows.slice(half), continued: true, affected: 0 }));
+    }
+    return content;   // a single row taller than a page - nothing sensible left to do
+  }
+
+  function render() {
+    const container = document.getElementById("pages");
+    container.innerHTML = "";
+    let content = createPage(container);
+    let currentLab = null;
+
+    for (const item of ITEMS) {
+      if (currentLab !== null && item.lab !== currentLab) content = createPage(container); // each lab starts a fresh page
+      currentLab = item.lab;
+      content = addItem(container, content, item);
+    }
+    document.getElementById("questionCount").textContent = String(ITEMS.length);
+    document.getElementById("pageCount").textContent = String(container.querySelectorAll(".paper").length);
+  }
+
+  render();
+</script>
+</body>
+</html>

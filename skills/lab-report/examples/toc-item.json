@@ -1,0 +1,31 @@
+[
+  {
+    "no": "1",
+    "title": "Count lines and characters in a file",
+    "question": "1. Write a C/C++ program to read a file and Count number of lines and characters in a file.",
+    "theory": [
+      "File handling in C involves opening a file using fopen(), reading its contents character-by-character using fgetc(), and closing it using fclose(). The character count is incremented for every byte read (including whitespaces and control characters), while the line count is incremented every time a newline character ('\n') is encountered."
+    ],
+    "filename": "program1.c",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    FILE *fp = fopen(\"test.txt\", \"w\");\n    if (fp != NULL) {\n        fprintf(fp, \"Theory of Computation\\nLab Report\\nPatan Multiple Campus\\n\");\n        fclose(fp);\n    }\n    fp = fopen(\"test.txt\", \"r\");\n    if (fp == NULL) {\n        printf(\"Error opening file.\\n\");\n        return 1;\n    }\n    int chars = 0, lines = 0;\n    char ch;\n    while ((ch = fgetc(fp)) != EOF) {\n        chars++;\n        if (ch == '\\n') {\n            lines++;\n        }\n    }\n    fclose(fp);\n    printf(\"Total Characters: %d\\n\", chars);\n    printf(\"Total Lines: %d\\n\", lines);\n    printf(\"\\nName: {NAME}  Roll: {ROLL}\\n\");\n    return 0;\n}",
+    "output": "Total Characters: 55\nTotal Lines: 3\n\nName: {NAME}  Roll: {ROLL}"
+  },
+  {
+    "no": "7",
+    "title": "DFA: Set of strings ending at 'b' from alphabet {a, b}",
+    "question": "7a. DFA: Set of strings ending at 'b' from alphabet {a, b}.",
+    "theory": [
+      "A Deterministic Finite Automaton (DFA) consists of states and transition rules. For strings ending in 'b', the DFA starts in q0 (not ending in 'b'). If it reads 'a', it stays in q0. If it reads 'b', it transitions to q1 (ending in 'b', accepting state). From q1, reading 'a' goes back to q0, while 'b' stays in q1."
+    ],
+    "algorithm": [
+      "Define transition logic where state q0 is initial/reject and q1 is accepting.",
+      "Read each character of the input string sequentially.",
+      "If character is 'a', transition current state to q0; if 'b', transition to q1.",
+      "After processing all characters, check if the final state is q1.",
+      "Accept the string if final state is q1, otherwise reject."
+    ],
+    "filename": "program7.c",
+    "code": "#include <stdio.h>\n\nint dfa_ends_in_b(const char *str) {\n    int state = 0;\n    for (int i = 0; str[i] != '\\0'; i++) {\n        char c = str[i];\n        if (c == 'a') {\n            state = 0;\n        } else if (c == 'b') {\n            state = 1;\n        } else {\n            return -1;\n        }\n    }\n    return (state == 1);\n}\n\nint main() {\n    const char *test_cases[] = {\"ab\", \"aab\", \"ba\", \"b\", \"aba\"};\n    printf(\"DFA Simulation (Ends in 'b' over {a, b}):\\n\");\n    for (int i = 0; i < 5; i++) {\n        int res = dfa_ends_in_b(test_cases[i]);\n        printf(\"String: %-5s -> %s\\n\", test_cases[i], res == 1 ? \"Accepted\" : (res == 0 ? \"Rejected\" : \"Invalid Input\"));\n    }\n    printf(\"\\nName: {NAME}  Roll: {ROLL}\\n\");\n    return 0;\n}",
+    "output": "DFA Simulation (Ends in 'b' over {a, b}):\nString: ab    -> Accepted\nString: aab   -> Accepted\nString: ba    -> Rejected\nString: b     -> Accepted\nString: aba   -> Rejected\n\nName: {NAME}  Roll: {ROLL}"
+  }
+]

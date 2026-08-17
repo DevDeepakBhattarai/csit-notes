@@ -1,0 +1,193 @@
+[
+  {
+    "id": "4A-01",
+    "lab": 4,
+    "title": "Project CategoryName from categories.",
+    "question": "Project CategoryName from categories.",
+    "sql": "SELECT CategoryName FROM categories;",
+    "verify": null,
+    "columns": [
+      "CategoryName"
+    ],
+    "rows": [
+      [
+        "Beverages"
+      ],
+      [
+        "Seafood"
+      ],
+      [
+        "Confections"
+      ],
+      [
+        "Dairy Products"
+      ],
+      [
+        "Grains/Cereals"
+      ]
+    ],
+    "affected": 0,
+    "dynamic": null
+  },
+  {
+    "id": "4A-08",
+    "lab": 4,
+    "title": "SELECT all from customers who are from a city whose name sta",
+    "question": "SELECT all from customers who are from a city whose name starts with the first letter of your name.",
+    "sql": "SELECT * FROM customers WHERE City LIKE '{{FIRST_LETTER}}%';",
+    "verify": null,
+    "columns": [
+      "CustomerID",
+      "CustomerName",
+      "ContactName",
+      "Address",
+      "City",
+      "PostalCode",
+      "Country"
+    ],
+    "rows": [],
+    "affected": 0,
+    "dynamic": "customer_city_initial"
+  },
+  {
+    "id": "5A-06",
+    "lab": 5,
+    "title": "Update all customers from Brazil to Singapore.",
+    "question": "Update all customers from Brazil to Singapore.",
+    "sql": "UPDATE customers SET Country = 'Singapore' WHERE Country = 'Brazil';",
+    "verify": "SELECT CustomerID, CustomerName, City, Country FROM customers WHERE Country = 'Singapore';",
+    "columns": [
+      "CustomerID",
+      "CustomerName",
+      "City",
+      "Country"
+    ],
+    "rows": [],
+    "affected": 0,
+    "dynamic": null
+  },
+  {
+    "id": "6A-06",
+    "lab": 6,
+    "title": "Join products with categories and suppliers to create produc",
+    "question": "Join products with categories and suppliers to create productinfo with ProductID, ProductName, Unit, Price and all category/supplier attributes.",
+    "sql": "DROP VIEW IF EXISTS productinfo;\nCREATE VIEW productinfo AS\nSELECT\n  p.ProductID,\n  p.ProductName,\n  p.Unit,\n  p.Price,\n  c.CategoryID,\n  c.CategoryName,\n  c.Description AS CategoryDescription,\n  s.SupplierID,\n  s.SupplierName,\n  s.ContactName AS SupplierContactName,\n  s.Address AS SupplierAddress,\n  s.City AS SupplierCity,\n  s.PostalCode AS SupplierPostalCode,\n  s.Country AS SupplierCountry\nFROM products AS p\nJOIN categories AS c ON c.CategoryID = p.CategoryID\nJOIN suppliers AS s ON s.SupplierID = p.SupplierID;\nSELECT * FROM productinfo;",
+    "verify": null,
+    "columns": [
+      "ProductID",
+      "ProductName",
+      "Unit",
+      "Price",
+      "CategoryID",
+      "CategoryName",
+      "CategoryDescription",
+      "SupplierID",
+      "SupplierName",
+      "SupplierContactName",
+      "SupplierAddress",
+      "SupplierCity",
+      "SupplierPostalCode",
+      "SupplierCountry"
+    ],
+    "rows": [
+      [
+        1,
+        "Chai",
+        "10 boxes x 20 bags",
+        "18.00",
+        1,
+        "Beverages",
+        "Soft drinks, coffees, teas, beers, and ales",
+        1,
+        "Exotic Liquids",
+        "Charlotte Cooper",
+        "49 Gilbert St.",
+        "London",
+        "EC1 4SD",
+        "UK"
+      ],
+      [
+        2,
+        "Chang",
+        "24 - 12 oz bottles",
+        "19.00",
+        1,
+        "Beverages",
+        "Soft drinks, coffees, teas, beers, and ales",
+        1,
+        "Exotic Liquids",
+        "Charlotte Cooper",
+        "49 Gilbert St.",
+        "London",
+        "EC1 4SD",
+        "UK"
+      ],
+      [
+        3,
+        "Aniseed Syrup",
+        "12 - 550 ml bottles",
+        "10.00",
+        1,
+        "Beverages",
+        "Soft drinks, coffees, teas, beers, and ales",
+        1,
+        "Exotic Liquids",
+        "Charlotte Cooper",
+        "49 Gilbert St.",
+        "London",
+        "EC1 4SD",
+        "UK"
+      ],
+      [
+        4,
+        "Chef Anton Cajun Seasoning",
+        "48 - 6 oz jars",
+        "22.00",
+        2,
+        "Seafood",
+        "Seaweed and fish",
+        2,
+        "Tokyo Traders",
+        "Yoshi Nagase",
+        "9-8 Sekimai Musashino-shi",
+        "Tokyo",
+        "100",
+        "Japan"
+      ],
+      [
+        5,
+        "Ikura",
+        "12 - 200 ml jars",
+        "31.00",
+        2,
+        "Seafood",
+        "Seaweed and fish",
+        2,
+        "Tokyo Traders",
+        "Yoshi Nagase",
+        "9-8 Sekimai Musashino-shi",
+        "Tokyo",
+        "100",
+        "Japan"
+      ],
+      [
+        6,
+        "Uncle Bob Organic Dried Pears",
+        "12 - 1 lb pkgs.",
+        "30.00",
+        3,
+        "Confections",
+        "Desserts, candies, and sweet breads",
+        3,
+        "New Orleans Cajun Delights",
+        "Shelley Cain",
+        "P.O. Box 78934",
+        "New Orleans",
+        "70117",
+        "USA"
+      ]
+    ],
+    "affected": 0,
+    "dynamic": null
+  }
+]

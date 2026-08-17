@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{SUBJECT}} Lab Report</title>
+  <!-- Mermaid is only needed when an item has a "diagram". Harmless if offline: falls back to plain text. -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    @page { size: A4; margin: 0; }
+    * { box-sizing: border-box; }
+    :root {
+      --screen-bg:#101217; --panel:#181c24; --panel-2:#202633; --line:rgba(255,255,255,.12);
+      --text:#eef2f6; --muted:#9aa6b5; --blue:#5294d0; --green:#2bb673;
+      --paper:#fff; --ink:#121212;
+      --paper-width:210mm; --paper-height:297mm; --paper-padding:10mm; --page-border-padding:5.5mm;
+    }
+    body { margin:0; min-height:100vh; background:var(--screen-bg); color:var(--text); font-family:"Segoe UI",Tahoma,sans-serif; }
+
+    /* ---------- screen controls (never printed) ---------- */
+    .controls { max-width:1120px; margin:22px auto; padding:18px; border:1px solid var(--line); border-radius:8px; background:rgba(24,28,36,.94); }
+    .controls-head { display:flex; justify-content:space-between; gap:18px; align-items:end; border-bottom:1px solid var(--line); padding-bottom:14px; margin-bottom:14px; }
+    .controls h1 { margin:0; font-size:23px; line-height:1.2; color:#fff; }
+    .controls p { margin:5px 0 0; color:var(--muted); font-size:12px; line-height:1.5; }
+    .input-grid { display:grid; grid-template-columns:repeat(3,minmax(150px,1fr)); gap:10px; }
+    .field label { display:block; margin:0 0 5px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .field input { width:100%; padding:10px 11px; border-radius:6px; border:1px solid rgba(255,255,255,.14); background:var(--panel-2); color:var(--text); outline:none; font-size:13px; }
+    .field input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(82,148,208,.16); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px; }
+    .print-btn { border:0; border-radius:6px; background:var(--green); color:#fff; font-weight:700; padding:10px 16px; cursor:pointer; font-size:13px; }
+    .theme-toggle { display:inline-flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; user-select:none; }
+    .theme-toggle input { position:absolute; opacity:0; pointer-events:none; }
+    .switch { width:46px; height:25px; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:#343b49; position:relative; transition:background .2s ease; }
+    .switch::after { content:""; position:absolute; width:19px; height:19px; top:2px; left:2px; border-radius:50%; background:#fff; transition:transform .2s ease; }
+    .theme-toggle input:checked + .switch { background:var(--blue); }
+    .theme-toggle input:checked + .switch::after { transform:translateX(21px); }
+
+    /* ---------- paper ---------- */
+    .pages { padding:10px 0 36px; overflow-x:auto; }
+    .report-page { width:var(--paper-width); height:var(--paper-height); margin:24px auto; padding:var(--paper-padding);
+      color:var(--ink); background:var(--paper); box-shadow:0 18px 50px rgba(0,0,0,.36); font-family:"Times New Roman",Times,serif; overflow:hidden; }
+    .page-inner { height:100%; border:2px solid #202020; padding:var(--page-border-padding); overflow:hidden; display:flex; flex-direction:column; background:#fff; min-height:0; }
+    .page-content { flex:1; min-height:0; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-start; }
+    .content-block { break-inside:avoid; page-break-inside:avoid; margin:0 0 4.2mm; }
+    .content-block:last-child { margin-bottom:0; }
+    .algorithm-block { margin-bottom:1.8mm; }
+
+    .question { margin:0; font-size:13pt; line-height:1.38; font-weight:700; }
+    .section-title { font-size:12pt; font-weight:700; font-style:italic; margin:0 0 1.7mm; color:#111; }
+    .info-box, .algo-box { border:1px solid #d3d6dc; border-radius:5px; background:#f7f8fa; padding:3mm; font-size:12.5pt; line-height:1.35; }
+    .info-box p { margin:0 0 2mm; }
+    .info-box p:last-child { margin-bottom:0; }
+    .algo-box ol, .algo-box ul { margin:0; padding-left:5.2mm; }
+    .algo-box li { margin:0 0 1.3mm; }
+
+    .plain-code { margin:0; padding:0; white-space:pre-wrap; overflow-wrap:anywhere; word-break:normal;
+      font-family:Consolas,"Courier New",monospace; font-size:10pt; line-height:1.26; color:#111; background:transparent; border:0; }
+    .source-code-first-block, .code-line-block { margin:0; break-inside:avoid; page-break-inside:avoid; }
+    .source-code-first-block .section-title { margin-bottom:1.2mm; }
+
+    .student-footer { display:flex; justify-content:space-between; gap:10mm; border-top:1px solid #111; padding-top:2.4mm; margin-top:3mm; font-size:11.5pt; line-height:1.25; color:#111; }
+    .student-footer span { display:inline-block; min-width:44mm; border-bottom:1px solid #111; padding-left:2mm; }
+
+    .diagram-box { border:1px solid #d3d6dc; border-radius:5px; background:#fff; padding:2.6mm; }
+    .diagram-caption { margin:0 0 2mm; color:#374151; font-size:9.2pt; font-weight:700; text-align:center; }
+    .mermaid-target { height:57mm; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .mermaid-target.tall { height:89mm; }
+    .mermaid-target.short { height:43mm; }
+    .mermaid-target svg { width:100% !important; max-width:100% !important; height:100% !important; max-height:100% !important; }
+    .diagram-loading { color:#777; font-family:Consolas,"Courier New",monospace; font-size:8.7pt; }
+
+    /* ---------- fake Windows terminal (the "screenshot") ---------- */
+    .output-block { margin-top:5mm; break-inside:avoid; page-break-inside:avoid; }
+    .win-terminal { border-radius:8px; overflow:hidden; box-shadow:0 8px 28px rgba(0,0,0,.24); font-family:"Segoe UI",Tahoma,sans-serif; }
+    .win-terminal.dark { background:#0c0c0c; color:#ccc; }
+    .win-terminal.dark .win-titlebar { background:#1f1f1f; border-bottom:1px solid #333; }
+    .win-terminal.dark .win-title-text, .win-terminal.dark .win-btn { color:#999; }
+    .win-terminal.dark .t-process { color:#e5c07b; }
+    .win-terminal.dark .t-press { color:#666; }
+    .win-terminal.light { background:#fff; color:#1e1e1e; border:1px solid #d4d4d4; box-shadow:none; }
+    .win-terminal.light .win-titlebar { background:#f3f3f3; border-bottom:1px solid #e0e0e0; }
+    .win-terminal.light .win-title-text, .win-terminal.light .win-btn { color:#666; }
+    .win-terminal.light .t-process { color:#9a6a00; }
+    .win-terminal.light .t-press { color:#7a7a7a; }
+    .win-titlebar { display:flex; align-items:center; height:30px; user-select:none; }
+    .win-title-text { flex:1; font-size:11px; padding-left:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .win-btns { display:flex; height:100%; }
+    .win-btn { width:38px; height:30px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; }
+    .win-btn svg { width:10px; height:10px; }
+    .t-body { margin:0; padding:3mm 3.6mm; white-space:pre-wrap; overflow-wrap:anywhere; font-family:Consolas,"Courier New",monospace; font-size:10pt; line-height:1.34; }
+
+    /* ---------- index page ---------- */
+    .index-table { width:100%; border-collapse:collapse; font-size:12pt; line-height:1.25; }
+    .index-title { margin:0 0 3mm; text-align:center; font-size:17pt; line-height:1.2; font-weight:700; }
+    .index-subtitle { margin:0 0 4mm; text-align:center; font-size:12pt; font-weight:700; }
+    .index-table th, .index-table td { border:1px solid #cfd4dc; padding:1.2mm 2.2mm; vertical-align:middle; }
+    .index-table th { background:#f0f3f7; text-align:left; }
+    .index-table th:first-child, .index-table td:first-child { width:18mm; text-align:center; }
+    .index-table th:last-child, .index-table td:last-child { width:34mm; text-align:center; }
+    .submitted-date-cell { width:30mm; text-align:center; }
+    .signature-cell { height:6mm; }
+
+    @media (max-width:900px) { .controls { margin:12px; } .controls-head { display:block; } .input-grid { grid-template-columns:1fr; } .report-page { margin:12px 0; } }
+    @media print {
+      * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+      body { margin:0; padding:0; background:#fff; }
+      .no-print { display:none !important; }
+      .pages { padding:0; overflow:visible; }
+      .report-page { width:var(--paper-width); height:var(--paper-height); margin:0; box-shadow:none; overflow:hidden; page-break-after:always; break-after:page; }
+      .report-page:last-child { page-break-after:auto; break-after:auto; }
+    }
+  </style>
+</head>
+<body>
+  <section class="controls no-print">
+    <div class="controls-head">
+      <div>
+        <h1>{{SUBJECT}} Lab Report</h1>
+        <p>Enter student details, choose output theme, then print or save as PDF (A4, margins none, background graphics ON).</p>
+      </div>
+      <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <div class="input-grid">
+      <div class="field"><label for="nameIn">Student Name</label><input id="nameIn" type="text" placeholder="Your full name"></div>
+      <div class="field"><label for="rollIn">Roll No.</label><input id="rollIn" type="text" placeholder="Roll number"></div>
+      <div class="field"><label for="sectionIn">Section</label><input id="sectionIn" type="text" placeholder="Section"></div>
+    </div>
+    <div class="actions">
+      <label class="theme-toggle"><input id="themeIn" type="checkbox" checked><span class="switch"></span><span>Dark output theme</span></label>
+    </div>
+  </section>
+
+  <main id="pages" class="pages"></main>
+
+<!-- ===================================================================
+     ONLY THIS BLOCK CHANGES PER SUBJECT.
+     item = {
+       no, title, question,
+       theory:   [ "2-3 sentences max" ],          // optional
+       algorithm:[ "short step", ... ],            // optional
+       diagram:  { title, code, size:"short|tall" },// optional, mermaid
+       filename: "lab_1a_fcfs.c",                  // drives the fake exe path
+       code:     "...{NAME}...{ROLL}...{SECTION}...",
+       output:   "verified stdout, same tokens"
+     }
+     ==================================================================== -->
+<script type="application/json" id="report-meta">
+{
+  "subject": "{{SUBJECT}}",
+  "folder": "{{FOLDER}}",
+  "indexTitle": "Index",
+  "indexSubtitle": "",
+  "indexColumns": ["Lab No.", "Experiment / Question", "Submitted Date", "Signature"],
+  "dateCell": "2083/__/__",
+  "showPageFooter": false
+}
+</script>
+<script type="application/json" id="report-data">
+[
+  {
+    "no": "1",
+    "title": "Sample Program",
+    "question": "1. WAP to ... (question text exactly as printed on the question paper).",
+    "theory": ["Two or three sentences. What the technique is and the one property that matters."],
+    "algorithm": ["Read the input.", "Do the single thing the question asks.", "Print the result."],
+    "filename": "lab_1_sample.c",
+    "code": "#include <stdio.h>\n\nint main() {\n    printf(\"Result: 42\\n\");\n\n    printf(\"\\nLab No.: 1\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n    return 0;\n}\n",
+    "output": "Result: 42\n\nLab No.: 1\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}"
+  }
+]
+</script>
+
+<script>
+  const META = JSON.parse(document.getElementById("report-meta").textContent);
+  const REPORT_ITEMS = JSON.parse(document.getElementById("report-data").textContent);
+  let renderCycle = 0;
+
+  const esc = v => String(v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const attr = v => esc(v).replace(/"/g, "&quot;");
+
+  function getValue(id, fallback) {
+    const input = document.getElementById(id);
+    const value = input ? input.value.trim() : "";
+    return value || fallback;
+  }
+
+  function currentStudent() {
+    return {
+      name: getValue("nameIn", "______________________________"),
+      roll: getValue("rollIn", "______________"),
+      section: getValue("sectionIn", "________")
+    };
+  }
+
+  const currentTheme = () => document.getElementById("themeIn").checked ? "dark" : "light";
+  const buildTokens = s => ({ "{NAME}": s.name, "{ROLL}": s.roll, "{SECTION}": s.section });
+
+  function fill(text, tokens) {
+    let value = String(text || "");
+    Object.keys(tokens).forEach(key => { value = value.split(key).join(tokens[key]); });
+    return value;
+  }
+
+  function slug(text) {
+    const clean = String(text || "student").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+    return clean || "student";
+  }
+
+  function executableName(filename) {
+    const clean = String(filename || "program").replace(/\.[^/.\\]+$/, "");
+    return `${clean || "program"}.exe`;
+  }
+
+  function makeBlock(html, extraClass) {
+    const block = document.createElement("div");
+    block.className = "content-block" + (extraClass ? " " + extraClass : "");
+    block.innerHTML = html;
+    return block;
+  }
+
+  const studentFooterHtml = s => `
+    <div class="student-footer">
+      <div>Name: <span>${esc(s.name)}</span></div>
+      <div>Roll No.: <span>${esc(s.roll)}</span></div>
+    </div>`;
+
+  function createPage(container, student, showFooter) {
+    const page = document.createElement("section");
+    page.className = "report-page";
+    const inner = document.createElement("div");
+    inner.className = "page-inner";
+    inner.innerHTML = `<div class="page-content"></div>${showFooter ? studentFooterHtml(student) : ""}`;
+    page.appendChild(inner);
+    container.appendChild(page);
+    return inner.querySelector(".page-content");
+  }
+
+  // Appends blocks one by one; when a block overflows the page it starts a new one.
+  function paginate(container, student, showFooter, blocks) {
+    let content = createPage(container, student, showFooter);
+    blocks.forEach(block => {
+      content.appendChild(block);
+      if (content.scrollHeight > content.clientHeight + 2) {
+        content.removeChild(block);
+        content = createPage(container, student, showFooter);
+        content.appendChild(block);
+      }
+    });
+  }
+
+  const theoryHtml = item => (!item.theory || !item.theory.length) ? "" : `
+    <div class="section-title">Theory:</div>
+    <div class="info-box">${item.theory.map(p => `<p>${esc(p)}</p>`).join("")}</div>`;
+
+  const algorithmHtml = item => (!item.algorithm || !item.algorithm.length) ? "" : `
+    <div class="section-title">Algorithm / Steps:</div>
+    <div class="algo-box"><ol>${item.algorithm.map(s => `<li>${esc(s)}</li>`).join("")}</ol></div>`;
+
+  const diagramHtml = d => `
+    <div class="section-title">Diagram:</div>
+    <div class="diagram-box">
+      <div class="diagram-caption">${esc(d.title || "Diagram")}</div>
+      <div class="mermaid-target${d.size ? " " + d.size : ""}" data-code="${attr(encodeURIComponent(d.code))}">
+        <div class="diagram-loading">Rendering diagram...</div>
+      </div>
+    </div>`;
+
+  const codeLineHtml = (line, index) =>
+    `${index === 0 ? '<div class="section-title">Source Code:</div>' : ""}<pre class="plain-code">${line === "" ? "&nbsp;" : esc(line)}</pre>`;
+
+  // Stable pseudo-random runtime so the same program always shows the same number.
+  function getExecutionTime(seedStr) {
+    let hash = 0;
+    for (let i = 0; i < seedStr.length; i++) hash = seedStr.charCodeAt(i) + ((hash << 5) - hash);
+    const absHash = Math.abs(hash);
+    return (((5.0 + (absHash % 145)) / 1000.0) + (absHash % 100) / 10000.0).toFixed(4);
+  }
+
+  function terminalBlockHtml(item, outputText, theme, part = {}) {
+    const title = `C:\\${slug(getValue("nameIn", "student"))}\\${META.folder}\\${executableName(item.filename)}`;
+    const time = getExecutionTime(item.filename || item.no || META.folder);
+    const tail = part.last === false ? "" : `${outputText.trim() ? "\n\n" : ""}<span class="t-process">Process exited after ${time} seconds with return value 0</span>
+<span class="t-press">Press any key to continue . . .</span>`;
+    return `
+      ${part.first === false ? "" : '<div class="section-title">Output:</div>'}
+      <div class="win-terminal ${theme}">
+        <div class="win-titlebar">
+          <div class="win-title-text">${esc(title)}</div>
+          <div class="win-btns">
+            <div class="win-btn"><svg viewBox="0 0 10 1" fill="currentColor"><rect width="10" height="1"></rect></svg></div>
+            <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="9" height="9"></rect></svg></div>
+            <div class="win-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="1" y1="1" x2="9" y2="9"></line><line x1="9" y1="1" x2="1" y2="9"></line></svg></div>
+          </div>
+        </div>
+        <pre class="t-body">${esc(outputText)}${tail}</pre>
+      </div>`;
+  }
+
+  // A terminal taller than one sheet would be clipped, so long runs are shown as
+  // consecutive terminal windows instead.
+  const MAX_OUTPUT_LINES = 40;
+  function outputChunks(text) {
+    const lines = text.split("\n");
+    if (lines.length <= MAX_OUTPUT_LINES) return [text];
+    const chunks = [];
+    for (let i = 0; i < lines.length; i += MAX_OUTPUT_LINES) {
+      chunks.push(lines.slice(i, i + MAX_OUTPUT_LINES).join("\n"));
+    }
+    return chunks;
+  }
+
+  function buildItemBlocks(item, tokens, theme) {
+    const blocks = [makeBlock(`<p class="question">${esc(item.question)}</p>`)];
+    if (item.diagram) blocks.push(makeBlock(diagramHtml(item.diagram)));
+    const theory = theoryHtml(item);
+    if (theory) blocks.push(makeBlock(theory));
+    const algorithm = algorithmHtml(item);
+    if (algorithm) blocks.push(makeBlock(algorithm, "algorithm-block"));
+
+    if (item.code) {
+      // One block per line so long programs flow across pages instead of overflowing.
+      fill(item.code, tokens).split("\n").forEach((line, index) => {
+        blocks.push(makeBlock(codeLineHtml(line, index), index === 0 ? "source-code-first-block" : "code-line-block"));
+      });
+    }
+    if (item.output && item.output.trim()) {
+      const chunks = outputChunks(fill(item.output, tokens));
+      chunks.forEach((chunk, index) => {
+        blocks.push(makeBlock(
+          terminalBlockHtml(item, chunk, theme, { first: index === 0, last: index === chunks.length - 1 }),
+          "output-block"));
+      });
+    }
+    return blocks;
+  }
+
+  const buildIndexBlocks = () => [makeBlock(`
+    <h2 class="index-title">${esc(META.indexTitle)}</h2>
+    ${META.indexSubtitle ? `<div class="index-subtitle">${META.indexSubtitle}</div>` : ""}
+    <table class="index-table">
+      <thead><tr>${META.indexColumns.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead>
+      <tbody>${REPORT_ITEMS.map(item => `
+        <tr>
+          <td>${esc(item.no)}</td>
+          <td>${esc(item.title)}</td>
+          <td class="submitted-date-cell">${esc(META.dateCell)}</td>
+          <td class="signature-cell"></td>
+        </tr>`).join("")}</tbody>
+    </table>`)];
+
+  async function renderMermaidDiagrams(cycle) {
+    const targets = Array.from(document.querySelectorAll(".mermaid-target"));
+    if (!targets.length) return;
+    if (!window.mermaid) {
+      targets.forEach(t => { t.innerHTML = `<pre class="diagram-loading">${esc(decodeURIComponent(t.dataset.code || ""))}</pre>`; });
+      return;
+    }
+    mermaid.initialize({
+      startOnLoad: false, securityLevel: "loose", theme: "base",
+      flowchart: { htmlLabels: true, curve: "basis", useMaxWidth: true },
+      themeVariables: {
+        fontFamily: "Times New Roman", primaryColor: "#ffffff", primaryTextColor: "#111111",
+        primaryBorderColor: "#555555", lineColor: "#333333", secondaryColor: "#f7f8fa", tertiaryColor: "#fff7ed"
+      }
+    });
+    for (let i = 0; i < targets.length; i++) {
+      if (cycle !== renderCycle) return;
+      const code = decodeURIComponent(targets[i].dataset.code || "");
+      try {
+        const result = await mermaid.render(`lab_mermaid_${cycle}_${i}`, code);
+        targets[i].innerHTML = result.svg;
+      } catch (error) {
+        targets[i].innerHTML = `<pre class="diagram-loading">${esc(code)}</pre>`;
+      }
+    }
+  }
+
+  function renderReport() {
+    renderCycle++;
+    const cycle = renderCycle;
+    const student = currentStudent();
+    const tokens = buildTokens(student);
+    const theme = currentTheme();
+    const container = document.getElementById("pages");
+    container.innerHTML = "";
+
+    paginate(container, student, false, buildIndexBlocks());
+    REPORT_ITEMS.forEach(item => {
+      paginate(container, student, META.showPageFooter, buildItemBlocks(item, tokens, theme));
+    });
+    renderMermaidDiagrams(cycle);
+  }
+
+  ["nameIn", "rollIn", "sectionIn", "themeIn"].forEach(id => {
+    document.getElementById(id).addEventListener("input", renderReport);
+    document.getElementById(id).addEventListener("change", renderReport);
+  });
+
+  renderReport();
+</script>
+</body>
+</html>
