@@ -69,16 +69,18 @@
   .view-panel { display:none; }
   .view-panel.active { display:block; }
 
-  .output-view { width:var(--paper-w); min-height:var(--paper-h); margin:20px auto 40px; padding:10mm; background:#fff; color:#111; box-shadow:0 16px 45px rgba(0,0,0,.38); }
-  .output-content { display:flex; flex-direction:column; gap:6mm; }
-  .output-item { display:flex; flex-direction:column; gap:3mm; break-inside:avoid-page; page-break-inside:avoid; }
+  .output-view { width:100%; margin:0; padding:8px 0 30px; background:transparent; color:#111; box-shadow:none; }
+  .output-content { width:100%; }
+  .output-sheet { position:relative; width:var(--paper-w); height:var(--paper-h); margin:20px auto; padding:10mm; background:#fff; color:#111; box-shadow:0 16px 45px rgba(0,0,0,.38); overflow:hidden; }
+  .output-page-body { width:100%; height:100%; overflow:hidden; }
+  .output-block { width:100%; margin:0 0 5mm; break-inside:avoid-page; page-break-inside:avoid; }
+  .output-block:last-child { margin-bottom:0; }
   .print-section-label { margin:0 0 1.8mm; font-family:"Times New Roman",Times,serif; font-size:12pt; line-height:1.2; font-weight:700; color:#111; }
-  .output-diagram .diagram-frame { width:100%; height:auto; min-height:0; max-height:92mm; padding:0; overflow:hidden; }
-  .output-diagram .diagram-frame img { display:block; width:auto; height:auto; max-width:100%; max-height:92mm; margin:0 auto; object-fit:contain; }
+  .output-diagram .diagram-frame { width:100%; height:auto; min-height:0; max-height:88mm; padding:0; overflow:hidden; }
+  .output-diagram .diagram-frame img { display:block; width:auto; height:auto; max-width:100%; max-height:88mm; margin:0 auto; object-fit:contain; }
   .output-terminal .terminal { margin:0; width:100%; max-width:100%; box-shadow:none; }
   .output-terminal .terminal-titlebar { display:none !important; }
   .output-terminal .terminal pre { min-height:0; padding:2.2mm 2.5mm; white-space:pre-wrap; overflow-wrap:anywhere; word-break:normal; font-size:7.2pt; line-height:1.18; }
-
   .handwrite-view { padding:8px 0 30px; }
   #handwriteContent { width:100%; }
   .handwrite-sheet { position:relative; width:var(--paper-w); height:var(--paper-h); margin:20px auto; background:#fff; color:#111; box-shadow:0 16px 45px rgba(0,0,0,.38); font-family:"Times New Roman",Times,serif; overflow:hidden; }
@@ -102,17 +104,15 @@
   @media print {
     #reportView, #outputView, #handwriteView { display:none !important; }
 
-    body.output-mode #outputView { display:block !important; width:100%; max-width:none; min-height:0; margin:0; padding:10mm; box-shadow:none; }
-    body.output-mode #outputView .output-content { display:block; }
-    body.output-mode #outputView .output-item { display:block; margin:0 0 5mm; break-inside:auto; page-break-inside:auto; }
-    body.output-mode #outputView .output-item:last-child { margin-bottom:0; }
-    body.output-mode #outputView .output-diagram { break-inside:avoid-page; page-break-inside:avoid; }
-    body.output-mode #outputView .output-terminal { margin-top:3mm; break-inside:avoid-page; page-break-inside:avoid; }
-    body.output-mode #outputView .output-diagram .diagram-frame,
-    body.output-mode #outputView .output-diagram .diagram-frame img { max-height:88mm; }
-    body.output-mode #outputView .terminal { break-inside:avoid-page; page-break-inside:avoid; }
-    body.output-mode #outputView .terminal pre { font-size:7pt; line-height:1.16; }
-
+    body.output-mode #outputView { display:block !important; width:100%; margin:0; padding:0; background:#fff; box-shadow:none; }
+    body.output-mode #outputContent { width:100%; margin:0; padding:0; }
+    body.output-mode .output-sheet { width:210mm; height:297mm; margin:0; padding:10mm; box-shadow:none; overflow:hidden; page-break-after:always; break-after:page; }
+    body.output-mode .output-sheet:last-child { page-break-after:auto; break-after:auto; }
+    body.output-mode .output-block,
+    body.output-mode .output-diagram,
+    body.output-mode .output-terminal,
+    body.output-mode .output-terminal .terminal { break-inside:avoid-page; page-break-inside:avoid; }
+    body.output-mode .output-terminal .terminal pre { font-size:7pt; line-height:1.16; }
     body.handwrite-mode #handwriteView { display:block !important; width:100%; margin:0; padding:0; }
     body.handwrite-mode #handwriteContent { width:100%; margin:0; padding:0; }
     body.handwrite-mode .handwrite-sheet { width:210mm; height:297mm; margin:0; box-shadow:none; overflow:hidden; page-break-after:always; break-after:page; }
@@ -998,37 +998,57 @@ Trace complete.</pre>
         return handwriteSources;
       }
 
+      function createOutputSheet() {
+        const sheet = document.createElement('section');
+        sheet.className = 'output-sheet';
+        const body = document.createElement('div');
+        body.className = 'output-page-body';
+        sheet.appendChild(body);
+        outputContent.appendChild(sheet);
+        return body;
+      }
+
+      function addOutputBlock(body, block) {
+        block.classList.add('output-block');
+        body.appendChild(block);
+        if (body.scrollHeight > body.clientHeight + 2) {
+          body.removeChild(block);
+          body = createOutputSheet();
+          body.appendChild(block);
+          if (body.scrollHeight > body.clientHeight + 2) {
+            console.warn('An output block is taller than one A4 page.');
+          }
+        }
+        return body;
+      }
+
       function buildOutput() {
         if (outputContent.dataset.ready === 'true') return;
+        outputContent.innerHTML = '';
+        let body = createOutputSheet();
 
         reportView.querySelectorAll('.report-page').forEach((page) => {
           const diagramImage = page.querySelector('.diagram-part .diagram-frame img');
           const terminal = page.querySelector('.result-part .terminal');
-          if (!diagramImage && !terminal) return;
-
-          const item = document.createElement('section');
-          item.className = 'output-item';
 
           if (diagramImage) {
             const diagram = document.createElement('div');
             diagram.className = 'output-diagram';
             diagram.appendChild(diagramImage.closest('.diagram-frame').cloneNode(true));
-            item.appendChild(diagram);
+            body = addOutputBlock(body, diagram);
           }
 
           if (terminal) {
             const result = document.createElement('div');
             result.className = 'output-terminal';
             result.appendChild(terminal.cloneNode(true));
-            item.appendChild(result);
+            body = addOutputBlock(body, result);
           }
-
-          outputContent.appendChild(item);
         });
 
+        if (!outputContent.querySelector('.output-block')) outputContent.innerHTML = '';
         outputContent.dataset.ready = 'true';
       }
-
       function createHandwriteSheet(number, showNumber = false) {
         const sheet = document.createElement('section');
         sheet.className = 'handwrite-sheet';
@@ -1146,8 +1166,6 @@ Trace complete.</pre>
         handwriteContent.dataset.ready = 'true';
       }
       function showView(viewId) {
-        buildOutput();
-
         panels.forEach((panel) => {
           const active = panel.id === viewId;
           panel.classList.toggle('active', active);
@@ -1157,6 +1175,7 @@ Trace complete.</pre>
         document.body.classList.toggle('output-mode', viewId === 'outputView');
         document.body.classList.toggle('handwrite-mode', viewId === 'handwriteView');
 
+        if (viewId === 'outputView') buildOutput();
         if (viewId === 'handwriteView') buildHandwrite();
 
         tabs.forEach((tab) => {
@@ -1184,7 +1203,6 @@ Trace complete.</pre>
       // Capture reference heights while the report view is visible. The actual
       // handwriting A4 sheets are built only after that tab becomes visible.
       captureHandwriteSources();
-      buildOutput();
 
       const initialView = location.hash === '#handwrite'
         ? 'handwriteView'
