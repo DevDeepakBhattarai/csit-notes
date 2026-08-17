@@ -84,14 +84,15 @@
   .handwrite-sheet { position:relative; width:var(--paper-w); height:var(--paper-h); margin:20px auto; background:#fff; color:#111; box-shadow:0 16px 45px rgba(0,0,0,.38); font-family:"Times New Roman",Times,serif; overflow:hidden; }
   .handwrite-sheet::before { content:""; position:absolute; inset:10mm; border:1px solid #444; pointer-events:none; z-index:2; }
   .handwrite-number { position:absolute; top:13mm; left:15mm; z-index:4; font-family:"Times New Roman",Times,serif; font-size:13pt; line-height:1; font-weight:700; color:#111; }
-  .handwrite-page-body { position:absolute; top:23mm; right:15mm; bottom:15mm; left:15mm; z-index:3; overflow:hidden; }
-  .handwrite-blank { width:100%; min-height:0; }
-  .handwrite-diagram { margin:0 0 4mm; break-inside:avoid-page; page-break-inside:avoid; }
+  .handwrite-page-body { position:absolute; top:23mm; right:15mm; bottom:15mm; left:15mm; z-index:3; overflow:hidden; display:flex; flex-direction:column; }
+  .handwrite-blank { width:100%; min-height:0; flex:0 0 auto; }
+  .handwrite-diagram { flex:0 0 auto; margin:0 0 4mm; break-inside:avoid-page; page-break-inside:avoid; }
   .handwrite-diagram .diagram-frame { width:100%; height:58mm; display:flex; align-items:center; justify-content:center; overflow:hidden; }
   .handwrite-diagram .diagram-frame img { display:block; max-width:100%; max-height:56mm; object-fit:contain; }
-  .handwrite-terminal { margin-top:2mm; break-inside:avoid-page; page-break-inside:avoid; }
+  .handwrite-terminal { flex:0 0 auto; margin-top:2mm; break-inside:avoid-page; page-break-inside:avoid; }
   .handwrite-terminal .terminal { margin:0; width:100%; max-width:100%; box-shadow:none; }
   .handwrite-terminal .terminal-titlebar { display:none !important; }
+  .handwrite-bottom-anchor { margin-top:auto !important; }
   @media (max-width:900px) {
     .toolbar { align-items:flex-start; }
     .toolbar-actions { width:100%; justify-content:flex-start; }
@@ -1038,16 +1039,18 @@ Trace complete.</pre>
         outputContent.dataset.ready = 'true';
       }
 
-      function createHandwriteSheet(number) {
+      function createHandwriteSheet(number, showNumber = false) {
         const sheet = document.createElement('section');
         sheet.className = 'handwrite-sheet';
         sheet.dataset.experiment = number;
         sheet.setAttribute('aria-label', `Handwriting print page for experiment ${number}`);
 
-        const numberLabel = document.createElement('div');
-        numberLabel.className = 'handwrite-number';
-        numberLabel.textContent = number;
-        sheet.appendChild(numberLabel);
+        if (showNumber) {
+          const numberLabel = document.createElement('div');
+          numberLabel.className = 'handwrite-number';
+          numberLabel.textContent = number;
+          sheet.appendChild(numberLabel);
+        }
 
         const body = document.createElement('div');
         body.className = 'handwrite-page-body';
@@ -1060,7 +1063,7 @@ Trace complete.</pre>
         body.appendChild(block);
         if (body.scrollHeight > body.clientHeight + 2) {
           body.removeChild(block);
-          body = createHandwriteSheet(number);
+          body = createHandwriteSheet(number, false);
           body.appendChild(block);
           if (body.scrollHeight > body.clientHeight + 2) {
             console.warn(`Handwriting block is taller than one page for experiment ${number}.`);
@@ -1078,7 +1081,7 @@ Trace complete.</pre>
         while (remaining > 0) {
           let available = body.clientHeight - handwriteUsedHeight(body);
           if (available <= 3) {
-            body = createHandwriteSheet(number);
+            body = createHandwriteSheet(number, false);
             available = body.clientHeight - handwriteUsedHeight(body);
           }
 
@@ -1090,12 +1093,12 @@ Trace complete.</pre>
 
           if (body.scrollHeight > body.clientHeight + 2) {
             body.removeChild(blank);
-            body = createHandwriteSheet(number);
+            body = createHandwriteSheet(number, false);
             continue;
           }
 
           remaining -= chunkHeight;
-          if (remaining > 0) body = createHandwriteSheet(number);
+          if (remaining > 0) body = createHandwriteSheet(number, false);
         }
         return body;
       }
@@ -1105,15 +1108,18 @@ Trace complete.</pre>
         handwriteContent.innerHTML = '';
 
         captureHandwriteSources().forEach(({ page, number, printedTextHeight }) => {
-          // Every experiment begins on a fresh physical A4 sheet. Continuation
-          // sheets repeat the experiment number so the handwritten pages stay easy to track.
-          let body = createHandwriteSheet(number);
+          // Every experiment begins on a fresh physical A4 sheet. Only the first
+          // sheet shows the experiment number; continuation sheets stay unnumbered.
+          let body = createHandwriteSheet(number, true);
 
           // Preserve the requested generous handwriting area: exactly twice the
           // rendered vertical space of Question + Requirement + Theory + Steps.
           body = addHandwriteBlankSpace(body, printedTextHeight * 2, number);
 
           const diagramImage = page.querySelector('.diagram-part .diagram-frame img');
+          const terminal = page.querySelector('.result-part .terminal');
+          const printedBlockCount = (diagramImage ? 1 : 0) + (terminal ? 1 : 0);
+
           if (diagramImage) {
             const diagram = document.createElement('div');
             diagram.className = 'handwrite-diagram';
@@ -1122,10 +1128,14 @@ Trace complete.</pre>
             diagramLabel.textContent = 'Diagram';
             diagram.appendChild(diagramLabel);
             diagram.appendChild(diagramImage.closest('.diagram-frame').cloneNode(true));
+            const originalBody = body;
+            const hadBlankAbove = Boolean(originalBody.querySelector('.handwrite-blank'));
             body = addHandwriteAtomicBlock(body, diagram, number);
+            if (printedBlockCount === 1 && body === originalBody && hadBlankAbove) {
+              diagram.classList.add('handwrite-bottom-anchor');
+            }
           }
 
-          const terminal = page.querySelector('.result-part .terminal');
           if (terminal) {
             const result = document.createElement('div');
             result.className = 'handwrite-terminal';
@@ -1134,7 +1144,12 @@ Trace complete.</pre>
             resultLabel.textContent = 'Result';
             result.appendChild(resultLabel);
             result.appendChild(terminal.cloneNode(true));
+            const originalBody = body;
+            const hadBlankAbove = Boolean(originalBody.querySelector('.handwrite-blank'));
             body = addHandwriteAtomicBlock(body, result, number);
+            if (printedBlockCount === 1 && body === originalBody && hadBlankAbove) {
+              result.classList.add('handwrite-bottom-anchor');
+            }
           }
         });
 
