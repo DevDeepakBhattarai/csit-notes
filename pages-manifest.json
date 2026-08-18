@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-18T04:12:58.286355+00:00",
-  "count": 12,
+  "generatedAt": "2026-08-18T05:10:21.965823+00:00",
+  "count": 16,
   "files": [
     {
       "path": "3rd Sem/Computer Architecture/Report/CSC213_CA_PDF_Generator_FIXED.html",
@@ -47,6 +47,38 @@
       "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized.html",
       "name": "DBMS_Lab_Report_Part2_Optimized.html",
       "title": "DBMS Lab Report - Labs 4 to 6 (Optimized)",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_A_Output.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_A_Output.html",
+      "name": "DBMS_Lab_Report_Part2_Optimized_Group_A_Output.html",
+      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized Group A - Output Printing)",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_A_Writing.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_A_Writing.html",
+      "name": "DBMS_Lab_Report_Part2_Optimized_Group_A_Writing.html",
+      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized Group A - Writing)",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Output.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Output.html",
+      "name": "DBMS_Lab_Report_Part2_Optimized_Group_B_Output.html",
+      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized Group B - Output Printing)",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Writing.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Writing.html",
+      "name": "DBMS_Lab_Report_Part2_Optimized_Group_B_Writing.html",
+      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized Group B - Writing)",
       "directory": "4th Sem/DBMS",
       "topLevel": "4th Sem"
     },
