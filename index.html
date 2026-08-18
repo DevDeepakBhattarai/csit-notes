@@ -1,0 +1,422 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse and open CSIT lab reports and study pages directly in the browser.">
+  <title>CSIT Notes</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f6f8;
+      --panel: rgba(255,255,255,.86);
+      --panel-solid: #fff;
+      --text: #18202a;
+      --muted: #687385;
+      --line: #dfe4ea;
+      --soft: #edf1f5;
+      --accent: #2d63d7;
+      --accent-strong: #174bb8;
+      --shadow: 0 18px 50px rgba(38, 49, 66, .10);
+      --radius: 20px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1117;
+        --panel: rgba(21,26,34,.88);
+        --panel-solid: #151a22;
+        --text: #edf1f6;
+        --muted: #9aa6b6;
+        --line: #2a313c;
+        --soft: #1d232d;
+        --accent: #77a2ff;
+        --accent-strong: #9ab9ff;
+        --shadow: 0 18px 50px rgba(0,0,0,.28);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 13% -10%, rgba(45,99,215,.14), transparent 32rem),
+        radial-gradient(circle at 85% 4%, rgba(109,79,235,.08), transparent 30rem),
+        var(--bg);
+    }
+    button, input { font: inherit; }
+    a { color: inherit; }
+
+    .shell { width: min(1400px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 52px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 26px; }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .brand-mark {
+      width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px;
+      background: linear-gradient(135deg, #2d63d7, #6d4feb); color: white; font-weight: 900;
+      letter-spacing: -.05em; box-shadow: 0 10px 26px rgba(45,99,215,.24);
+    }
+    .brand-copy strong { display: block; font-size: 18px; letter-spacing: -.02em; }
+    .brand-copy span { display: block; color: var(--muted); margin-top: 2px; font-size: 13px; }
+    .repo-link {
+      display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--muted);
+      border: 1px solid var(--line); background: var(--panel); padding: 9px 12px; border-radius: 12px;
+    }
+    .repo-link:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+
+    .hero {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end;
+      padding: 30px; border: 1px solid var(--line); border-radius: 26px; background: var(--panel);
+      box-shadow: var(--shadow); backdrop-filter: blur(18px); margin-bottom: 22px;
+    }
+    .eyebrow { color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 9px; }
+    h1 { margin: 0; font-size: clamp(32px, 5vw, 54px); line-height: .98; letter-spacing: -.055em; }
+    .hero p { max-width: 680px; margin: 14px 0 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
+    .stat { min-width: 120px; padding: 17px 19px; border-radius: 18px; background: var(--soft); border: 1px solid var(--line); }
+    .stat strong { display: block; font-size: 26px; letter-spacing: -.04em; }
+    .stat span { color: var(--muted); font-size: 12px; }
+
+    .toolbar { display: grid; grid-template-columns: minmax(240px, 1fr) auto; gap: 12px; margin-bottom: 22px; }
+    .search-wrap { position: relative; }
+    .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    #search {
+      width: 100%; min-height: 48px; padding: 0 44px 0 43px; color: var(--text); border: 1px solid var(--line);
+      border-radius: 14px; background: var(--panel-solid); outline: none; box-shadow: 0 3px 14px rgba(0,0,0,.03);
+    }
+    #search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+    #clearSearch {
+      display: none; position: absolute; right: 8px; top: 8px; width: 32px; height: 32px; border: 0;
+      border-radius: 9px; color: var(--muted); background: transparent; cursor: pointer;
+    }
+    #clearSearch:hover { background: var(--soft); color: var(--text); }
+    .home-button {
+      border: 1px solid var(--line); border-radius: 14px; background: var(--panel-solid); color: var(--text); padding: 0 15px;
+      font-weight: 700; cursor: pointer;
+    }
+    .home-button:hover { border-color: var(--accent); }
+
+    .workspace { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 18px; align-items: start; }
+    .sidebar, .content-panel { border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+    .sidebar { position: sticky; top: 18px; padding: 14px; }
+    .sidebar-title { padding: 7px 10px 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; }
+    .folder-tree { display: grid; gap: 4px; }
+    .tree-button {
+      width: 100%; display: flex; align-items: center; gap: 9px; border: 0; border-radius: 10px; background: transparent;
+      color: var(--muted); text-align: left; padding: 9px 10px; cursor: pointer;
+    }
+    .tree-button:hover { background: var(--soft); color: var(--text); }
+    .tree-button.active { color: var(--accent-strong); background: color-mix(in srgb, var(--accent) 12%, transparent); font-weight: 750; }
+    .tree-button .count { margin-left: auto; font-size: 11px; color: var(--muted); }
+    .tree-indent { padding-left: 16px; border-left: 1px solid var(--line); margin-left: 17px; }
+
+    .content-panel { padding: 22px; min-height: 420px; }
+    .breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+    .crumb { border: 0; background: transparent; padding: 0; color: inherit; cursor: pointer; }
+    .crumb:hover { color: var(--accent); }
+    .content-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .content-heading h2 { margin: 0; font-size: 24px; letter-spacing: -.035em; }
+    .content-heading span { color: var(--muted); font-size: 13px; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .folder-card, .file-card {
+      position: relative; min-width: 0; padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel-solid);
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .folder-card:hover, .file-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 42%, var(--line)); box-shadow: 0 12px 26px rgba(0,0,0,.07); }
+    .folder-card { display: flex; align-items: center; gap: 13px; cursor: pointer; }
+    .folder-icon { width: 42px; height: 42px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 12px; background: var(--soft); font-size: 20px; }
+    .folder-card strong, .file-card h3 { overflow-wrap: anywhere; }
+    .folder-card strong { display: block; margin-bottom: 3px; }
+    .folder-card small { color: var(--muted); }
+    .arrow { margin-left: auto; color: var(--muted); font-size: 20px; }
+
+    .file-card { display: flex; flex-direction: column; min-height: 158px; }
+    .file-meta { display: flex; align-items: center; gap: 7px; color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+    .file-card h3 { margin: 10px 0 8px; font-size: 17px; line-height: 1.25; letter-spacing: -.025em; }
+    .file-path { color: var(--muted); font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; margin-bottom: 14px; }
+    .open-link {
+      margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 7px; text-decoration: none; color: var(--accent-strong);
+      font-size: 13px; font-weight: 800;
+    }
+    .open-link::after { content: '↗'; font-size: 15px; }
+    .open-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    .empty { text-align: center; color: var(--muted); padding: 64px 18px; }
+    .empty strong { display: block; color: var(--text); font-size: 18px; margin-bottom: 7px; }
+    .loading { display: grid; place-items: center; min-height: 350px; color: var(--muted); }
+    .error { max-width: 580px; margin: 70px auto; text-align: center; color: var(--muted); line-height: 1.6; }
+    .error strong { color: var(--text); display: block; font-size: 19px; margin-bottom: 6px; }
+    footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 24px; }
+
+    @media (max-width: 880px) {
+      .shell { width: min(100% - 20px, 720px); padding-top: 18px; }
+      .hero { grid-template-columns: 1fr; padding: 24px; }
+      .stat { display: inline-block; min-width: 0; justify-self: start; }
+      .workspace { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .folder-tree { display: flex; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+      .tree-indent { display: contents; }
+      .tree-button { width: auto; flex: 0 0 auto; border: 1px solid var(--line); }
+      .tree-button .count { margin-left: 6px; }
+    }
+    @media (max-width: 620px) {
+      .topbar { align-items: flex-start; }
+      .repo-link span { display: none; }
+      .hero { border-radius: 20px; padding: 21px; }
+      .hero p { font-size: 14px; }
+      .toolbar { grid-template-columns: 1fr auto; }
+      .grid { grid-template-columns: 1fr; }
+      .content-panel { padding: 16px; }
+      .content-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <a class="brand" href="#" aria-label="CSIT Notes home">
+        <div class="brand-mark">CN</div>
+        <div class="brand-copy"><strong>CSIT Notes</strong><span>Browser-ready lab resources</span></div>
+      </a>
+      <a class="repo-link" href="https://github.com/DevDeepakBhattarai/csit-notes" target="_blank" rel="noopener">
+        <span>View on GitHub</span> ↗
+      </a>
+    </div>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">No downloads required</div>
+        <h1>Open the notes.<br>Use them instantly.</h1>
+        <p>Browse semester folders and launch the existing interactive HTML reports directly from the web. New HTML pages are discovered automatically whenever the repository is deployed.</p>
+      </div>
+      <div class="stat"><strong id="pageCount">—</strong><span>HTML pages available</span></div>
+    </section>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="search" type="search" autocomplete="off" placeholder="Search reports, subjects, folders…" aria-label="Search HTML pages">
+        <button id="clearSearch" aria-label="Clear search">×</button>
+      </div>
+      <button class="home-button" id="homeButton">Home</button>
+    </div>
+
+    <section class="workspace">
+      <aside class="sidebar">
+        <div class="sidebar-title">Folders</div>
+        <nav id="folderTree" class="folder-tree" aria-label="Folder navigation"></nav>
+      </aside>
+
+      <section class="content-panel" id="contentPanel">
+        <div class="loading">Loading notes…</div>
+      </section>
+    </section>
+
+    <footer>CSIT Notes · Served with GitHub Pages</footer>
+  </main>
+
+  <script>
+    const state = { files: [], selected: '', query: '' };
+    const tree = { name: 'All Notes', path: '', children: new Map(), files: [] };
+    const folderTreeEl = document.getElementById('folderTree');
+    const contentEl = document.getElementById('contentPanel');
+    const searchEl = document.getElementById('search');
+    const clearSearchEl = document.getElementById('clearSearch');
+
+    function folderIcon(name) {
+      if (/^\d+(st|nd|rd|th) Sem$/i.test(name)) return '◫';
+      if (/print/i.test(name)) return '▤';
+      return '□';
+    }
+
+    function buildTree(files) {
+      for (const file of files) {
+        const parts = file.directory ? file.directory.split('/') : [];
+        let node = tree;
+        for (const part of parts) {
+          if (!node.children.has(part)) {
+            const path = node.path ? `${node.path}/${part}` : part;
+            node.children.set(part, { name: part, path, children: new Map(), files: [] });
+          }
+          node = node.children.get(part);
+        }
+        node.files.push(file);
+      }
+    }
+
+    function countFiles(node) {
+      let count = node.files.length;
+      for (const child of node.children.values()) count += countFiles(child);
+      return count;
+    }
+
+    function findNode(path) {
+      if (!path) return tree;
+      let node = tree;
+      for (const part of path.split('/')) {
+        node = node.children.get(part);
+        if (!node) return tree;
+      }
+      return node;
+    }
+
+    function navigate(path) {
+      state.query = '';
+      searchEl.value = '';
+      clearSearchEl.style.display = 'none';
+      state.selected = path;
+      const encoded = path ? path.split('/').map(encodeURIComponent).join('/') : '';
+      if (encoded) history.replaceState(null, '', `#${encoded}`);
+      else history.replaceState(null, '', location.pathname + location.search);
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function makeTreeButton(node, depth = 0) {
+      const wrapper = document.createElement('div');
+      const button = document.createElement('button');
+      button.className = `tree-button${state.selected === node.path && !state.query ? ' active' : ''}`;
+      button.innerHTML = `<span aria-hidden="true">${folderIcon(node.name)}</span>`;
+      const label = document.createElement('span');
+      label.textContent = node.name;
+      const count = document.createElement('span');
+      count.className = 'count';
+      count.textContent = countFiles(node);
+      button.append(label, count);
+      button.addEventListener('click', () => navigate(node.path));
+      wrapper.appendChild(button);
+
+      if (node.children.size && depth < 1) {
+        const childWrap = document.createElement('div');
+        childWrap.className = 'tree-indent';
+        for (const child of node.children.values()) childWrap.appendChild(makeTreeButton(child, depth + 1));
+        wrapper.appendChild(childWrap);
+      }
+      return wrapper;
+    }
+
+    function renderTree() {
+      folderTreeEl.replaceChildren();
+      const all = { ...tree, name: 'All Notes' };
+      folderTreeEl.appendChild(makeTreeButton(all));
+      for (const child of tree.children.values()) folderTreeEl.appendChild(makeTreeButton(child));
+    }
+
+    function createBreadcrumbs(path) {
+      const wrap = document.createElement('div');
+      wrap.className = 'breadcrumbs';
+      const home = document.createElement('button');
+      home.className = 'crumb'; home.textContent = 'All Notes'; home.addEventListener('click', () => navigate(''));
+      wrap.appendChild(home);
+      let current = '';
+      for (const part of path ? path.split('/') : []) {
+        const sep = document.createElement('span'); sep.textContent = '/'; wrap.appendChild(sep);
+        current = current ? `${current}/${part}` : part;
+        const target = current;
+        const crumb = document.createElement('button');
+        crumb.className = 'crumb'; crumb.textContent = part; crumb.addEventListener('click', () => navigate(target));
+        wrap.appendChild(crumb);
+      }
+      return wrap;
+    }
+
+    function createFolderCard(node) {
+      const card = document.createElement('article');
+      card.className = 'folder-card'; card.tabIndex = 0; card.setAttribute('role', 'button');
+      const icon = document.createElement('div'); icon.className = 'folder-icon'; icon.textContent = folderIcon(node.name);
+      const copy = document.createElement('div');
+      const title = document.createElement('strong'); title.textContent = node.name;
+      const meta = document.createElement('small'); meta.textContent = `${countFiles(node)} ${countFiles(node) === 1 ? 'page' : 'pages'}`;
+      copy.append(title, meta);
+      const arrow = document.createElement('span'); arrow.className = 'arrow'; arrow.textContent = '›';
+      card.append(icon, copy, arrow);
+      card.addEventListener('click', () => navigate(node.path));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(node.path); } });
+      return card;
+    }
+
+    function createFileCard(file) {
+      const card = document.createElement('article'); card.className = 'file-card';
+      const meta = document.createElement('div'); meta.className = 'file-meta'; meta.textContent = 'HTML · Open in browser';
+      const title = document.createElement('h3'); title.textContent = file.title;
+      const path = document.createElement('div'); path.className = 'file-path'; path.textContent = file.path;
+      const link = document.createElement('a'); link.className = 'open-link'; link.href = file.url; link.target = '_blank'; link.rel = 'noopener'; link.textContent = 'Open page';
+      card.append(meta, title, path, link);
+      return card;
+    }
+
+    function renderFolder() {
+      const node = findNode(state.selected);
+      contentEl.replaceChildren(createBreadcrumbs(node.path));
+
+      const heading = document.createElement('div'); heading.className = 'content-heading';
+      const h2 = document.createElement('h2'); h2.textContent = node.path ? node.name : 'Browse notes';
+      const total = countFiles(node);
+      const count = document.createElement('span'); count.textContent = `${total} ${total === 1 ? 'page' : 'pages'} in this folder`;
+      heading.append(h2, count); contentEl.appendChild(heading);
+
+      const grid = document.createElement('div'); grid.className = 'grid';
+      for (const child of node.children.values()) grid.appendChild(createFolderCard(child));
+      for (const file of node.files) grid.appendChild(createFileCard(file));
+      if (!grid.children.length) {
+        const empty = document.createElement('div'); empty.className = 'empty'; empty.innerHTML = '<strong>No HTML pages here.</strong>This folder does not contain a published page yet.';
+        contentEl.appendChild(empty);
+      } else contentEl.appendChild(grid);
+    }
+
+    function renderSearch() {
+      const q = state.query.trim().toLowerCase();
+      const matches = state.files.filter(file => `${file.title} ${file.path}`.toLowerCase().includes(q));
+      contentEl.replaceChildren();
+      const heading = document.createElement('div'); heading.className = 'content-heading';
+      const h2 = document.createElement('h2'); h2.textContent = 'Search results';
+      const count = document.createElement('span'); count.textContent = `${matches.length} ${matches.length === 1 ? 'match' : 'matches'}`;
+      heading.append(h2, count); contentEl.appendChild(heading);
+      if (!matches.length) {
+        const empty = document.createElement('div'); empty.className = 'empty'; empty.innerHTML = '<strong>Nothing matched.</strong>Try a subject, semester, or report name.';
+        contentEl.appendChild(empty); return;
+      }
+      const grid = document.createElement('div'); grid.className = 'grid';
+      for (const file of matches) grid.appendChild(createFileCard(file));
+      contentEl.appendChild(grid);
+    }
+
+    function render() {
+      renderTree();
+      state.query ? renderSearch() : renderFolder();
+    }
+
+    searchEl.addEventListener('input', () => {
+      state.query = searchEl.value;
+      clearSearchEl.style.display = state.query ? 'block' : 'none';
+      render();
+    });
+    clearSearchEl.addEventListener('click', () => { searchEl.value = ''; state.query = ''; clearSearchEl.style.display = 'none'; render(); searchEl.focus(); });
+    document.getElementById('homeButton').addEventListener('click', () => navigate(''));
+
+    async function boot() {
+      try {
+        const response = await fetch('pages-manifest.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Manifest request failed (${response.status})`);
+        const manifest = await response.json();
+        state.files = manifest.files || [];
+        buildTree(state.files);
+        document.getElementById('pageCount').textContent = state.files.length;
+        const rawHash = location.hash.slice(1);
+        if (rawHash) {
+          try { state.selected = rawHash.split('/').map(decodeURIComponent).join('/'); } catch { state.selected = ''; }
+        }
+        render();
+      } catch (error) {
+        console.error(error);
+        contentEl.innerHTML = '<div class="error"><strong>Could not load the page list.</strong>If you opened this file directly from disk, use a local web server instead. On GitHub Pages this manifest is generated automatically during deployment.</div>';
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>

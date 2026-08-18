@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-08-18T04:12:58.286355+00:00",
+  "count": 12,
+  "files": [
+    {
+      "path": "3rd Sem/Computer Architecture/Report/CSC213_CA_PDF_Generator_FIXED.html",
+      "url": "3rd%20Sem/Computer%20Architecture/Report/CSC213_CA_PDF_Generator_FIXED.html",
+      "name": "CSC213_CA_PDF_Generator_FIXED.html",
+      "title": "CSC 213 CA Lab Report",
+      "directory": "3rd Sem/Computer Architecture/Report",
+      "topLevel": "3rd Sem"
+    },
+    {
+      "path": "4th Sem/AI/AI_Lab_Report_Generator.html",
+      "url": "4th%20Sem/AI/AI_Lab_Report_Generator.html",
+      "name": "AI_Lab_Report_Generator.html",
+      "title": "CSC 266 AI Lab Report Generator",
+      "directory": "4th Sem/AI",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/Computer Network/Computer_Network_Lab_Report_Semi_Printable.html",
+      "url": "4th%20Sem/Computer%20Network/Computer_Network_Lab_Report_Semi_Printable.html",
+      "name": "Computer_Network_Lab_Report_Semi_Printable.html",
+      "title": "Computer Network Lab Report - Semi Printable",
+      "directory": "4th Sem/Computer Network",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report.html",
+      "name": "DBMS_Lab_Report.html",
+      "title": "DBMS Lab Report Generator",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2.html",
+      "name": "DBMS_Lab_Report_Part2.html",
+      "title": "DBMS Lab Report - Labs 4 to 6",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized.html",
+      "name": "DBMS_Lab_Report_Part2_Optimized.html",
+      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized)",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Printable.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Printable.html",
+      "name": "DBMS_Lab_Report_Part2_Printable.html",
+      "title": "DBMS Lab Report Part 2 - Printable",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Printable_60_Pages.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Printable_60_Pages.html",
+      "name": "DBMS_Lab_Report_Part2_Printable_60_Pages.html",
+      "title": "DBMS Lab Report Part 2 - Printable (60 Pages)",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/OS/OS_Lab_Report_Generator.html",
+      "url": "4th%20Sem/OS/OS_Lab_Report_Generator.html",
+      "name": "OS_Lab_Report_Generator.html",
+      "title": "Operating System Lab Report Generator",
+      "directory": "4th Sem/OS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/Theory of Computation/Theory of Computation Lab Report-Writing.html",
+      "url": "4th%20Sem/Theory%20of%20Computation/Theory%20of%20Computation%20Lab%20Report-Writing.html",
+      "name": "Theory of Computation Lab Report-Writing.html",
+      "title": "Theory of Computation Lab Report Generator",
+      "directory": "4th Sem/Theory of Computation",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/Theory of Computation/Theory of Computation Lab Report.html",
+      "url": "4th%20Sem/Theory%20of%20Computation/Theory%20of%20Computation%20Lab%20Report.html",
+      "name": "Theory of Computation Lab Report.html",
+      "title": "Theory of Computation Lab Report Generator",
+      "directory": "4th Sem/Theory of Computation",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "Printing/Lab Template.html",
+      "url": "Printing/Lab%20Template.html",
+      "name": "Lab Template.html",
+      "title": "DSA Lab Report Generator",
+      "directory": "Printing",
+      "topLevel": "Printing"
+    }
+  ]
+}
