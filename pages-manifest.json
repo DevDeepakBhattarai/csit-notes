@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-18T05:43:08.399045+00:00",
-  "count": 19,
+  "generatedAt": "2026-08-18T06:27:37.120085+00:00",
+  "count": 16,
   "files": [
     {
       "path": "3rd Sem/Computer Architecture/Report/CSC213_CA_PDF_Generator_FIXED.html",
@@ -27,18 +27,18 @@
       "topLevel": "4th Sem"
     },
     {
-      "path": "4th Sem/DBMS/DBMS_Lab_Report.html",
-      "url": "4th%20Sem/DBMS/DBMS_Lab_Report.html",
-      "name": "DBMS_Lab_Report.html",
-      "title": "DBMS Lab Report Generator",
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_1.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_1.html",
+      "name": "DBMS_Lab_Report_1.html",
+      "title": "DBMS Lab Report 1",
       "directory": "4th Sem/DBMS",
       "topLevel": "4th Sem"
     },
     {
-      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2.html",
-      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2.html",
-      "name": "DBMS_Lab_Report_Part2.html",
-      "title": "DBMS Lab Report - Labs 4 to 6",
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_1_Index.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_1_Index.html",
+      "name": "DBMS_Lab_Report_1_Index.html",
+      "title": "DBMS Lab Report 1 - Index",
       "directory": "4th Sem/DBMS",
       "topLevel": "4th Sem"
     },
@@ -51,6 +51,14 @@
       "topLevel": "4th Sem"
     },
     {
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Group_A_Printable.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Group_A_Printable.html",
+      "name": "DBMS_Lab_Report_Part2_Group_A_Printable.html",
+      "title": "DBMS Lab Report Part 2 - Group A Printable",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
       "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Group_B_Index.html",
       "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Group_B_Index.html",
       "name": "DBMS_Lab_Report_Part2_Group_B_Index.html",
@@ -59,10 +67,10 @@
       "topLevel": "4th Sem"
     },
     {
-      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized.html",
-      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized.html",
-      "name": "DBMS_Lab_Report_Part2_Optimized.html",
-      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized)",
+      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Group_B_Printable.html",
+      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Group_B_Printable.html",
+      "name": "DBMS_Lab_Report_Part2_Group_B_Printable.html",
+      "title": "DBMS Lab Report Part 2 - Group B Printable",
       "directory": "4th Sem/DBMS",
       "topLevel": "4th Sem"
     },
@@ -75,42 +83,10 @@
       "topLevel": "4th Sem"
     },
     {
-      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_A_Writing.html",
-      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_A_Writing.html",
-      "name": "DBMS_Lab_Report_Part2_Optimized_Group_A_Writing.html",
-      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized Group A - Writing)",
-      "directory": "4th Sem/DBMS",
-      "topLevel": "4th Sem"
-    },
-    {
       "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Output.html",
       "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Output.html",
       "name": "DBMS_Lab_Report_Part2_Optimized_Group_B_Output.html",
       "title": "DBMS Lab Report - Labs 4 to 6 (Optimized Group B - Output Printing)",
-      "directory": "4th Sem/DBMS",
-      "topLevel": "4th Sem"
-    },
-    {
-      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Writing.html",
-      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Optimized_Group_B_Writing.html",
-      "name": "DBMS_Lab_Report_Part2_Optimized_Group_B_Writing.html",
-      "title": "DBMS Lab Report - Labs 4 to 6 (Optimized Group B - Writing)",
-      "directory": "4th Sem/DBMS",
-      "topLevel": "4th Sem"
-    },
-    {
-      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Printable.html",
-      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Printable.html",
-      "name": "DBMS_Lab_Report_Part2_Printable.html",
-      "title": "DBMS Lab Report Part 2 - Printable",
-      "directory": "4th Sem/DBMS",
-      "topLevel": "4th Sem"
-    },
-    {
-      "path": "4th Sem/DBMS/DBMS_Lab_Report_Part2_Printable_60_Pages.html",
-      "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Printable_60_Pages.html",
-      "name": "DBMS_Lab_Report_Part2_Printable_60_Pages.html",
-      "title": "DBMS Lab Report Part 2 - Printable (60 Pages)",
       "directory": "4th Sem/DBMS",
       "topLevel": "4th Sem"
     },

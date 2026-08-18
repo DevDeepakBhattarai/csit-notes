@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DBMS Lab Report Generator</title>
+  <title>DBMS Lab Report 1</title>
   <meta name="description" content="Database Management System lab report with SQL scripts and XAMPP/phpMyAdmin-style outputs.">
   <style>
     :root {
@@ -570,10 +570,10 @@
   <main class="container">
     <header class="header">
       <div>
-        <h1>DBMS <span>Lab Report</span></h1>
+        <h1>DBMS <span>Lab Report 1</span></h1>
         <div class="header-meta"><span class="header-dot"></span> CSC260 Database Management System</div>
       </div>
-      <div class="header-count">Labs Split · SQL + Output</div>
+      <div class="header-count">Labs 1-2 · SQL + Output</div>
     </header>
 
     <section class="inputs-section no-print">
@@ -607,10 +607,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
             HTML
           </button>
-          <a class="link-btn" href="DBMS_Lab_Report_Package.zip" download title="Download the packaged report files">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>
-            Package
-          </a>
           <button class="tool-btn primary" type="button" onclick="generateOutputPDF()" title="Print only the output panes as a PDF">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
             Output PDF
@@ -1536,7 +1532,7 @@ DESCRIBE teacher;`, table(["Field", "Type", "Null", "Key", "Default", "Extra"], 
       const blob = new Blob(["<!DOCTYPE html>\n" + document.documentElement.outerHTML], { type: "text/html;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "DBMS_Lab_Report.html";
+      a.download = "DBMS_Lab_Report_1.html";
       document.body.appendChild(a);
       a.click();
       URL.revokeObjectURL(a.href);
@@ -1568,7 +1564,7 @@ DESCRIBE teacher;`, table(["Field", "Type", "Null", "Key", "Default", "Extra"], 
       document.body.appendChild(iframe);
       const doc = iframe.contentWindow.document;
       doc.open();
-      doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DBMS Output PDF</title><style>${css}</style></head><body><div class="pdf-head"><div><h1>DBMS Lab Output</h1><p>${esc(c.name)} · ${esc(c.roll)} · ${esc(c.college)}</p></div><p>Outputs are arranged in question order.</p></div><div class="outputs-list">${outputCards(c).join("")}</div></body></html>`);
+      doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DBMS Lab Report 1 Output</title><style>${css}</style></head><body><div class="pdf-head"><div><h1>DBMS Lab Report 1 Output</h1><p>${esc(c.name)} · ${esc(c.roll)} · ${esc(c.college)}</p></div><p>Outputs are arranged in question order.</p></div><div class="outputs-list">${outputCards(c).join("")}</div></body></html>`);
       doc.close();
       setTimeout(() => {
         iframe.contentWindow.focus();

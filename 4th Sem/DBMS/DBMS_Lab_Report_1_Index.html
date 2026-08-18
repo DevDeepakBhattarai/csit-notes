@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DBMS Lab Report 1 - Index</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root {
+    --paper-width: 210mm;
+    --paper-height: 297mm;
+    --paper-padding: 10mm;
+    --page-border-padding: 5.5mm;
+    --screen-bg: #101217;
+    --panel: #181c24;
+    --line: rgba(255,255,255,.12);
+    --text: #eef2f6;
+    --muted: #9aa6b5;
+    --green: #2bb673;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: var(--screen-bg);
+    color: var(--text);
+    font-family: "Segoe UI", Tahoma, sans-serif;
+  }
+
+  .controls {
+    max-width: 1120px;
+    margin: 22px auto 8px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(24,28,36,.96);
+  }
+  .controls-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 18px;
+  }
+  .controls h1 { margin: 0; color: #fff; font-size: 22px; line-height: 1.2; }
+  .controls p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+  .right-controls { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+  .field label {
+    display: block;
+    margin: 0 0 5px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .field input {
+    height: 36px;
+    width: 132px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 6px;
+    background: #202633;
+    color: var(--text);
+    padding: 0 10px;
+    font-size: 13px;
+    outline: none;
+  }
+  .print-btn {
+    height: 36px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--green);
+    color: #fff;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .stats {
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .stats strong { color: #fff; }
+
+  .pages { padding: 8px 0 36px; overflow-x: auto; }
+  .report-page {
+    width: var(--paper-width);
+    height: var(--paper-height);
+    margin: 24px auto;
+    padding: var(--paper-padding);
+    color: #121212;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(0,0,0,.36);
+    font-family: "Times New Roman", Times, serif;
+    overflow: hidden;
+  }
+  .page-inner {
+    height: 100%;
+    border: 2px solid #202020;
+    padding: var(--page-border-padding);
+    overflow: hidden;
+    background: #fff;
+  }
+  .page-content { width: 100%; height: 100%; overflow: hidden; }
+
+  .index-title {
+    margin: 0 0 2.2mm;
+    text-align: center;
+    font-size: 17pt;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .index-subtitle {
+    margin: 0 0 3mm;
+    text-align: center;
+    font-size: 11.5pt;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .index-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.8pt;
+    line-height: 1.18;
+    table-layout: fixed;
+  }
+  .index-table th,
+  .index-table td {
+    border: 1px solid #cfd4dc;
+    padding: 1.15mm 1.8mm;
+    vertical-align: middle;
+  }
+  .index-table th {
+    background: #f0f3f7;
+    text-align: left;
+    font-weight: 700;
+  }
+  .index-table th:nth-child(1), .index-table td:nth-child(1) {
+    width: 22mm;
+    text-align: center;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .index-table th:nth-child(3), .index-table td:nth-child(3) {
+    width: 29mm;
+    text-align: center;
+  }
+  .index-table th:nth-child(4), .index-table td:nth-child(4) {
+    width: 31mm;
+    text-align: center;
+  }
+  .index-table tbody tr { break-inside: avoid; page-break-inside: avoid; }
+  .question-cell { overflow-wrap: anywhere; }
+  .signature-cell { height: 7mm; }
+  .lab-start td { border-top: 2px solid #555; }
+
+  @media (max-width: 900px) {
+    .controls { margin: 12px; }
+    .controls-head { display: block; }
+    .right-controls { margin-top: 12px; }
+    .report-page { margin: 12px 0; }
+  }
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { margin: 0; padding: 0; background: #fff; }
+    .no-print { display: none !important; }
+    .pages { padding: 0; overflow: visible; }
+    .report-page {
+      width: var(--paper-width);
+      height: var(--paper-height);
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+    }
+    .report-page:last-child { page-break-after: auto; break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<section class="controls no-print">
+  <div class="controls-head">
+    <div>
+      <h1>DBMS Lab Report 1 - Index</h1>
+      <p>Complete index for DBMS Lab Report 1 (Labs 1 and 2). Print on A4 with margins None and background graphics ON.</p>
+    </div>
+    <div class="right-controls">
+      <div class="field">
+        <label for="dateIn">Submitted Date</label>
+        <input id="dateIn" value="2083/__/__" oninput="render()">
+      </div>
+      <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+  <div class="stats"><strong id="questionCount">0</strong> questions &nbsp;·&nbsp; <strong id="pageCount">0</strong> A4 index pages</div>
+</section>
+
+<main id="pages" class="pages"></main>
+
+<script type="application/json" id="question-data">[{"id":"1.1","lab":1,"question":"List all existing databases."},{"id":"1.2","lab":1,"question":"Create a database named <your-name>dbms1 and verify that it is created."},{"id":"1.3","lab":1,"question":"Select the created database to perform further SQL queries."},{"id":"1.4","lab":1,"question":"Create student(sid, name, gender, program) and teacher(id, name, address) tables."},{"id":"1.5","lab":1,"question":"List all tables in the selected database and check table properties."},{"id":"1.6","lab":1,"question":"Add contactno to student and subject to teacher."},{"id":"1.7","lab":1,"question":"Change contactno of student to INT and address of teacher to INT."},{"id":"1.8","lab":1,"question":"Drop gender from student and address from teacher."},{"id":"1.9","lab":1,"question":"Rename name to studentname in student and id to tid in teacher."},{"id":"1.10","lab":1,"question":"Drop student table, teacher table, and the created database."},{"id":"2.1","lab":2,"question":"Create a database lab<yourname> and use it as the current database."},{"id":"2.2","lab":2,"question":"Create student(id, name, gender, program, contact_number, address)."},{"id":"2.3","lab":2,"question":"Create teacher(id, name, subject, contact_number, address, email)."},{"id":"2.4","lab":2,"question":"See detail of student and teacher tables."},{"id":"2.5","lab":2,"question":"Insert sample data into student and teacher tables."},{"id":"2.6","lab":2,"question":"Check inserted data in both tables."},{"id":"2.7","lab":2,"question":"Add NOT NULL constraints in student and teacher tables for necessary attributes."},{"id":"2.8","lab":2,"question":"Test violation of NOT NULL constraint by inserting NULL values."},{"id":"2.9","lab":2,"question":"Delete duplicate data if required and add UNIQUE constraints."},{"id":"2.10","lab":2,"question":"Test violation of UNIQUE constraint by inserting duplicate values."},{"id":"2.11","lab":2,"question":"Add DEFAULT values in student and teacher tables for necessary attributes."},{"id":"2.12","lab":2,"question":"Test default values after inserting rows without those attributes."},{"id":"2.13","lab":2,"question":"Add primary keys in student and teacher tables."},{"id":"2.14","lab":2,"question":"Add ENUM and CHECK constraints in student and teacher tables."},{"id":"2.15","lab":2,"question":"Test ENUM and CHECK constraints by inserting invalid values."},{"id":"2.16","lab":2,"question":"List all constraints from information_schema."},{"id":"2.17","lab":2,"question":"Drop constraints from student and teacher tables."},{"id":"2.18","lab":2,"question":"Test deletion of constraints by inserting duplicate values."}]</script>
+<script>
+const QUESTIONS = JSON.parse(document.getElementById('question-data').textContent);
+
+function esc(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function createPage(container, pageNumber) {
+  const page = document.createElement('section');
+  page.className = 'report-page';
+  page.dataset.page = String(pageNumber);
+  page.innerHTML = `<div class="page-inner"><div class="page-content">
+    <h2 class="index-title">Index${pageNumber > 1 ? ' - Continued' : ''}</h2>
+    <div class="index-subtitle">DBMS Lab Report 1 · Labs 1-2</div>
+    <table class="index-table">
+      <thead><tr>
+        <th>Question No.</th>
+        <th>Experiment / Question</th>
+        <th>Submitted Date</th>
+        <th>Signature</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div></div>`;
+  container.appendChild(page);
+  return {
+    content: page.querySelector('.page-content'),
+    tbody: page.querySelector('tbody')
+  };
+}
+
+function makeRow(item, date, previousLab) {
+  const row = document.createElement('tr');
+  row.dataset.questionId = item.id;
+  if (previousLab !== null && item.lab !== previousLab) row.classList.add('lab-start');
+  row.innerHTML = `
+    <td>${esc(item.id)}</td>
+    <td class="question-cell">${esc(item.question)}</td>
+    <td>${esc(date)}</td>
+    <td class="signature-cell"></td>`;
+  return row;
+}
+
+function render() {
+  const container = document.getElementById('pages');
+  const date = document.getElementById('dateIn').value.trim() || '2083/__/__';
+  container.innerHTML = '';
+
+  let pageNumber = 1;
+  let page = createPage(container, pageNumber);
+  let previousLab = null;
+
+  for (const item of QUESTIONS) {
+    const row = makeRow(item, date, previousLab);
+    page.tbody.appendChild(row);
+
+    if (page.content.scrollHeight > page.content.clientHeight + 2) {
+      page.tbody.removeChild(row);
+      pageNumber += 1;
+      page = createPage(container, pageNumber);
+      page.tbody.appendChild(row);
+    }
+    previousLab = item.lab;
+  }
+
+  document.getElementById('questionCount').textContent = String(QUESTIONS.length);
+  document.getElementById('pageCount').textContent = String(pageNumber);
+}
+
+document.getElementById('dateIn').addEventListener('change', render);
+render();
+</script>
+</body>
+</html>
