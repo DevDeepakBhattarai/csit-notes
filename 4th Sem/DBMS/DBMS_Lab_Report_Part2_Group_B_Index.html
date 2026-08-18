@@ -138,7 +138,7 @@
     font-weight: 700;
   }
   .index-table th:nth-child(1), .index-table td:nth-child(1) {
-    width: 22mm;
+    width: 13mm;
     text-align: center;
     font-weight: 700;
     white-space: nowrap;
@@ -154,7 +154,6 @@
   .index-table tbody tr { break-inside: avoid; page-break-inside: avoid; }
   .question-cell { overflow-wrap: anywhere; }
   .signature-cell { height: 7mm; }
-  .lab-start td { border-top: 2px solid #555; }
 
   @media (max-width: 900px) {
     .controls { margin: 12px; }
@@ -189,7 +188,7 @@
     <div class="right-controls">
       <div class="field">
         <label for="dateIn">Submitted Date</label>
-        <input id="dateIn" value="2083/__/__" oninput="render()">
+        <input id="dateIn" value="2083/05/__" oninput="render()">
       </div>
       <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
     </div>
@@ -216,11 +215,10 @@ function createPage(container, pageNumber) {
   page.className = 'report-page';
   page.dataset.page = String(pageNumber);
   page.innerHTML = `<div class="page-inner"><div class="page-content">
-    <h2 class="index-title">Index${pageNumber > 1 ? ' - Continued' : ''}</h2>
-    <div class="index-subtitle">DBMS Lab Report Part 2 · Group B · Labs 4-6</div>
+    ${pageNumber === 1 ? `<h2 class="index-title">Index</h2>\n    <div class="index-subtitle">DBMS Lab Report Part 2 · Group B · Labs 4-6</div>` : ''}
     <table class="index-table">
       <thead><tr>
-        <th>Question No.</th>
+        <th>SN</th>
         <th>Experiment / Question</th>
         <th>Submitted Date</th>
         <th>Signature</th>
@@ -235,12 +233,11 @@ function createPage(container, pageNumber) {
   };
 }
 
-function makeRow(item, date, previousLab) {
+function makeRow(item, date, serial) {
   const row = document.createElement('tr');
   row.dataset.questionId = item.id;
-  if (previousLab !== null && item.lab !== previousLab) row.classList.add('lab-start');
   row.innerHTML = `
-    <td>${esc(item.id)}</td>
+    <td>${serial}</td>
     <td class="question-cell">${esc(item.question)}</td>
     <td>${esc(date)}</td>
     <td class="signature-cell"></td>`;
@@ -249,15 +246,15 @@ function makeRow(item, date, previousLab) {
 
 function render() {
   const container = document.getElementById('pages');
-  const date = document.getElementById('dateIn').value.trim() || '2083/__/__';
+  const date = document.getElementById('dateIn').value.trim() || '2083/05/__';
   container.innerHTML = '';
 
   let pageNumber = 1;
   let page = createPage(container, pageNumber);
-  let previousLab = null;
+  let serial = 1;
 
   for (const item of QUESTIONS) {
-    const row = makeRow(item, date, previousLab);
+    const row = makeRow(item, date, serial);
     page.tbody.appendChild(row);
 
     if (page.content.scrollHeight > page.content.clientHeight + 2) {
@@ -266,7 +263,7 @@ function render() {
       page = createPage(container, pageNumber);
       page.tbody.appendChild(row);
     }
-    previousLab = item.lab;
+    serial += 1;
   }
 
   document.getElementById('questionCount').textContent = String(QUESTIONS.length);
