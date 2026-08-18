@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DBMS Lab Report Part 2 - Group B Index</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root {
+    --paper-width: 210mm;
+    --paper-height: 297mm;
+    --paper-padding: 10mm;
+    --page-border-padding: 5.5mm;
+    --screen-bg: #101217;
+    --panel: #181c24;
+    --line: rgba(255,255,255,.12);
+    --text: #eef2f6;
+    --muted: #9aa6b5;
+    --green: #2bb673;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: var(--screen-bg);
+    color: var(--text);
+    font-family: "Segoe UI", Tahoma, sans-serif;
+  }
+
+  .controls {
+    max-width: 1120px;
+    margin: 22px auto 8px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(24,28,36,.96);
+  }
+  .controls-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 18px;
+  }
+  .controls h1 { margin: 0; color: #fff; font-size: 22px; line-height: 1.2; }
+  .controls p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+  .right-controls { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+  .field label {
+    display: block;
+    margin: 0 0 5px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .field input {
+    height: 36px;
+    width: 132px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 6px;
+    background: #202633;
+    color: var(--text);
+    padding: 0 10px;
+    font-size: 13px;
+    outline: none;
+  }
+  .print-btn {
+    height: 36px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--green);
+    color: #fff;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .stats {
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .stats strong { color: #fff; }
+
+  .pages { padding: 8px 0 36px; overflow-x: auto; }
+  .report-page {
+    width: var(--paper-width);
+    height: var(--paper-height);
+    margin: 24px auto;
+    padding: var(--paper-padding);
+    color: #121212;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(0,0,0,.36);
+    font-family: "Times New Roman", Times, serif;
+    overflow: hidden;
+  }
+  .page-inner {
+    height: 100%;
+    border: 2px solid #202020;
+    padding: var(--page-border-padding);
+    overflow: hidden;
+    background: #fff;
+  }
+  .page-content { width: 100%; height: 100%; overflow: hidden; }
+
+  .index-title {
+    margin: 0 0 2.2mm;
+    text-align: center;
+    font-size: 17pt;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .index-subtitle {
+    margin: 0 0 3mm;
+    text-align: center;
+    font-size: 11.5pt;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .index-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.8pt;
+    line-height: 1.18;
+    table-layout: fixed;
+  }
+  .index-table th,
+  .index-table td {
+    border: 1px solid #cfd4dc;
+    padding: 1.15mm 1.8mm;
+    vertical-align: middle;
+  }
+  .index-table th {
+    background: #f0f3f7;
+    text-align: left;
+    font-weight: 700;
+  }
+  .index-table th:nth-child(1), .index-table td:nth-child(1) {
+    width: 22mm;
+    text-align: center;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .index-table th:nth-child(3), .index-table td:nth-child(3) {
+    width: 29mm;
+    text-align: center;
+  }
+  .index-table th:nth-child(4), .index-table td:nth-child(4) {
+    width: 31mm;
+    text-align: center;
+  }
+  .index-table tbody tr { break-inside: avoid; page-break-inside: avoid; }
+  .question-cell { overflow-wrap: anywhere; }
+  .signature-cell { height: 7mm; }
+  .lab-start td { border-top: 2px solid #555; }
+
+  @media (max-width: 900px) {
+    .controls { margin: 12px; }
+    .controls-head { display: block; }
+    .right-controls { margin-top: 12px; }
+    .report-page { margin: 12px 0; }
+  }
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { margin: 0; padding: 0; background: #fff; }
+    .no-print { display: none !important; }
+    .pages { padding: 0; overflow: visible; }
+    .report-page {
+      width: var(--paper-width);
+      height: var(--paper-height);
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+    }
+    .report-page:last-child { page-break-after: auto; break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<section class="controls no-print">
+  <div class="controls-head">
+    <div>
+      <h1>DBMS Lab Report Part 2 - Group B Index</h1>
+      <p>Full non-optimized question set for Labs 4, 5 and 6. Print on A4 with margins None and background graphics ON.</p>
+    </div>
+    <div class="right-controls">
+      <div class="field">
+        <label for="dateIn">Submitted Date</label>
+        <input id="dateIn" value="2083/__/__" oninput="render()">
+      </div>
+      <button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+  <div class="stats"><strong id="questionCount">0</strong> questions &nbsp;·&nbsp; <strong id="pageCount">0</strong> A4 index pages</div>
+</section>
+
+<main id="pages" class="pages"></main>
+
+<script type="application/json" id="question-data">[{"id":"4B-01","lab":4,"question":"Project CategoryName from categories."},{"id":"4B-02","lab":4,"question":"Project Country from customers."},{"id":"4B-03","lab":4,"question":"Project City, Country from customers."},{"id":"4B-04","lab":4,"question":"SELECT CustomerName from customers who are from Paris City."},{"id":"4B-05","lab":4,"question":"SELECT CustomerID from customers who are from Spain."},{"id":"4B-06","lab":4,"question":"SELECT CustomerID, CustomerName from customers who are from Mexico or Italy."},{"id":"4B-07","lab":4,"question":"SELECT all from customers who are from Frankfurt a.M. and Germany."},{"id":"4B-08","lab":4,"question":"SELECT all from customers who are from a city whose name starts with the first letter of your name."},{"id":"4B-09","lab":4,"question":"SELECT all from customers who are not from Venezuela or Argentina."},{"id":"4B-10","lab":4,"question":"SELECT all from customers who are from G7 Countries (USA, UK, Canada, France, Germany, Italy, Japan)."},{"id":"4B-11","lab":4,"question":"SELECT all from customers who have PostalCode containing 50."},{"id":"4B-12","lab":4,"question":"SELECT all from customers having PostalCode containing 31 and from Mexico City or Toulouse."},{"id":"4B-13","lab":4,"question":"SELECT all from customers who are not from Elgin."},{"id":"4B-14","lab":4,"question":"SELECT all employees who are born in July."},{"id":"4B-15","lab":4,"question":"SELECT all employees having BA degree in Notes."},{"id":"4B-16","lab":4,"question":"SELECT all suppliers from Australia and Sweden."},{"id":"4B-17","lab":4,"question":"Find name and count of suppliers from different countries."},{"id":"4B-18","lab":4,"question":"Find name and count of customers from different cities."},{"id":"4B-19","lab":4,"question":"Find number of orders made by employee along with EmployeeID."},{"id":"4B-20","lab":4,"question":"Find number of orders made by customers along with CustomerID."},{"id":"4B-21","lab":4,"question":"Find all orders that are shipped by shippers having 2 or 4 ShipperID."},{"id":"4B-22","lab":4,"question":"SELECT all product having CategoryID 5."},{"id":"4B-23","lab":4,"question":"SELECT all products having ProductName that starts with the first letter of your name."},{"id":"5B-01","lab":5,"question":"Add two product categories of your choice."},{"id":"5B-02","lab":5,"question":"Add 3 new suppliers in suppliers table."},{"id":"5B-03","lab":5,"question":"Add 5 new customers in customers table."},{"id":"5B-04","lab":5,"question":"Add 4 products in product table."},{"id":"5B-05","lab":5,"question":"Add 3 new employees."},{"id":"5B-06","lab":5,"question":"Update all customers from Mexico to Vietnam."},{"id":"5B-07","lab":5,"question":"Update customers table changing name of Paris City to Delhi."},{"id":"5B-08","lab":5,"question":"Update all USA customer to Indian customers."},{"id":"5B-09","lab":5,"question":"Convert all Brazilian customer to Cambodian Customers."},{"id":"5B-10","lab":5,"question":"Convert all customers of Madrid to Kathmandu customers and also change the country."},{"id":"5B-11","lab":5,"question":"Convert customers from G7 Countries to SAARC Countries."},{"id":"5B-12","lab":5,"question":"DELETE all records from orders and orderdetails."},{"id":"5B-13","lab":5,"question":"DELETE all from customers who have PostalCode containing 31."},{"id":"5B-14","lab":5,"question":"DELETE all from customers having PostalCode containing 00 and from Rome or Paris."},{"id":"5B-15","lab":5,"question":"DELETE all from customers who are not from Salzburg."},{"id":"5B-16","lab":5,"question":"DELETE all employees who are born in July."},{"id":"5B-17","lab":5,"question":"DELETE all employees who are born in August."},{"id":"5B-18","lab":5,"question":"DELETE all suppliers from Singapore and Japan."},{"id":"5B-19","lab":5,"question":"Find name and count of suppliers from different countries."},{"id":"5B-20","lab":5,"question":"Find name and count of customers from different cities."},{"id":"5B-21","lab":5,"question":"Find number of orders made by employee along with EmployeeID."},{"id":"6B-01","lab":6,"question":"Perform UNION of customers and employees relation using compatible attributes."},{"id":"6B-02","lab":6,"question":"Perform UNION ALL of customers.ContactName and employees.FirstName or full name."},{"id":"6B-03","lab":6,"question":"List all customers from Berlin, Germany and Paris, France using UNION."},{"id":"6B-04","lab":6,"question":"List all customers of USA not having the same name as customers from UK."},{"id":"6B-05","lab":6,"question":"Create view cust by selecting only 4 attributes from customers."},{"id":"6B-06","lab":6,"question":"Join products with categories and suppliers to create productinfo with ProductID, ProductName, Unit, Price and all category/supplier attributes."},{"id":"6B-07","lab":6,"question":"Find name and count of Categories from productinfo."},{"id":"6B-08","lab":6,"question":"Find all products that have suppliers from Asia in productinfo."},{"id":"6B-09","lab":6,"question":"Find all products that have price lower than Average price from productinfo."},{"id":"6B-10","lab":6,"question":"Join orders with customers, employees and shippers to create a view as orderinfo."},{"id":"6B-11","lab":6,"question":"List all order shipment provided by Speedy Express and Global Express from orderinfo."},{"id":"6B-12","lab":6,"question":"List all order processed by employee Nancy Davolio and Michael Suyama from orderinfo."},{"id":"6B-13","lab":6,"question":"List all order shipment provider on date August 19, 2023 from orderinfo."},{"id":"6B-14","lab":6,"question":"List countries of customers that placed order on August 17, 2023 from orderinfo."}]</script>
+<script>
+const QUESTIONS = JSON.parse(document.getElementById('question-data').textContent);
+
+function esc(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function createPage(container, pageNumber) {
+  const page = document.createElement('section');
+  page.className = 'report-page';
+  page.dataset.page = String(pageNumber);
+  page.innerHTML = `<div class="page-inner"><div class="page-content">
+    <h2 class="index-title">Index${pageNumber > 1 ? ' - Continued' : ''}</h2>
+    <div class="index-subtitle">DBMS Lab Report Part 2 · Group B · Labs 4-6</div>
+    <table class="index-table">
+      <thead><tr>
+        <th>Question No.</th>
+        <th>Experiment / Question</th>
+        <th>Submitted Date</th>
+        <th>Signature</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div></div>`;
+  container.appendChild(page);
+  return {
+    content: page.querySelector('.page-content'),
+    tbody: page.querySelector('tbody')
+  };
+}
+
+function makeRow(item, date, previousLab) {
+  const row = document.createElement('tr');
+  row.dataset.questionId = item.id;
+  if (previousLab !== null && item.lab !== previousLab) row.classList.add('lab-start');
+  row.innerHTML = `
+    <td>${esc(item.id)}</td>
+    <td class="question-cell">${esc(item.question)}</td>
+    <td>${esc(date)}</td>
+    <td class="signature-cell"></td>`;
+  return row;
+}
+
+function render() {
+  const container = document.getElementById('pages');
+  const date = document.getElementById('dateIn').value.trim() || '2083/__/__';
+  container.innerHTML = '';
+
+  let pageNumber = 1;
+  let page = createPage(container, pageNumber);
+  let previousLab = null;
+
+  for (const item of QUESTIONS) {
+    const row = makeRow(item, date, previousLab);
+    page.tbody.appendChild(row);
+
+    if (page.content.scrollHeight > page.content.clientHeight + 2) {
+      page.tbody.removeChild(row);
+      pageNumber += 1;
+      page = createPage(container, pageNumber);
+      page.tbody.appendChild(row);
+    }
+    previousLab = item.lab;
+  }
+
+  document.getElementById('questionCount').textContent = String(QUESTIONS.length);
+  document.getElementById('pageCount').textContent = String(pageNumber);
+}
+
+document.getElementById('dateIn').addEventListener('change', render);
+render();
+</script>
+</body>
+</html>
