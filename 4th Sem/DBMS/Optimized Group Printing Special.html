@@ -162,8 +162,8 @@
     flex-direction:column;
   }
   .special-pair .write-space {
-    flex:1 1 auto;
-    min-height:85mm;
+    flex:0 0 105mm;
+    height:105mm;
   }
   .special-pair .xampp {
     flex:0 0 auto;
@@ -417,8 +417,8 @@ function render() {
 
     if (special) {
       // Special questions always receive a fresh A4 sheet and nothing else may
-      // share that page. The flexible blank area pushes the output downward,
-      // leaving as much handwriting room for the SQL as the output permits.
+      // share that page. A fixed handwriting area keeps the output around the
+      // middle of the sheet while still leaving generous room for the SQL.
       content = createPage(container);
       content.appendChild(makePair(item));
       currentLab = item.lab;
