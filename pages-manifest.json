@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-18T05:28:04.342595+00:00",
-  "count": 18,
+  "generatedAt": "2026-08-18T05:43:08.399045+00:00",
+  "count": 19,
   "files": [
     {
       "path": "3rd Sem/Computer Architecture/Report/CSC213_CA_PDF_Generator_FIXED.html",
@@ -111,6 +111,14 @@
       "url": "4th%20Sem/DBMS/DBMS_Lab_Report_Part2_Printable_60_Pages.html",
       "name": "DBMS_Lab_Report_Part2_Printable_60_Pages.html",
       "title": "DBMS Lab Report Part 2 - Printable (60 Pages)",
+      "directory": "4th Sem/DBMS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/DBMS/Optimized Group Printing Special.html",
+      "url": "4th%20Sem/DBMS/Optimized%20Group%20Printing%20Special.html",
+      "name": "Optimized Group Printing Special.html",
+      "title": "Optimized Group Printing Special",
       "directory": "4th Sem/DBMS",
       "topLevel": "4th Sem"
     },
