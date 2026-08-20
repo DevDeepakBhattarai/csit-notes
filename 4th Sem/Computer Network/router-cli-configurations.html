@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cisco Router CLI Configurations — Questions 8–12</title>
+  <style>
+    @page { size: A4 portrait; margin: 0; }
+
+    :root { --paper-width: 210mm; --paper-height: 297mm; --ink: #171717; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #d8d8d8; color: var(--ink); font-family: Arial, sans-serif; }
+    .print-bar { width: var(--paper-width); margin: 10mm auto 0; text-align: right; }
+    .print-button {
+      border: 0;
+      border-radius: 5px;
+      padding: 10px 16px;
+      background: #173b63;
+      color: #fff;
+      font: 600 10.5pt Arial, sans-serif;
+      cursor: pointer;
+    }
+    .print-button:hover { background: #0e2b4a; }
+    .page {
+      width: var(--paper-width);
+      min-height: var(--paper-height);
+      margin: 10mm auto;
+      padding: 17mm 15mm 15mm;
+      background: #fff;
+      box-shadow: 0 2mm 6mm rgba(0, 0, 0, .18);
+      break-after: page;
+      page-break-after: always;
+      overflow: hidden;
+    }
+    .page:last-child { break-after: auto; page-break-after: auto; }
+    h1 { margin: 0 0 7mm; font-size: 17pt; font-weight: 700; }
+    h2 { margin: 6mm 0 2.5mm; font-size: 12pt; font-weight: 700; }
+    h2:first-of-type { margin-top: 0; }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 8.55pt;
+      font-weight: 400;
+      line-height: 1.48;
+      letter-spacing: .01em;
+    }
+    .tight pre { font-size: 8.1pt; line-height: 1.37; }
+    /* Three router transcripts must remain together on Question 10's A4 page. */
+    .dense pre { font-size: 6.75pt; line-height: 1.25; }
+    @media print {
+      body { background: #fff; }
+      .print-bar { display: none; }
+      .page { margin: 0; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-bar">
+    <button class="print-button" type="button" onclick="window.print()">Print A4</button>
+  </div>
+  <main>
+    <section class="page" aria-label="Question 8">
+      <h1>8.</h1>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 192.168.1.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 192.168.2.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#</pre>
+    </section>
+
+    <section class="page tight" aria-label="Question 9">
+      <h1>9.</h1>
+      <h2>Router 1</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 10.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 20.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#router rip
+Router(config-router)#version 2
+Router(config-router)#no auto-summary
+Router(config-router)#network 10.0.0.0
+Router(config-router)#network 20.0.0.0
+Router(config-router)#ex</pre>
+      <h2>Router 2</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 30.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 20.0.0.2 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#router rip
+Router(config-router)#version 2
+Router(config-router)#no auto-summary
+Router(config-router)#network 30.0.0.0
+Router(config-router)#network 20.0.0.0
+Router(config-router)#ex</pre>
+    </section>
+
+    <section class="page dense" aria-label="Question 10">
+      <h1>10.</h1>
+      <h2>Router 1</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 10.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 20.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#router bgp 100
+Router(config-router)#neighbor 20.0.0.2 remote-as 200
+Router(config-router)#network 10.0.0.0 mask 255.255.255.0
+Router(config-router)#ex
+Router(config)#</pre>
+      <h2>Router 2</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 20.0.0.2 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 30.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#router bgp 200
+Router(config-router)#neighbor 20.0.0.1 remote-as 100
+%BGP-5-ADJCHANGE: neighbor 20.0.0.1 Up
+Router(config-router)#neighbor 30.0.0.2 remote-as 300
+Router(config-router)#ex
+Router(config)#</pre>
+      <h2>Router 3</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 30.0.0.2 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 40.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#router bgp 300
+Router(config-router)#neighbor 30.0.0.1 remote-as 200
+%BGP-5-ADJCHANGE: neighbor 30.0.0.1 Up
+Router(config-router)#network 40.0.0.0 mask 255.255.255.0
+Router(config-router)#ex
+Router(config)#</pre>
+    </section>
+
+    <section class="page tight" aria-label="Question 11">
+      <h1>11.</h1>
+      <h2>Router 1</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 10.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#ex
+Router(config)#int g0/1
+Router(config-if)#ip add 20.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#router ospf 1
+Router(config-router)#network 10.0.0.0 0.0.0.255 area 0
+Router(config-router)#network 20.0.0.0 0.0.0.255 area 0
+Router(config-router)#end
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+write
+Building configuration...
+[OK]
+Router#</pre>
+      <h2>Router 2</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 20.0.0.2 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 30.0.0.1 255.255.255.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#router ospf 2
+Router(config-router)#network 20.0.0.0 0.0.0.255 area 0
+Router(config-router)#network 30.0.0.0 0.0.0.255 area 0
+%OSPF-5-ADJCHG: Process 2, Nbr 20.0.0.1 on GigabitEthernet0/0 from LOADING to FULL
+Router(config-router)#end
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+write
+Building configuration...
+[OK]
+Router#</pre>
+    </section>
+
+    <section class="page" aria-label="Question 12">
+      <h1>12.</h1>
+      <h2>Router 1</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 1.0.0.1 255.0.0.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 2.0.0.1 255.0.0.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#ip route 3.0.0.0 255.0.0.0 2.0.0.2
+Router(config)#</pre>
+      <h2>Router 2</h2>
+      <pre>Router&gt;en
+Router#conf t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#int g0/0
+Router(config-if)#ip add 2.0.0.2 255.0.0.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+ex
+Router(config)#int g0/1
+Router(config-if)#ip add 3.0.0.1 255.0.0.0
+Router(config-if)#no sh
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to up
+ex
+Router(config)#ip route 1.0.0.0 255.0.0.0 2.0.0.1
+Router(config)#</pre>
+    </section>
+  </main>
+</body>
+</html>
