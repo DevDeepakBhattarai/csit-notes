@@ -22,15 +22,24 @@
     }
     .print-button:hover { background: #0e2b4a; }
     .page {
+      position: relative;
       width: var(--paper-width);
-      min-height: var(--paper-height);
+      height: var(--paper-height);
       margin: 10mm auto;
-      padding: 17mm 15mm 15mm;
+      padding: 16mm 15mm 15mm;
       background: #fff;
       box-shadow: 0 2mm 6mm rgba(0, 0, 0, .18);
       break-after: page;
       page-break-after: always;
       overflow: hidden;
+    }
+    /* Visible line margin around the page (10mm inset) matching other printable reports */
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 10mm;
+      border: 1.5px solid #202020;
+      pointer-events: none;
     }
     .page:last-child { break-after: auto; page-break-after: auto; }
     h1 { margin: 0 0 7mm; font-size: 17pt; font-weight: 700; }
@@ -49,9 +58,17 @@
     /* Three router transcripts must remain together on Question 10's A4 page. */
     .dense pre { font-size: 6.75pt; line-height: 1.25; }
     @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
       body { background: #fff; }
-      .print-bar { display: none; }
-      .page { margin: 0; box-shadow: none; }
+      .print-bar { display: none !important; }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        height: var(--paper-height);
+      }
     }
   </style>
 </head>

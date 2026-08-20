@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab Report - Blank Margin Paper</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  :root {
+    --paper-w: 210mm;
+    --paper-h: 297mm;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #11151b;
+  }
+
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    max-width: 600px;
+    margin: 16px auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #1b2029;
+    border: 1px solid #303744;
+    border-radius: 8px;
+    font-family: system-ui, sans-serif;
+    color: #eef2f6;
+  }
+  .toolbar span {
+    font-size: 14px;
+    color: #aeb7c4;
+  }
+  .print-btn {
+    border: 0;
+    border-radius: 6px;
+    padding: 8px 16px;
+    background: #2e9b67;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .pages {
+    padding: 10px 0 40px;
+  }
+
+  .margin-page {
+    position: relative;
+    width: var(--paper-w);
+    height: var(--paper-h);
+    margin: 20px auto;
+    background: #fff;
+    box-shadow: 0 16px 45px rgba(0,0,0,.38);
+    overflow: hidden;
+  }
+
+  /* Exact 10mm border margin matching the other document */
+  .margin-page::before {
+    content: "";
+    position: absolute;
+    inset: 10mm;
+    border: 1px solid #444;
+    pointer-events: none;
+  }
+
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      background: #fff;
+    }
+    .no-print {
+      display: none !important;
+    }
+    .pages {
+      padding: 0;
+    }
+    .margin-page {
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+    }
+    .margin-page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar no-print">
+    <span>Blank Margin Page (A4, 10mm Inset Border)</span>
+    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <main class="pages">
+    <section class="margin-page"></section>
+  </main>
+
+</body>
+</html>

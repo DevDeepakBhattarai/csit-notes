@@ -620,7 +620,6 @@ Approximate round trip times in milli-seconds:
         <h2 class="experiment-title"><span>14.</span> C:\&gt;ping: Tests connectivity between your computer and another device on the network by sending packets and awaiting a response.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; active network connection; reachable destination IP or hostname.</p></section>
         <section class="part"><h3>Theory</h3><p>The ping command sends ICMP Echo Request packets and waits for Echo Reply packets. Replies and round-trip times indicate whether the destination is reachable.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong>.</li><li>Run <code>ping 192.168.1.1</code> and confirm that replies are received.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -648,7 +647,6 @@ Approximate round trip times in milli-seconds:
         <h2 class="experiment-title"><span>15.</span> C:\&gt;ipconfig: Displays the current TCP/IP configuration of the computer, such as IP address, subnet mask, and default gateway.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows computer with a configured network adapter; Command Prompt.</p></section>
         <section class="part"><h3>Theory</h3><p>The ipconfig command displays the current IPv4/IPv6 configuration of network adapters. It is commonly used to check an adapter&#x27;s address, subnet mask and default gateway.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong>.</li><li>Run <code>ipconfig</code> and note the IP address, subnet mask, and default gateway.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -673,7 +671,6 @@ Ethernet adapter Ethernet:
         <h2 class="experiment-title"><span>16.</span> C:\&gt;ipconfig /all: Provides detailed information on the computer&#x27;s network configuration, including DNS, DHCP, and Ethernet adapter details.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows computer with a configured network adapter; Command Prompt.</p></section>
         <section class="part"><h3>Theory</h3><p>ipconfig /all displays extended adapter information including physical address, DHCP status, DNS servers and lease data. It is useful when the normal ipconfig output does not provide enough detail.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong>.</li><li>Run <code>ipconfig /all</code> and review the adapter, DHCP, DNS, and address details.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -706,7 +703,6 @@ Ethernet adapter Ethernet:
         <h2 class="experiment-title"><span>17.</span> C:\&gt;ipconfig /release: Releases the current IP address obtained from the DHCP server.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows computer using DHCP; Command Prompt; active DHCP-managed network adapter.</p></section>
         <section class="part"><h3>Theory</h3><p>ipconfig /release gives up the current DHCP lease for the selected adapter. The adapter then has no usable DHCP IPv4 address until a new lease is obtained.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong> on a DHCP-configured computer.</li><li>Run <code>ipconfig /release</code> and verify that the current DHCP address is released.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -729,7 +725,6 @@ Ethernet adapter Ethernet:
         <h2 class="experiment-title"><span>18.</span> C:\&gt;ipconfig /renew: Renews the IP address lease from the DHCP server.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows computer using DHCP; Command Prompt; reachable DHCP server.</p></section>
         <section class="part"><h3>Theory</h3><p>ipconfig /renew requests a new or renewed DHCP lease for the adapter. A successful renewal restores an IPv4 address and related network settings supplied by DHCP.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong> with the DHCP server reachable.</li><li>Run <code>ipconfig /renew</code> and verify that a valid IP configuration is obtained.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -754,7 +749,6 @@ Ethernet adapter Ethernet:
         <h2 class="experiment-title"><span>19.</span> C:\&gt;ipconfig /flushdns: Clears the DNS resolver cache, useful when dealing with DNS issues.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; local DNS resolver cache.</p></section>
         <section class="part"><h3>Theory</h3><p>ipconfig /flushdns clears cached DNS records stored by the Windows DNS client. This forces later name lookups to obtain fresh DNS information instead of using stale cached entries.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong>.</li><li>Run <code>ipconfig /flushdns</code> and confirm that the DNS resolver cache is cleared.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -774,7 +768,6 @@ Successfully flushed the DNS Resolver Cache.</pre>
         <h2 class="experiment-title"><span>20.</span> C:\&gt;nbtstat -a: Displays the NetBIOS name table of a remote computer.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; NetBIOS over TCP/IP; reachable remote computer name.</p></section>
         <section class="part"><h3>Theory</h3><p>nbtstat displays NetBIOS over TCP/IP information, including registered names and cache entries. With -a and a remote computer name, it requests that computer&#x27;s NetBIOS name table.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong> with <strong>LAB-PC2</strong> reachable through NetBIOS.</li><li>Run <code>nbtstat -a LAB-PC2</code> and view its NetBIOS name table.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -803,7 +796,6 @@ Node IpAddress: [192.168.1.10] Scope Id: []
         <h2 class="experiment-title"><span>21.</span> C:\&gt;arp -a: Shows the IP address and MAC address mappings on the network.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; active network adapter with ARP entries.</p></section>
         <section class="part"><h3>Theory</h3><p>The ARP cache maps IPv4 addresses to link-layer MAC addresses learned on the local network. arp -a displays the current dynamic and static mappings.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong> on an active network.</li><li>Run <code>arp -a</code> and view the cached IP-to-MAC address mappings.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -825,7 +817,6 @@ Interface: 192.168.1.10 --- 0x6
         <h2 class="experiment-title"><span>22.</span> C:\&gt;hostname: Displays the name of your computer.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows computer; Command Prompt.</p></section>
         <section class="part"><h3>Theory</h3><p>The hostname command prints the computer&#x27;s configured host name. This name is used to identify the machine locally and in many network-management contexts.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong>.</li><li>Run <code>hostname</code> to display the computer name.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -842,7 +833,6 @@ LAB-PC</pre>
         <h2 class="experiment-title"><span>23.</span> C:\&gt;netdiag: Diagnoses network issues (needs to be installed from Windows support tools).</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Support Tools with netdiag installed; Command Prompt; configured network connection.</p></section>
         <section class="part"><h3>Theory</h3><p>Netdiag is a legacy Windows Support Tools utility that performs a collection of network diagnostic tests. Its checks can report problems with adapters, gateways, DNS and other network services.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Ensure <strong>Windows Support Tools / netdiag</strong> is installed, then open Command Prompt.</li><li>Run <code>netdiag</code> and review the network diagnostic test results.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -866,7 +856,6 @@ The command completed successfully.</pre>
         <h2 class="experiment-title"><span>24.</span> C:\&gt;netstat: Displays current active TCP/IP connections and listening ports.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; TCP/IP networking enabled.</p></section>
         <section class="part"><h3>Theory</h3><p>netstat displays active network connections and protocol statistics. Using <code>netstat -a</code> lists both active TCP connections and ports on which the computer is listening.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong>.</li><li>Run <code>netstat -a</code> and review active connections and listening ports.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -891,7 +880,6 @@ Active Connections
         <h2 class="experiment-title"><span>25.</span> C:\&gt;nslookup: Diagnoses DNS problems by querying DNS servers for domain name information.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; active network connection; reachable DNS server.</p></section>
         <section class="part"><h3>Theory</h3><p>nslookup queries a DNS server for records associated with a domain name or IP address. It is useful for checking whether name resolution returns the expected DNS information.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong> with a reachable DNS server.</li><li>Run <code>nslookup example.com</code> and check the returned DNS server and addresses.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -914,7 +902,6 @@ Addresses:  2606:2800:220:1:248:1893:25c8:1946
         <h2 class="experiment-title"><span>26.</span> C:\&gt;pathping: A combination of ping and tracert, traces the path and measures packet loss.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; active IP connection; reachable destination.</p></section>
         <section class="part"><h3>Theory</h3><p>pathping first traces the route to a destination and then measures packet loss at each hop over time. It combines route discovery with per-hop reachability statistics.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong> with an active Internet connection.</li><li>Run <code>pathping 8.8.8.8</code> and review the route and per-hop packet-loss statistics.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -946,7 +933,6 @@ Trace complete.</pre>
         <h2 class="experiment-title"><span>27.</span> C:\&gt;route: Displays and modifies the routing table on the computer.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; configured TCP/IP network adapter.</p></section>
         <section class="part"><h3>Theory</h3><p>The route command displays or modifies entries in the local IP routing table. route print shows the destinations, masks, gateways, interfaces and metrics used for packet forwarding.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong>.</li><li>Run <code>route print</code> and review the destination, mask, gateway, interface, and metric entries.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
@@ -972,7 +958,6 @@ Network Destination        Netmask          Gateway       Interface  Metric
         <h2 class="experiment-title"><span>28.</span> C:\&gt;tracert: Displays the path packets take to reach a destination, useful for troubleshooting network routing issues.</h2>
         <section class="part"><h3>Requirement</h3><p>Windows Command Prompt; active IP connection; reachable destination hostname or IP address.</p></section>
         <section class="part"><h3>Theory</h3><p>tracert discovers the sequence of routers used to reach a destination by sending probes with increasing TTL values. The displayed hops help locate where delay or routing failure occurs along the path.</p></section>
-        <section class="part steps-part procedure-part"><h3>Procedure</h3><ol><li>Open <strong>Command Prompt</strong> with an active Internet connection.</li><li>Run <code>tracert 8.8.8.8</code> and review each hop to the destination.</li></ol></section>
         <section class="part result-part"><h3>Result</h3><div class="terminal">
       <div class="terminal-titlebar">
         <span class="terminal-icon">C:\</span>
