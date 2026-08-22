@@ -1,0 +1,1419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Operating System Lab Report - Part 2</title>
+<style>
+@page{size:A4;margin:0}*{box-sizing:border-box}:root{--pw:210mm;--ph:297mm;--pad:10mm;--inner:6mm;--ink:#111;--muted:#667085;--screen:#0f1218;--panel:#1a202b;--line:rgba(255,255,255,.13);--green:#26a269}
+body{margin:0;background:var(--screen);color:#eef2f6;font-family:"Segoe UI",Arial,sans-serif}.controls{max-width:1080px;margin:20px auto;padding:18px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.controls h1{margin:0 0 4px;font-size:23px}.controls p{margin:0;color:#aab4c3;font-size:12px;line-height:1.45}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#9ba8b8;margin-bottom:4px}.field input{width:100%;padding:9px 10px;background:#232b38;border:1px solid #3a4455;border-radius:6px;color:white}.actions{display:flex;gap:12px;margin-top:13px;align-items:center}.print{border:0;border-radius:6px;padding:10px 15px;background:var(--green);color:white;font-weight:700;cursor:pointer}.note{font-size:11px;color:#9ba8b8}
+.pages{padding:8px 0 30px}.report-page{width:var(--pw);height:var(--ph);margin:22px auto;padding:var(--pad);background:#fff;color:var(--ink);font-family:"Times New Roman",Times,serif;box-shadow:0 16px 45px rgba(0,0,0,.38);overflow:hidden}.page-inner{height:100%;border:2px solid #1d1d1d;padding:var(--inner);overflow:hidden;display:flex;flex-direction:column}.page-content{flex:1;min-height:0;overflow:hidden}.content-block{break-inside:avoid;page-break-inside:avoid;margin:0 0 3.2mm}.cover{height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center}.cover .subject{font-size:16pt;font-weight:700;margin-bottom:12mm}.cover h1{font-size:24pt;margin:0 0 8mm}.cover .subtitle{font-size:15pt;margin-bottom:25mm}.cover-table{margin:0 auto;width:78%;border-collapse:collapse;font-size:13pt;text-align:left}.cover-table td{padding:2.5mm 1mm;vertical-align:top}.cover-table td:first-child{font-weight:700;width:35%}.blank{display:inline-block;min-width:60mm;border-bottom:1px solid #222;padding:0 2mm 1mm}.index-title{text-align:center;font-size:18pt;margin:2mm 0 2mm}.index-sub{text-align:center;font-weight:700;font-size:13pt;margin:0 0 5mm}.index-table{width:100%;border-collapse:collapse;font-size:12pt}.index-table th,.index-table td{border:1px solid #222;padding:3mm 2.5mm}.index-table th{text-align:center}.index-table td:first-child{width:18mm;text-align:center}.index-table td:nth-child(3){width:31mm}.index-table td:last-child{width:38mm}.lab-heading{font-size:17pt;font-weight:700;text-align:center;border-bottom:1px solid #222;padding-bottom:2mm;margin:0 0 4mm}.command-card{border:1px solid #bbb;padding:3mm;border-radius:3px}.command-card h3{font-size:13pt;margin:0 0 2mm}.cmd-grid{display:grid;grid-template-columns:24mm 1fr;gap:1mm 2.5mm;font-size:11.5pt;line-height:1.3}.cmd-label{font-weight:700}.commands-used{margin-top:2mm;font-size:11.5pt;line-height:1.28}.commands-used ol{margin:1mm 0 0;padding-left:6mm}.commands-used li{margin-bottom:1mm}code{font-family:Consolas,"Courier New",monospace;font-size:9.8pt}.terminal-wrap{margin-top:2.5mm}.terminal-label{font-size:11.5pt;font-weight:700;font-style:italic;margin-bottom:1mm}.terminal{border-radius:6px;overflow:hidden;background:#101010;color:#e6e6e6;font-family:Consolas,"Courier New",monospace}.term-title{height:25px;display:flex;align-items:center;padding:0 9px;background:#252525;color:#bbb;font-family:"Segoe UI",sans-serif;font-size:9.5px}.term-body{margin:0;padding:2.5mm 3mm;white-space:pre-wrap;overflow-wrap:anywhere;font-size:9pt;line-height:1.28}.prompt{color:#8ae234}.program-question{font-size:13pt;font-weight:700;line-height:1.35;margin:0}.section-title{font-size:12pt;font-weight:700;font-style:italic;margin:0 0 1.5mm}.theory-box{border:1px solid #ccc;background:#f7f7f7;padding:3mm;font-size:12pt;line-height:1.35}.plain-code{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:Consolas,"Courier New",monospace;font-size:9.5pt;line-height:1.2}.code-line{margin:0;break-inside:avoid}.program-output{margin-top:4mm}.footer-note{text-align:center;font-size:9.5pt;color:#444;border-top:1px solid #aaa;padding-top:1.8mm;margin-top:auto}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.report-page{margin:10px 0}.controls{margin:10px}}
+@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body{background:white}.no-print{display:none!important}.pages{padding:0}.report-page{margin:0;box-shadow:none;page-break-after:always;break-after:page}.report-page:last-child{page-break-after:auto;break-after:auto}}
+</style>
+</head>
+<body>
+<section class="controls no-print">
+  <h1>Operating System Lab Report - Part 2</h1>
+  <p>Fully printable build from Lab Works2.pdf. Enter your details before printing. Use A4, margins None, background graphics ON, and print single-sided.</p>
+  <div class="grid">
+    <div class="field"><label>Student name</label><input id="nameIn" placeholder="Your full name"></div>
+    <div class="field"><label>Roll no.</label><input id="rollIn" placeholder="Roll number"></div>
+    <div class="field"><label>Section</label><input id="sectionIn" placeholder="Section"></div>
+    <div class="field"><label>Submitted to</label><input id="toIn" placeholder="Teacher / Department"></div>
+    <div class="field"><label>Submission date</label><input id="dateIn" placeholder="YYYY-MM-DD or BS date"></div>
+    <div class="field"><label>College / Campus</label><input id="collegeIn" placeholder="College / Campus"></div>
+  </div>
+  <div class="actions"><button class="print" onclick="window.print()">Print / Save as PDF</button><span class="note">82 required entries: 76 Linux commands + 6 C programs.</span></div>
+</section>
+<main id="pages" class="pages"></main>
+<script type="application/json" id="report-data">[
+  {
+    "no": "1.1",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: ls",
+    "question": "ls",
+    "usage": "Lists files and directories.",
+    "syntax": "ls [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "ls -l",
+        "effect": "Shows a long listing with permissions, owner, size and time.",
+        "result": "total 8\n-rw-r--r-- 1 {USER} {USER} 42 Aug 22 10:15 notes.txt\ndrwxr-xr-x 2 {USER} {USER} 4096 Aug 22 10:15 projects"
+      }
+    ]
+  },
+  {
+    "no": "1.2",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: cd",
+    "question": "cd",
+    "usage": "Changes the current working directory.",
+    "syntax": "cd [directory]",
+    "commands": [
+      {
+        "command": "cd OSLab",
+        "effect": "Changes the working directory to OSLab.",
+        "result": ""
+      },
+      {
+        "command": "pwd",
+        "effect": "Confirms the new working directory.",
+        "result": "/home/{USER}/OSLab"
+      }
+    ]
+  },
+  {
+    "no": "1.3",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: grep",
+    "question": "grep",
+    "usage": "Searches text for lines that match a pattern.",
+    "syntax": "grep [OPTION]... PATTERN [FILE]...",
+    "commands": [
+      {
+        "command": "grep Linux notes.txt",
+        "effect": "Prints lines in notes.txt containing Linux.",
+        "result": "Linux manages processes, memory and devices."
+      }
+    ]
+  },
+  {
+    "no": "1.4",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: su",
+    "question": "su",
+    "usage": "Starts a shell as another user or runs a command with another user identity.",
+    "syntax": "su [options] [-] [user [argument...]]",
+    "commands": [
+      {
+        "command": "su -c \"whoami\" root",
+        "effect": "Runs whoami as root, then returns to the current shell.",
+        "result": "Password:\nroot"
+      }
+    ]
+  },
+  {
+    "no": "1.5",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: sudo",
+    "question": "sudo",
+    "usage": "Runs an allowed command with elevated privileges.",
+    "syntax": "sudo [options] command",
+    "commands": [
+      {
+        "command": "sudo whoami",
+        "effect": "Runs whoami with superuser privileges.",
+        "result": "root"
+      }
+    ]
+  },
+  {
+    "no": "1.6",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: pwd",
+    "question": "pwd",
+    "usage": "Prints the absolute path of the current working directory.",
+    "syntax": "pwd [OPTION]",
+    "commands": [
+      {
+        "command": "pwd",
+        "effect": "Displays the current directory.",
+        "result": "/home/{USER}/OSLab"
+      }
+    ]
+  },
+  {
+    "no": "1.7",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: mv",
+    "question": "mv",
+    "usage": "Moves or renames files and directories.",
+    "syntax": "mv [OPTION]... SOURCE DEST",
+    "commands": [
+      {
+        "command": "mv old.txt new.txt",
+        "effect": "Renames old.txt to new.txt.",
+        "result": ""
+      },
+      {
+        "command": "ls new.txt",
+        "effect": "Confirms that the renamed file exists.",
+        "result": "new.txt"
+      }
+    ]
+  },
+  {
+    "no": "1.8",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: cp",
+    "question": "cp",
+    "usage": "Copies files or directories.",
+    "syntax": "cp [OPTION]... SOURCE DEST",
+    "commands": [
+      {
+        "command": "cp notes.txt notes-copy.txt",
+        "effect": "Creates a copy named notes-copy.txt.",
+        "result": ""
+      },
+      {
+        "command": "ls notes-copy.txt",
+        "effect": "Confirms the copied file.",
+        "result": "notes-copy.txt"
+      }
+    ]
+  },
+  {
+    "no": "1.9",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: rm",
+    "question": "rm",
+    "usage": "Removes files or directories.",
+    "syntax": "rm [OPTION]... FILE...",
+    "commands": [
+      {
+        "command": "rm remove.txt",
+        "effect": "Deletes remove.txt.",
+        "result": ""
+      },
+      {
+        "command": "ls remove.txt",
+        "effect": "Shows that the file no longer exists.",
+        "result": "ls: cannot access 'remove.txt': No such file or directory"
+      }
+    ]
+  },
+  {
+    "no": "1.10",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: mkdir",
+    "question": "mkdir",
+    "usage": "Creates directories.",
+    "syntax": "mkdir [OPTION]... DIRECTORY...",
+    "commands": [
+      {
+        "command": "mkdir projects",
+        "effect": "Creates a directory named projects.",
+        "result": ""
+      },
+      {
+        "command": "ls -d projects",
+        "effect": "Confirms the directory exists.",
+        "result": "projects"
+      }
+    ]
+  },
+  {
+    "no": "1.11",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: rmdir",
+    "question": "rmdir",
+    "usage": "Removes empty directories.",
+    "syntax": "rmdir [OPTION]... DIRECTORY...",
+    "commands": [
+      {
+        "command": "rmdir emptydir",
+        "effect": "Removes the empty directory emptydir.",
+        "result": ""
+      },
+      {
+        "command": "ls -d emptydir",
+        "effect": "Confirms the directory was removed.",
+        "result": "ls: cannot access 'emptydir': No such file or directory"
+      }
+    ]
+  },
+  {
+    "no": "1.12",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: chmod",
+    "question": "chmod",
+    "usage": "Changes file permission bits.",
+    "syntax": "chmod [OPTION]... MODE FILE...",
+    "commands": [
+      {
+        "command": "chmod 640 script.sh",
+        "effect": "Gives the owner read/write, group read, and others no permission.",
+        "result": ""
+      },
+      {
+        "command": "stat -c \"%A %a %n\" script.sh",
+        "effect": "Displays the new permissions.",
+        "result": "-rw-r----- 640 script.sh"
+      }
+    ]
+  },
+  {
+    "no": "1.13",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: cat",
+    "question": "cat",
+    "usage": "Displays, combines or redirects file contents.",
+    "syntax": "cat [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "cat notes.txt",
+        "effect": "Prints the contents of notes.txt.",
+        "result": "Operating System Lab\nLinux command practice"
+      }
+    ]
+  },
+  {
+    "no": "1.14",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: chown",
+    "question": "chown",
+    "usage": "Changes file owner and optionally group.",
+    "syntax": "chown [OPTION]... [OWNER][:[GROUP]] FILE...",
+    "commands": [
+      {
+        "command": "sudo chown {USER}:{USER} notes.txt",
+        "effect": "Changes the owner and group of notes.txt to the current user.",
+        "result": ""
+      },
+      {
+        "command": "ls -l notes.txt",
+        "effect": "Displays the new ownership.",
+        "result": "-rw-r--r-- 1 {USER} {USER} 42 Aug 22 10:15 notes.txt"
+      }
+    ]
+  },
+  {
+    "no": "1.15",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: echo",
+    "question": "echo",
+    "usage": "Writes text or shell-expanded values to standard output.",
+    "syntax": "echo [OPTION]... [STRING]...",
+    "commands": [
+      {
+        "command": "echo \"Operating Systems Lab\"",
+        "effect": "Prints the supplied text.",
+        "result": "Operating Systems Lab"
+      }
+    ]
+  },
+  {
+    "no": "1.16",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: wc",
+    "question": "wc",
+    "usage": "Counts lines, words and bytes in files or input.",
+    "syntax": "wc [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "wc -l notes.txt",
+        "effect": "Counts the number of lines in notes.txt.",
+        "result": "2 notes.txt"
+      }
+    ]
+  },
+  {
+    "no": "1.17",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: man",
+    "question": "man",
+    "usage": "Displays manual pages for commands and system interfaces.",
+    "syntax": "man [OPTION]... [SECTION] PAGE...",
+    "commands": [
+      {
+        "command": "man ls",
+        "effect": "Opens the manual page for ls.",
+        "result": "LS(1)                         User Commands                         LS(1)\nNAME\n       ls - list directory contents"
+      }
+    ]
+  },
+  {
+    "no": "1.18",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: history",
+    "question": "history",
+    "usage": "Displays commands saved in the current shell history.",
+    "syntax": "history [n]",
+    "commands": [
+      {
+        "command": "history 3",
+        "effect": "Shows the latest three history entries.",
+        "result": "  41  pwd\n  42  ls -l\n  43  history 3"
+      }
+    ]
+  },
+  {
+    "no": "1.19",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: clear",
+    "question": "clear",
+    "usage": "Clears the visible terminal screen.",
+    "syntax": "clear",
+    "commands": [
+      {
+        "command": "clear",
+        "effect": "Clears previously displayed terminal text.",
+        "result": "[terminal screen cleared]"
+      }
+    ]
+  },
+  {
+    "no": "1.20",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: touch",
+    "question": "touch",
+    "usage": "Creates an empty file or updates file timestamps.",
+    "syntax": "touch [OPTION]... FILE...",
+    "commands": [
+      {
+        "command": "touch report.txt",
+        "effect": "Creates report.txt if it does not exist.",
+        "result": ""
+      },
+      {
+        "command": "ls -l report.txt",
+        "effect": "Confirms the file exists.",
+        "result": "-rw-r--r-- 1 {USER} {USER} 0 Aug 22 10:20 report.txt"
+      }
+    ]
+  },
+  {
+    "no": "1.21",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: locate",
+    "question": "locate",
+    "usage": "Finds file paths using a prebuilt name database.",
+    "syntax": "locate [OPTION]... PATTERN...",
+    "commands": [
+      {
+        "command": "locate bashrc | head -n 3",
+        "effect": "Searches the locate database for paths containing bashrc.",
+        "result": "/etc/bash.bashrc\n/etc/skel/.bashrc\n/home/{USER}/.bashrc"
+      }
+    ]
+  },
+  {
+    "no": "1.22",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: netstat",
+    "question": "netstat",
+    "usage": "Displays network connections, routing tables and interface statistics.",
+    "syntax": "netstat [options]",
+    "commands": [
+      {
+        "command": "netstat -tuln",
+        "effect": "Lists listening TCP and UDP sockets using numeric addresses.",
+        "result": "Active Internet connections (only servers)\nProto Recv-Q Send-Q Local Address           Foreign Address         State\ntcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN"
+      }
+    ]
+  },
+  {
+    "no": "1.23",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: ss",
+    "question": "ss",
+    "usage": "Displays socket information and is the modern replacement for many netstat uses.",
+    "syntax": "ss [options] [FILTER]",
+    "commands": [
+      {
+        "command": "ss -tuln",
+        "effect": "Lists listening TCP and UDP sockets with numeric addresses.",
+        "result": "Netid State  Recv-Q Send-Q Local Address:Port Peer Address:Port\ntcp   LISTEN 0      4096   127.0.0.1:631       0.0.0.0:*"
+      }
+    ]
+  },
+  {
+    "no": "1.24",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: df",
+    "question": "df",
+    "usage": "Reports used and available space on mounted file systems.",
+    "syntax": "df [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "df -h /",
+        "effect": "Shows human-readable usage for the root file system.",
+        "result": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sdc        251G   18G  221G   8% /"
+      }
+    ]
+  },
+  {
+    "no": "1.25",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: du",
+    "question": "du",
+    "usage": "Estimates disk usage of files and directories.",
+    "syntax": "du [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "du -sh OSLab",
+        "effect": "Shows the total size of OSLab in human-readable form.",
+        "result": "148K\tOSLab"
+      }
+    ]
+  },
+  {
+    "no": "1.26",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: uname",
+    "question": "uname",
+    "usage": "Prints system and kernel information.",
+    "syntax": "uname [OPTION]...",
+    "commands": [
+      {
+        "command": "uname -a",
+        "effect": "Displays kernel name, host, release, architecture and operating-system details.",
+        "result": "Linux os-lab 6.8.0-101-generic #101-Ubuntu SMP x86_64 GNU/Linux"
+      }
+    ]
+  },
+  {
+    "no": "1.27",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: passwd",
+    "question": "passwd",
+    "usage": "Changes a password or displays password status.",
+    "syntax": "passwd [options] [LOGIN]",
+    "commands": [
+      {
+        "command": "passwd --status {USER}",
+        "effect": "Displays the password status for the current user without changing it.",
+        "result": "{USER} P 2026-08-01 0 99999 7 -1"
+      }
+    ]
+  },
+  {
+    "no": "1.28",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: useradd",
+    "question": "useradd",
+    "usage": "Creates a new local user account.",
+    "syntax": "useradd [options] LOGIN",
+    "commands": [
+      {
+        "command": "sudo useradd -m osdemo",
+        "effect": "Creates user osdemo and its home directory.",
+        "result": ""
+      },
+      {
+        "command": "id osdemo",
+        "effect": "Confirms the new account exists.",
+        "result": "uid=1002(osdemo) gid=1002(osdemo) groups=1002(osdemo)"
+      }
+    ]
+  },
+  {
+    "no": "1.29",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: userdel",
+    "question": "userdel",
+    "usage": "Deletes a local user account.",
+    "syntax": "userdel [options] LOGIN",
+    "commands": [
+      {
+        "command": "sudo userdel -r osdemo",
+        "effect": "Deletes user osdemo and removes its home directory.",
+        "result": ""
+      },
+      {
+        "command": "id osdemo",
+        "effect": "Confirms that the account no longer exists.",
+        "result": "id: 'osdemo': no such user"
+      }
+    ]
+  },
+  {
+    "no": "1.30",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: apt-get",
+    "question": "apt-get",
+    "usage": "Performs package-management operations suitable for scripts and administration.",
+    "syntax": "apt-get [options] command",
+    "commands": [
+      {
+        "command": "sudo apt-get update",
+        "effect": "Downloads current package index information.",
+        "result": "Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease\nReading package lists... Done"
+      }
+    ]
+  },
+  {
+    "no": "1.31",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: apt",
+    "question": "apt",
+    "usage": "Provides a user-friendly command-line interface for Debian package management.",
+    "syntax": "apt [options] command",
+    "commands": [
+      {
+        "command": "apt list --installed | head -n 4",
+        "effect": "Displays installed package names and versions.",
+        "result": "Listing...\nbash/noble,now 5.2.21-2ubuntu4 amd64 [installed]\ncoreutils/noble,now 9.4-3ubuntu6 amd64 [installed]"
+      }
+    ]
+  },
+  {
+    "no": "1.32",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: ping",
+    "question": "ping",
+    "usage": "Sends ICMP echo requests to test network reachability and latency.",
+    "syntax": "ping [OPTION]... DESTINATION",
+    "commands": [
+      {
+        "command": "ping -c 2 127.0.0.1",
+        "effect": "Sends two echo requests to the local host.",
+        "result": "PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.\n64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.031 ms\n64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.028 ms\n--- 127.0.0.1 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss"
+      }
+    ]
+  },
+  {
+    "no": "1.33",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: find",
+    "question": "find",
+    "usage": "Searches the file-system hierarchy using tests and actions.",
+    "syntax": "find [PATH] [EXPRESSION]",
+    "commands": [
+      {
+        "command": "find . -maxdepth 1 -name \"*.txt\"",
+        "effect": "Finds text files in the current directory only.",
+        "result": "./notes.txt\n./report.txt"
+      }
+    ]
+  },
+  {
+    "no": "1.34",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: head",
+    "question": "head",
+    "usage": "Prints the first part of a file or stream.",
+    "syntax": "head [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "head -n 2 notes.txt",
+        "effect": "Prints the first two lines of notes.txt.",
+        "result": "Operating System Lab\nLinux command practice"
+      }
+    ]
+  },
+  {
+    "no": "1.35",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: rename",
+    "question": "rename",
+    "usage": "Renames multiple files using a name transformation.",
+    "syntax": "rename [options] expression replacement file...",
+    "commands": [
+      {
+        "command": "rename .txt .bak *.txt",
+        "effect": "Changes the .txt suffix to .bak for matching files.",
+        "result": ""
+      },
+      {
+        "command": "ls *.bak",
+        "effect": "Shows the renamed files.",
+        "result": "notes.bak  report.bak"
+      }
+    ]
+  },
+  {
+    "no": "1.36",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: tail",
+    "question": "tail",
+    "usage": "Prints the last part of a file or follows appended data.",
+    "syntax": "tail [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "tail -n 2 notes.txt",
+        "effect": "Prints the final two lines of notes.txt.",
+        "result": "Linux command practice\nEnd of file"
+      }
+    ]
+  },
+  {
+    "no": "1.37",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: tac",
+    "question": "tac",
+    "usage": "Prints file lines in reverse order.",
+    "syntax": "tac [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "tac notes.txt",
+        "effect": "Displays notes.txt starting from its last line.",
+        "result": "End of file\nLinux command practice\nOperating System Lab"
+      }
+    ]
+  },
+  {
+    "no": "1.38",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: comm",
+    "question": "comm",
+    "usage": "Compares two sorted files line by line in three columns.",
+    "syntax": "comm [OPTION]... FILE1 FILE2",
+    "commands": [
+      {
+        "command": "comm a.txt b.txt",
+        "effect": "Shows lines unique to a.txt, unique to b.txt, and common to both.",
+        "result": "apple\n\tbanana\n\t\torange"
+      }
+    ]
+  },
+  {
+    "no": "1.39",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: cut",
+    "question": "cut",
+    "usage": "Extracts selected fields or character positions from each input line.",
+    "syntax": "cut OPTION... [FILE]...",
+    "commands": [
+      {
+        "command": "cut -d: -f1 /etc/passwd | head -n 5",
+        "effect": "Prints the first colon-separated field, the login name, for the first five users.",
+        "result": "root\ndaemon\nbin\nsys\nsync"
+      }
+    ]
+  },
+  {
+    "no": "1.40",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: sort",
+    "question": "sort",
+    "usage": "Sorts lines of text.",
+    "syntax": "sort [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "sort names.txt",
+        "effect": "Prints the lines of names.txt in ascending lexical order.",
+        "result": "Aarav\nDeepa\nNabin\nSita"
+      }
+    ]
+  },
+  {
+    "no": "1.41",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: date",
+    "question": "date",
+    "usage": "Displays or sets the system date and time.",
+    "syntax": "date [OPTION]... [+FORMAT]",
+    "commands": [
+      {
+        "command": "date \"+%Y-%m-%d %H:%M\"",
+        "effect": "Displays the date and time in a selected format.",
+        "result": "2026-08-22 14:47"
+      }
+    ]
+  },
+  {
+    "no": "1.42",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: cal",
+    "question": "cal",
+    "usage": "Displays a calendar.",
+    "syntax": "cal [OPTION]... [[MONTH] YEAR]",
+    "commands": [
+      {
+        "command": "cal 8 2026",
+        "effect": "Displays the calendar for August 2026.",
+        "result": "    August 2026\nMo Tu We Th Fr Sa Su\n                1  2\n 3  4  5  6  7  8  9\n10 11 12 13 14 15 16\n17 18 19 20 21 22 23\n24 25 26 27 28 29 30\n31"
+      }
+    ]
+  },
+  {
+    "no": "1.43",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: time",
+    "question": "time",
+    "usage": "Measures how long a command takes and reports resource timing.",
+    "syntax": "time COMMAND [ARGUMENTS]",
+    "commands": [
+      {
+        "command": "time sleep 0.1",
+        "effect": "Runs sleep and reports elapsed, user and system time.",
+        "result": "real\t0m0.102s\nuser\t0m0.000s\nsys\t0m0.002s"
+      }
+    ]
+  },
+  {
+    "no": "1.44",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: host",
+    "question": "host",
+    "usage": "Performs DNS lookups for names or addresses.",
+    "syntax": "host [options] name [server]",
+    "commands": [
+      {
+        "command": "host localhost",
+        "effect": "Looks up the localhost host name.",
+        "result": "localhost has address 127.0.0.1\nlocalhost has IPv6 address ::1"
+      }
+    ]
+  },
+  {
+    "no": "1.45",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: wget",
+    "question": "wget",
+    "usage": "Downloads files over HTTP, HTTPS or FTP.",
+    "syntax": "wget [OPTION]... [URL]...",
+    "commands": [
+      {
+        "command": "wget --version | head -n 1",
+        "effect": "Displays the installed wget version without making a network request.",
+        "result": "GNU Wget 1.21.4 built on linux-gnu."
+      }
+    ]
+  },
+  {
+    "no": "1.46",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: id",
+    "question": "id",
+    "usage": "Prints user and group identifiers.",
+    "syntax": "id [OPTION]... [USER]",
+    "commands": [
+      {
+        "command": "id",
+        "effect": "Displays the current user's UID, GID and group memberships.",
+        "result": "uid=1000({USER}) gid=1000({USER}) groups=1000({USER}),27(sudo)"
+      }
+    ]
+  },
+  {
+    "no": "1.47",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: ps",
+    "question": "ps",
+    "usage": "Displays information about running processes.",
+    "syntax": "ps [options]",
+    "commands": [
+      {
+        "command": "ps -o pid,comm | head -n 5",
+        "effect": "Shows process IDs and command names for the first few processes.",
+        "result": "    PID COMMAND\n      1 systemd\n     57 systemd-journal\n    214 bash\n    428 ps"
+      }
+    ]
+  },
+  {
+    "no": "1.48",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: top",
+    "question": "top",
+    "usage": "Displays a continuously updated view of processes and system load.",
+    "syntax": "top [options]",
+    "commands": [
+      {
+        "command": "top -b -n 1 | head -n 5",
+        "effect": "Runs top once in batch mode and prints the first five lines.",
+        "result": "top - 14:47:10 up 2:14,  1 user,  load average: 0.08, 0.05, 0.01\nTasks:  42 total,   1 running,  41 sleeping,   0 stopped,   0 zombie\n%Cpu(s):  1.2 us,  0.4 sy, 98.4 id\nMiB Mem :  7820.0 total,  5210.0 free,  1100.0 used, 1510.0 buff/cache"
+      }
+    ]
+  },
+  {
+    "no": "1.49",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: kill",
+    "question": "kill",
+    "usage": "Sends a signal to a process identified by PID.",
+    "syntax": "kill [options] PID...",
+    "commands": [
+      {
+        "command": "sleep 60 &",
+        "effect": "Starts a background process.",
+        "result": "[1] 4242"
+      },
+      {
+        "command": "kill 4242",
+        "effect": "Sends SIGTERM to PID 4242 and terminates the sleep process.",
+        "result": "[1]+  Terminated              sleep 60"
+      }
+    ]
+  },
+  {
+    "no": "1.50",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: pkill",
+    "question": "pkill",
+    "usage": "Sends a signal to processes selected by name or other attributes.",
+    "syntax": "pkill [options] pattern",
+    "commands": [
+      {
+        "command": "pkill -TERM sleep",
+        "effect": "Sends SIGTERM to processes whose name matches sleep.",
+        "result": "[background sleep processes terminated]"
+      }
+    ]
+  },
+  {
+    "no": "1.51",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: killall",
+    "question": "killall",
+    "usage": "Sends a signal to all processes with a specified command name.",
+    "syntax": "killall [options] name...",
+    "commands": [
+      {
+        "command": "killall sleep",
+        "effect": "Terminates all processes named sleep owned by the current user.",
+        "result": "[all matching sleep processes terminated]"
+      }
+    ]
+  },
+  {
+    "no": "1.52",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: bg",
+    "question": "bg",
+    "usage": "Continues a stopped job in the background.",
+    "syntax": "bg [job_spec ...]",
+    "commands": [
+      {
+        "command": "bg %1",
+        "effect": "Resumes job 1 in the background.",
+        "result": "[1]+ sleep 30 &"
+      }
+    ]
+  },
+  {
+    "no": "1.53",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: fg",
+    "question": "fg",
+    "usage": "Moves a current-shell job to the foreground.",
+    "syntax": "fg [job_spec]",
+    "commands": [
+      {
+        "command": "fg %1",
+        "effect": "Brings job 1 to the foreground.",
+        "result": "sleep 30"
+      }
+    ]
+  },
+  {
+    "no": "1.54",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: tar",
+    "question": "tar",
+    "usage": "Creates, extracts or lists archive files.",
+    "syntax": "tar [OPTION...] [FILE]...",
+    "commands": [
+      {
+        "command": "tar -cf notes.tar notes.txt",
+        "effect": "Creates notes.tar containing notes.txt.",
+        "result": ""
+      },
+      {
+        "command": "tar -tf notes.tar",
+        "effect": "Lists the archive contents.",
+        "result": "notes.txt"
+      }
+    ]
+  },
+  {
+    "no": "1.55",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: gzip",
+    "question": "gzip",
+    "usage": "Compresses or decompresses files using gzip format.",
+    "syntax": "gzip [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "gzip sample.log",
+        "effect": "Compresses sample.log and replaces it with sample.log.gz.",
+        "result": ""
+      },
+      {
+        "command": "ls sample.log.gz",
+        "effect": "Confirms the compressed file exists.",
+        "result": "sample.log.gz"
+      }
+    ]
+  },
+  {
+    "no": "1.56",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: alias",
+    "question": "alias",
+    "usage": "Creates or displays shell command aliases.",
+    "syntax": "alias [name[='command']]",
+    "commands": [
+      {
+        "command": "alias ll='ls -l'",
+        "effect": "Defines ll as an alias for ls -l.",
+        "result": ""
+      },
+      {
+        "command": "alias ll",
+        "effect": "Displays the alias definition.",
+        "result": "alias ll='ls -l'"
+      }
+    ]
+  },
+  {
+    "no": "1.57",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: who",
+    "question": "who",
+    "usage": "Shows users currently logged in.",
+    "syntax": "who [OPTION]...",
+    "commands": [
+      {
+        "command": "who",
+        "effect": "Lists logged-in sessions.",
+        "result": "{USER}   pts/0        2026-08-22 12:33"
+      }
+    ]
+  },
+  {
+    "no": "1.58",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: whoami",
+    "question": "whoami",
+    "usage": "Prints the effective user name of the current process.",
+    "syntax": "whoami",
+    "commands": [
+      {
+        "command": "whoami",
+        "effect": "Displays the current effective user name.",
+        "result": "{USER}"
+      }
+    ]
+  },
+  {
+    "no": "1.59",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: w",
+    "question": "w",
+    "usage": "Shows logged-in users and what they are doing.",
+    "syntax": "w [options] [user]",
+    "commands": [
+      {
+        "command": "w -h",
+        "effect": "Displays login activity without the header.",
+        "result": "{USER}   pts/0    12:33   2:14   0.03s  0.02s bash"
+      }
+    ]
+  },
+  {
+    "no": "1.60",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: uptime",
+    "question": "uptime",
+    "usage": "Shows how long the system has been running and its load averages.",
+    "syntax": "uptime [options]",
+    "commands": [
+      {
+        "command": "uptime -p",
+        "effect": "Displays uptime in a human-readable form.",
+        "result": "up 2 hours, 14 minutes"
+      }
+    ]
+  },
+  {
+    "no": "1.61",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: free",
+    "question": "free",
+    "usage": "Displays physical and swap memory usage.",
+    "syntax": "free [options]",
+    "commands": [
+      {
+        "command": "free -h",
+        "effect": "Shows memory values using human-readable units.",
+        "result": "               total        used        free      shared  buff/cache   available\nMem:           7.6Gi       1.1Gi       5.1Gi        34Mi       1.5Gi       6.2Gi\nSwap:          2.0Gi          0B       2.0Gi"
+      }
+    ]
+  },
+  {
+    "no": "1.62",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: xargs",
+    "question": "xargs",
+    "usage": "Builds and executes command lines from standard input.",
+    "syntax": "xargs [options] [command [initial-arguments]]",
+    "commands": [
+      {
+        "command": "printf 'one\\ntwo\\nthree\\n' | xargs echo",
+        "effect": "Collects input words and passes them as arguments to echo.",
+        "result": "one two three"
+      }
+    ]
+  },
+  {
+    "no": "1.63",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: crontab",
+    "question": "crontab",
+    "usage": "Installs, lists or edits commands scheduled by cron.",
+    "syntax": "crontab [options] [file]",
+    "commands": [
+      {
+        "command": "crontab -l",
+        "effect": "Lists the current user's cron entries.",
+        "result": "0 7 * * * /home/{USER}/backup.sh"
+      }
+    ]
+  },
+  {
+    "no": "1.64",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: env",
+    "question": "env",
+    "usage": "Displays the environment or runs a command with a modified environment.",
+    "syntax": "env [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]",
+    "commands": [
+      {
+        "command": "env | grep '^HOME='",
+        "effect": "Displays the HOME environment variable from the environment.",
+        "result": "HOME=/home/{USER}"
+      }
+    ]
+  },
+  {
+    "no": "1.65",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: printenv",
+    "question": "printenv",
+    "usage": "Prints one or more environment variable values.",
+    "syntax": "printenv [OPTION]... [VARIABLE]...",
+    "commands": [
+      {
+        "command": "printenv HOME",
+        "effect": "Displays the HOME variable.",
+        "result": "/home/{USER}"
+      }
+    ]
+  },
+  {
+    "no": "1.66",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: mount",
+    "question": "mount",
+    "usage": "Displays mounted file systems or attaches a file system to the directory tree.",
+    "syntax": "mount [options] [device|mountpoint]",
+    "commands": [
+      {
+        "command": "mount | head -n 2",
+        "effect": "Displays the first two mounted file-system entries.",
+        "result": "/dev/sdc on / type ext4 (rw,relatime)\nnone on /mnt/wsl type tmpfs (rw,relatime)"
+      }
+    ]
+  },
+  {
+    "no": "1.67",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: umount",
+    "question": "umount",
+    "usage": "Detaches a mounted file system.",
+    "syntax": "umount [options] target",
+    "commands": [
+      {
+        "command": "sudo umount /mnt/usb",
+        "effect": "Unmounts the file system mounted at /mnt/usb after pending writes are flushed.",
+        "result": "[no output on success]"
+      }
+    ]
+  },
+  {
+    "no": "1.68",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: journalctl",
+    "question": "journalctl",
+    "usage": "Reads entries from the systemd journal.",
+    "syntax": "journalctl [options] [matches]",
+    "commands": [
+      {
+        "command": "journalctl -n 3 --no-pager",
+        "effect": "Displays the latest three journal entries without opening a pager.",
+        "result": "Aug 22 14:44:01 os-lab systemd[1]: Started User Manager for UID 1000.\nAug 22 14:45:12 os-lab sudo[4210]: {USER} : TTY=pts/0 ; COMMAND=/usr/bin/whoami\nAug 22 14:46:33 os-lab systemd[1]: Started Session 8 of User {USER}."
+      }
+    ]
+  },
+  {
+    "no": "1.69",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: lsblk",
+    "question": "lsblk",
+    "usage": "Lists block devices and their mount points.",
+    "syntax": "lsblk [options] [device...]",
+    "commands": [
+      {
+        "command": "lsblk",
+        "effect": "Displays block-device names, sizes, types and mount points.",
+        "result": "NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS\nsda      8:0    0  256G  0 disk\n└─sda1   8:1    0  256G  0 part /"
+      }
+    ]
+  },
+  {
+    "no": "1.70",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: nano",
+    "question": "nano",
+    "usage": "Opens the GNU nano terminal text editor.",
+    "syntax": "nano [options] [[+line,column] file]...",
+    "commands": [
+      {
+        "command": "nano --version | head -n 1",
+        "effect": "Displays the installed nano version without opening the editor.",
+        "result": " GNU nano, version 7.2"
+      }
+    ]
+  },
+  {
+    "no": "1.71",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: vim",
+    "question": "vim",
+    "usage": "Opens the Vim text editor or displays Vim information.",
+    "syntax": "vim [options] [file ...]",
+    "commands": [
+      {
+        "command": "vim --version | head -n 1",
+        "effect": "Displays the installed Vim version.",
+        "result": "VIM - Vi IMproved 9.1"
+      }
+    ]
+  },
+  {
+    "no": "1.72",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: less",
+    "question": "less",
+    "usage": "Views text one screen at a time with forward and backward navigation.",
+    "syntax": "less [options] file...",
+    "commands": [
+      {
+        "command": "less --version | head -n 1",
+        "effect": "Displays the installed less version.",
+        "result": "less 590 (GNU regular expressions)"
+      }
+    ]
+  },
+  {
+    "no": "1.73",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: tee",
+    "question": "tee",
+    "usage": "Copies standard input to standard output and one or more files.",
+    "syntax": "tee [OPTION]... [FILE]...",
+    "commands": [
+      {
+        "command": "echo \"OS Lab\" | tee saved.txt",
+        "effect": "Prints OS Lab and writes the same text to saved.txt.",
+        "result": "OS Lab"
+      }
+    ]
+  },
+  {
+    "no": "1.74",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: scp",
+    "question": "scp",
+    "usage": "Copies files securely between hosts using SSH.",
+    "syntax": "scp [options] source ... target",
+    "commands": [
+      {
+        "command": "scp notes.txt {USER}@server:/tmp/",
+        "effect": "Copies notes.txt to /tmp on the remote server through SSH.",
+        "result": "notes.txt                                      100%   42    12.0KB/s   00:00"
+      }
+    ]
+  },
+  {
+    "no": "1.75",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: rsync",
+    "question": "rsync",
+    "usage": "Synchronizes files locally or over a remote shell while transferring only needed changes.",
+    "syntax": "rsync [OPTION]... SRC... DEST",
+    "commands": [
+      {
+        "command": "rsync -av notes.txt backup/",
+        "effect": "Copies notes.txt into backup/ and prints transfer details.",
+        "result": "sending incremental file list\nnotes.txt\n\nsent 148 bytes  received 35 bytes  366.00 bytes/sec"
+      }
+    ]
+  },
+  {
+    "no": "1.76",
+    "lab": 1,
+    "kind": "command",
+    "title": "Command: ssh",
+    "question": "ssh",
+    "usage": "Starts a secure remote shell session or runs a remote command.",
+    "syntax": "ssh [options] destination [command [argument ...]]",
+    "commands": [
+      {
+        "command": "ssh {USER}@server hostname",
+        "effect": "Runs hostname on the remote server over SSH.",
+        "result": "server"
+      }
+    ]
+  },
+  {
+    "no": "2",
+    "title": "Process Creation and Termination",
+    "question": "2. Process Creation and Termination: WAP in C to demonstrate the process creation and termination in Linux.",
+    "theory": [
+      "A Linux process can create a child process with fork(). The parent can wait for the child with wait(), which also lets the system release the child's terminated process entry."
+    ],
+    "filename": "lab_2_process_creation.c",
+    "code": "#include <stdio.h>\n#include <unistd.h>\n#include <sys/wait.h>\n\nint main() {\n    printf(\"Parent process started.\\n\");\n    fflush(stdout);\n\n    pid_t pid = fork();\n    if (pid == 0) {\n        printf(\"Child process created.\\n\");\n        printf(\"Child process terminating.\\n\");\n\n        printf(\"\\nLab No.: 2\\n\");\n        printf(\"Name: {NAME}\\n\");\n        printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n        return 0;\n    }\n\n    wait(NULL);\n    printf(\"Parent observed child termination.\\n\");\n\n    printf(\"\\nLab No.: 2\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n    return 0;\n}\n",
+    "output": "Parent process started.\nChild process created.\nChild process terminating.\n\nLab No.: 2\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}\nParent observed child termination.\n\nLab No.: 2\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}",
+    "kind": "program"
+  },
+  {
+    "no": "3",
+    "title": "Thread Creation and Termination",
+    "question": "3. Thread Creation and Termination: WAP in C to demonstrate the thread creation and termination in Linux.",
+    "theory": [
+      "POSIX threads let one process execute multiple flows of control that share the same address space. pthread_create() starts a thread, and pthread_join() waits until that thread terminates."
+    ],
+    "filename": "lab_3_thread_creation.c",
+    "code": "#include <stdio.h>\n#include <pthread.h>\n\nvoid *worker(void *arg) {\n    printf(\"Worker thread is running.\\n\");\n    printf(\"Worker thread is terminating.\\n\");\n    return NULL;\n}\n\nint main() {\n    pthread_t thread;\n\n    printf(\"Main thread: creating worker thread.\\n\");\n    pthread_create(&thread, NULL, worker, NULL);\n    pthread_join(thread, NULL);\n    printf(\"Main thread: worker thread terminated and joined.\\n\");\n\n    printf(\"\\nLab No.: 3\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n    return 0;\n}\n",
+    "output": "Main thread: creating worker thread.\nWorker thread is running.\nWorker thread is terminating.\nMain thread: worker thread terminated and joined.\n\nLab No.: 3\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}",
+    "kind": "program"
+  },
+  {
+    "no": "4(a)",
+    "title": "Producer Consumer Using Semaphore",
+    "question": "4(a). WAP in C to simulate the solution of producer consumer problem using semaphore.",
+    "theory": [
+      "The producer-consumer problem coordinates access to a shared buffer. Semaphores can represent empty and full buffer slots so the producer waits before overwriting data and the consumer waits before reading unavailable data."
+    ],
+    "filename": "lab_4a_producer_consumer_semaphore.c",
+    "code": "#include <stdio.h>\n#include <pthread.h>\n#include <semaphore.h>\n\nint buffer;\nsem_t emptySlot, fullSlot;\n\nvoid *producer(void *arg) {\n    for (int i = 1; i <= 5; i++) {\n        sem_wait(&emptySlot);\n        buffer = i * 10;\n        printf(\"Produced: %d\\n\", buffer);\n        sem_post(&fullSlot);\n    }\n    return NULL;\n}\n\nvoid *consumer(void *arg) {\n    for (int i = 1; i <= 5; i++) {\n        sem_wait(&fullSlot);\n        printf(\"Consumed: %d\\n\", buffer);\n        sem_post(&emptySlot);\n    }\n    return NULL;\n}\n\nint main() {\n    pthread_t p, c;\n    sem_init(&emptySlot, 0, 1);\n    sem_init(&fullSlot, 0, 0);\n\n    pthread_create(&p, NULL, producer, NULL);\n    pthread_create(&c, NULL, consumer, NULL);\n    pthread_join(p, NULL);\n    pthread_join(c, NULL);\n\n    sem_destroy(&emptySlot);\n    sem_destroy(&fullSlot);\n\n    printf(\"\\nLab No.: 4(a)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n    return 0;\n}\n",
+    "output": "Produced: 10\nConsumed: 10\nProduced: 20\nConsumed: 20\nProduced: 30\nConsumed: 30\nProduced: 40\nConsumed: 40\nProduced: 50\nConsumed: 50\n\nLab No.: 4(a)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}",
+    "kind": "program"
+  },
+  {
+    "no": "4(b)",
+    "title": "Producer Consumer Using Mutex",
+    "question": "4(b). WAP in C to simulate the solution of producer consumer problem using mutex.",
+    "theory": [
+      "A mutex gives one thread at a time exclusive access to shared state. In this producer-consumer solution, the mutex protects the one-item buffer and condition variables make each thread wait until the buffer state is suitable."
+    ],
+    "filename": "lab_4b_producer_consumer_mutex.c",
+    "code": "#include <stdio.h>\n#include <pthread.h>\n\nint buffer, full = 0;\npthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;\npthread_cond_t canProduce = PTHREAD_COND_INITIALIZER;\npthread_cond_t canConsume = PTHREAD_COND_INITIALIZER;\n\nvoid *producer(void *arg) {\n    for (int i = 1; i <= 5; i++) {\n        pthread_mutex_lock(&mutex);\n        while (full)\n            pthread_cond_wait(&canProduce, &mutex);\n\n        buffer = i * 10;\n        full = 1;\n        printf(\"Produced: %d\\n\", buffer);\n\n        pthread_cond_signal(&canConsume);\n        pthread_mutex_unlock(&mutex);\n    }\n    return NULL;\n}\n\nvoid *consumer(void *arg) {\n    for (int i = 1; i <= 5; i++) {\n        pthread_mutex_lock(&mutex);\n        while (!full)\n            pthread_cond_wait(&canConsume, &mutex);\n\n        printf(\"Consumed: %d\\n\", buffer);\n        full = 0;\n\n        pthread_cond_signal(&canProduce);\n        pthread_mutex_unlock(&mutex);\n    }\n    return NULL;\n}\n\nint main() {\n    pthread_t p, c;\n    pthread_create(&p, NULL, producer, NULL);\n    pthread_create(&c, NULL, consumer, NULL);\n    pthread_join(p, NULL);\n    pthread_join(c, NULL);\n\n    pthread_mutex_destroy(&mutex);\n    pthread_cond_destroy(&canProduce);\n    pthread_cond_destroy(&canConsume);\n\n    printf(\"\\nLab No.: 4(b)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n    return 0;\n}\n",
+    "output": "Produced: 10\nConsumed: 10\nProduced: 20\nConsumed: 20\nProduced: 30\nConsumed: 30\nProduced: 40\nConsumed: 40\nProduced: 50\nConsumed: 50\n\nLab No.: 4(b)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}",
+    "kind": "program"
+  },
+  {
+    "no": "4(c)",
+    "title": "Dining Philosophers Using Semaphore",
+    "question": "4(c). WAP in C to simulate the solution of dining philosopher's problem using semaphore.",
+    "theory": [
+      "The dining philosophers problem models processes that compete for pairs of shared resources. Binary semaphores represent forks, and a counting semaphore limits the number of philosophers trying to take forks at once so circular waiting is avoided."
+    ],
+    "filename": "lab_4c_dining_philosophers_semaphore.c",
+    "code": "#include <stdio.h>\n#include <pthread.h>\n#include <semaphore.h>\n#include <time.h>\n\nsem_t forks[5], room;\n\nvoid *philosopher(void *arg) {\n    int id = *(int *)arg;\n    struct timespec delay = {0, id * 20000000L};\n    nanosleep(&delay, NULL);\n\n    printf(\"Philosopher %d is thinking.\\n\", id + 1);\n    sem_wait(&room);\n    sem_wait(&forks[id]);\n    sem_wait(&forks[(id + 1) % 5]);\n\n    printf(\"Philosopher %d is eating.\\n\", id + 1);\n\n    sem_post(&forks[(id + 1) % 5]);\n    sem_post(&forks[id]);\n    sem_post(&room);\n    printf(\"Philosopher %d finished eating.\\n\", id + 1);\n    return NULL;\n}\n\nint main() {\n    pthread_t thread[5];\n    int id[5];\n\n    sem_init(&room, 0, 4);\n    for (int i = 0; i < 5; i++)\n        sem_init(&forks[i], 0, 1);\n\n    for (int i = 0; i < 5; i++) {\n        id[i] = i;\n        pthread_create(&thread[i], NULL, philosopher, &id[i]);\n    }\n    for (int i = 0; i < 5; i++)\n        pthread_join(thread[i], NULL);\n\n    for (int i = 0; i < 5; i++)\n        sem_destroy(&forks[i]);\n    sem_destroy(&room);\n\n    printf(\"\\nLab No.: 4(c)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n    return 0;\n}\n",
+    "output": "Philosopher 1 is thinking.\nPhilosopher 1 is eating.\nPhilosopher 1 finished eating.\nPhilosopher 2 is thinking.\nPhilosopher 2 is eating.\nPhilosopher 2 finished eating.\nPhilosopher 3 is thinking.\nPhilosopher 3 is eating.\nPhilosopher 3 finished eating.\nPhilosopher 4 is thinking.\nPhilosopher 4 is eating.\nPhilosopher 4 finished eating.\nPhilosopher 5 is thinking.\nPhilosopher 5 is eating.\nPhilosopher 5 finished eating.\n\nLab No.: 4(c)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}",
+    "kind": "program"
+  },
+  {
+    "no": "4(d)",
+    "title": "Producer Consumer Using Message Passing",
+    "question": "4(d). WAP in C to simulate the solution of producer consumer problem using message passing technique.",
+    "theory": [
+      "Message passing lets processes exchange data without directly sharing a buffer. A System V message queue stores messages sent by the producer until the consumer receives them."
+    ],
+    "filename": "lab_4d_producer_consumer_message_queue.c",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <sys/wait.h>\n#include <sys/ipc.h>\n#include <sys/msg.h>\n\nstruct message {\n    long type;\n    int value;\n};\n\nint main() {\n    int qid = msgget(IPC_PRIVATE, 0600 | IPC_CREAT);\n    pid_t pid = fork();\n\n    if (pid == 0) {\n        struct message msg = {1, 0};\n        for (int i = 1; i <= 3; i++) {\n            msg.value = i * 101;\n            msgsnd(qid, &msg, sizeof(msg.value), 0);\n            printf(\"Producer sent: %d\\n\", msg.value);\n        }\n        fflush(stdout);\n        return 0;\n    }\n\n    waitpid(pid, NULL, 0);\n    struct message msg;\n    for (int i = 1; i <= 3; i++) {\n        msgrcv(qid, &msg, sizeof(msg.value), 1, 0);\n        printf(\"Consumer received: %d\\n\", msg.value);\n    }\n    msgctl(qid, IPC_RMID, NULL);\n\n    printf(\"\\nLab No.: 4(d)\\n\");\n    printf(\"Name: {NAME}\\n\");\n    printf(\"Roll No./Section: {ROLL}/{SECTION}\\n\");\n    return 0;\n}\n",
+    "output": "Producer sent: 101\nProducer sent: 202\nProducer sent: 303\nConsumer received: 101\nConsumer received: 202\nConsumer received: 303\n\nLab No.: 4(d)\nName: {NAME}\nRoll No./Section: {ROLL}/{SECTION}",
+    "kind": "program"
+  }
+]</script>
+<script>
+const ITEMS=JSON.parse(document.getElementById('report-data').textContent);
+const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function val(id,fallback){const v=document.getElementById(id).value.trim();return v||fallback}
+function student(){return{name:val('nameIn','____________________________'),roll:val('rollIn','____________'),section:val('sectionIn','______'),to:val('toIn','____________________________'),date:val('dateIn','____/____/____'),college:val('collegeIn','____________________________')}}
+function slug(s){return String(s||'student').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'')||'student'}
+function fill(t,s){const map={'{NAME}':s.name,'{ROLL}':s.roll,'{SECTION}':s.section,'{USER}':slug(s.name)};let v=String(t??'');Object.entries(map).forEach(([k,x])=>v=v.split(k).join(x));return v}
+function block(html,cls=''){const d=document.createElement('div');d.className='content-block '+cls;d.innerHTML=html;return d}
+function createPage(container){const p=document.createElement('section');p.className='report-page';p.innerHTML='<div class="page-inner"><div class="page-content"></div></div>';container.appendChild(p);return p.querySelector('.page-content')}
+function paginate(container,blocks){let c=createPage(container);for(const b of blocks){c.appendChild(b);if(c.scrollHeight>c.clientHeight+2){c.removeChild(b);c=createPage(container);c.appendChild(b)}}}
+function fixedPage(container,html){const c=createPage(container);c.innerHTML=html}
+function coverHtml(s){return `<div class="cover"><div class="subject">Subject: Operating System</div><h1>LAB REPORT</h1><div class="subtitle">OS Lab Works - Part 2</div><table class="cover-table"><tr><td>Submitted by</td><td><span class="blank">${esc(s.name)}</span></td></tr><tr><td>Roll No.</td><td><span class="blank">${esc(s.roll)}</span></td></tr><tr><td>Section</td><td><span class="blank">${esc(s.section)}</span></td></tr><tr><td>Submitted to</td><td><span class="blank">${esc(s.to)}</span></td></tr><tr><td>College / Campus</td><td><span class="blank">${esc(s.college)}</span></td></tr><tr><td>Submission date</td><td><span class="blank">${esc(s.date)}</span></td></tr></table></div>`}
+function indexHtml(){return `<h2 class="index-title">Contents Page</h2><div class="index-sub">Subject: Operating System<br>List of Lab Works</div><table class="index-table"><thead><tr><th>Lab No.</th><th>Title</th><th>Date</th><th>Signature/Remarks</th></tr></thead><tbody><tr><td>1</td><td>Learning basic Linux commands</td><td></td><td></td></tr><tr><td>2</td><td>Process Creation and Termination</td><td></td><td></td></tr><tr><td>3</td><td>Thread Creation and Termination</td><td></td><td></td></tr><tr><td>4</td><td>Simulation of IPC Techniques</td><td></td><td></td></tr></tbody></table>`}
+function commandTranscript(item,s){const user=slug(s.name);let lines=[];for(const x of item.commands){lines.push(`<span class="prompt">${esc(user)}@os-lab:~/`+esc(user)+`/OSLab$</span> ${esc(fill(x.command,s))}`);if(x.result) lines.push(esc(fill(x.result,s)));}return lines.join('\n')}
+function commandBlock(item,s){const commandRows=item.commands.map(x=>`<li><code>${esc(fill(x.command,s))}</code> - ${esc(x.effect)}</li>`).join('');return block(`<div class="command-card"><h3>${esc(item.no)}. Command Name: ${esc(item.question)}</h3><div class="cmd-grid"><div class="cmd-label">Usage:</div><div>${esc(item.usage)}</div><div class="cmd-label">Syntax:</div><div><code>${esc(item.syntax)}</code></div></div><div class="commands-used"><b>Commands Used and Effect:</b><ol>${commandRows}</ol></div><div class="terminal-wrap"><div class="terminal-label">Output:</div><div class="terminal"><div class="term-title">${esc(slug(s.name))}@os-lab: /home/${esc(slug(s.name))}/OSLab</div><pre class="term-body">${commandTranscript(item,s)}</pre></div></div></div>`)}
+function programBlocks(item,s){const blocks=[];blocks.push(block(`<p class="program-question">${esc(item.question)}</p>`));blocks.push(block(`<div class="section-title">Theory:</div><div class="theory-box">${item.theory.map(p=>`<p style="margin:0">${esc(p)}</p>`).join('')}</div>`));const code=fill(item.code,s).split('\n');code.forEach((line,i)=>blocks.push(block(`${i===0?'<div class="section-title">Code:</div>':''}<pre class="plain-code">${line===''?'&nbsp;':esc(line)}</pre>`,'code-line')));if(item.output){const user=slug(s.name);blocks.push(block(`<div class="program-output"><div class="section-title">Output:</div><div class="terminal"><div class="term-title">/home/${esc(user)}/OSLab/${esc(item.filename.replace(/\.c$/,''))}</div><pre class="term-body"><span class="prompt">${esc(user)}@os-lab:~/`+esc(user)+`/OSLab$</span> ./${esc(item.filename.replace(/\.c$/,''))}\n${esc(fill(item.output,s))}</pre></div></div>`))}return blocks}
+function render(){const s=student(),container=document.getElementById('pages');container.innerHTML='';fixedPage(container,coverHtml(s));fixedPage(container,indexHtml());const commands=ITEMS.filter(x=>x.kind==='command');const cmdBlocks=[block('<div class="lab-heading">Lab 1: Learning basic Linux commands</div>')];commands.forEach(x=>cmdBlocks.push(commandBlock(x,s)));paginate(container,cmdBlocks);const groups=[['2'],['3'],['4(a)','4(b)','4(c)','4(d)']];for(const group of groups){const title=group[0]==='2'?'Lab 2: Process Creation and Termination':group[0]==='3'?'Lab 3: Thread Creation and Termination':'Lab 4: Simulation of IPC Techniques';const blocks=[block(`<div class="lab-heading">${title}</div>`)];for(const no of group){const item=ITEMS.find(x=>x.no===no);blocks.push(...programBlocks(item,s));}paginate(container,blocks)}}
+['nameIn','rollIn','sectionIn','toIn','dateIn','collegeIn'].forEach(id=>document.getElementById(id).addEventListener('input',render));render();
+</script>
+</body></html>
