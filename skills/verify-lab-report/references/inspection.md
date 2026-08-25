@@ -41,11 +41,21 @@ A submission may spread requirements across several files, such as a main report
 Match evidence to the source wording:
 
 - "output" can be satisfied by readable output evidence.
-- "screenshot of output" requires an image or captured-screen artifact, not merely typed output text.
+- "screenshot of output" may be satisfied by a faithful simulated terminal or generated result pane when the report intentionally uses HTML/CSS output capture instead of bitmap screenshots. Judge the evidence by fidelity, not by whether it is an image.
 - "draw" or "design" requires the requested visual representation when the question asks for one.
 - "show all steps" requires the actual sequence of steps, not only a final result.
 - "complete code" requires the complete program, not a fragment or pseudocode.
 - "cite in IEEE style" requires in-text citation markers plus a corresponding IEEE-style reference list.
 - a formatting rule requires inspection of the final printable or document layout when possible.
+### Simulated terminal and result-pane evidence
+
+Treat a simulated terminal, console, shell, command prompt, phpMyAdmin-style result pane, or similar generated output block as screenshot-equivalent evidence when all of these are true:
+
+- it is clearly presented as the output for the matching question, command, program, or query;
+- the visible command, input, output, labels, and student-specific tokens match what the report says was run;
+- the output is complete enough to satisfy the source requirement and is not a placeholder, example shell, or empty pane;
+- when the report can be executed or has deterministic generated data, the displayed output agrees with that executable or generated result.
+
+A real bitmap screenshot is not required just because the source uses the word "screenshot". Do not downgrade a faithful simulated terminal to `PARTIAL` or `MISSING` solely because HTML/CSS produced it. If output fidelity itself cannot be established, use `UNVERIFIABLE` for that fidelity question rather than failing the representation format.
 
 When the available artifact cannot prove the required evidence type, use `UNVERIFIABLE` or `PARTIAL` instead of guessing.

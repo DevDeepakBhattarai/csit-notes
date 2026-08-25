@@ -540,6 +540,10 @@
         <label for="sectionIn">Section</label>
         <input id="sectionIn" type="text" placeholder="Section">
       </div>
+      <div class="field">
+        <label for="dateIn">Submitted Date</label>
+        <input id="dateIn" type="text" placeholder="e.g. 2083/04/24">
+      </div>
     </div>
     <div class="actions">
       <label class="theme-toggle">
@@ -727,6 +731,7 @@
     }
 
     function buildIndexBlocks() {
+      const submittedDate = getValue("dateIn", "____/__/__");
       return [makeBlock(`
         <h2 class="index-title">Contents Page</h2>
         <div class="index-subtitle">Subject: Operating System<br>List of Lab Works</div>
@@ -738,7 +743,7 @@
             <tr>
               <td>${esc(item.no)}</td>
               <td>${esc(item.title)}</td>
-              <td class="submitted-date-cell">2083/04/__</td>
+              <td class="submitted-date-cell">${esc(submittedDate)}</td>
               <td class="signature-cell"></td>
             </tr>`).join("")}</tbody>
         </table>`)];
@@ -757,7 +762,7 @@
       });
     }
 
-    ["nameIn", "rollIn", "sectionIn", "themeIn"].forEach((id) => {
+    ["nameIn", "rollIn", "sectionIn", "dateIn", "themeIn"].forEach((id) => {
       document.getElementById(id).addEventListener("input", renderReport);
       document.getElementById(id).addEventListener("change", renderReport);
     });

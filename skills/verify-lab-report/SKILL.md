@@ -49,7 +49,7 @@ For each ledger row, find concrete evidence in the report and record its locatio
 - `MISSING`: no matching evidence exists.
 - `UNVERIFIABLE`: the artifact or available tools cannot establish whether the requirement is satisfied.
 
-Question text by itself is not an answer. A heading named "Diagram" with no diagram is not a diagram. A styled terminal pane is output text, not automatically a captured screenshot. A placeholder field for student details is not proof that the submitted copy contains those details.
+Question text by itself is not an answer. A heading named "Diagram" with no diagram is not a diagram. For terminal-style or generated output panes, apply the screenshot-equivalence rules in [references/inspection.md](references/inspection.md); do not fail valid output evidence merely because HTML/CSS renders it instead of an image. A placeholder field for student details is not proof that the submitted copy contains those details.
 
 When a requirement must repeat, check every applicable item. One correct footer, screenshot, citation, or output does not satisfy a rule that applies to all questions.
 

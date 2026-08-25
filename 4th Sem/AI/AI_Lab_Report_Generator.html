@@ -595,6 +595,10 @@
         <label for="sectionIn">Section</label>
         <input id="sectionIn" type="text" placeholder="Section">
       </div>
+      <div class="field">
+        <label for="dateIn">Submitted Date</label>
+        <input id="dateIn" type="text" placeholder="e.g. 2083/04/24">
+      </div>
     </div>
     <div class="actions">
       <label class="theme-toggle">
@@ -1008,10 +1012,10 @@ Lab Number: Lab I - DLS`
           title: "Weighted graph with heuristic values for A*",
           code: `flowchart LR
   A["A h=6"] -->|2| B["B h=4"]
-  A -->|5| C["C h=3"]
+  A -->|5| C["C h=5"]
   B -->|4| D["D h=2"]
   B -->|3| E["E h=1"]
-  C -->|2| F["F h=2"]
+  C -->|2| F["F h=3"]
   D -->|2| G["G h=0"]
   E -->|1| G
   F -->|5| G
@@ -1111,9 +1115,9 @@ Lab Number: Lab I - A Star`
         diagram: {
           title: "State graph for hill climbing",
           code: `flowchart LR
-  A["A score=1"] --> B["B score=3"]
-  A --> C["C score=2"]
-  B --> D["D score=4"]
+  A["A score=2"] --> B["B score=4"]
+  A --> C["C score=3"]
+  B --> D["D score=1"]
   B --> E["E score=6"]
   C --> F["F score=5"]
   E --> G["G score=8"]
@@ -1134,7 +1138,7 @@ int main() {
     graph[0][1] = graph[0][2] = 1;
     graph[1][3] = graph[1][4] = 1;
     graph[2][5] = 1;
-    graph[4][6] = 1;
+    graph[4][6] = graph[5][6] = 1;
 
     int current = 0;
     int path[7], count = 0;
@@ -1294,9 +1298,7 @@ Lab Number: Lab I - Minimax Alpha Beta`
         code: String.raw`print_identity :-
     write('Name: {NAME}'), nl,
     write('Roll No: {ROLL}'), nl,
-    write('Lab Number: Lab II - Display Name'), nl.
-
-:- initialization(print_identity).`,
+    write('Lab Number: Lab II - Display Name'), nl.`,
         output: String.raw`?- print_identity.
 Name: {NAME}
 Roll No: {ROLL}
@@ -1403,7 +1405,13 @@ parent(sue, angela).
 
 student_name('{NAME}').
 roll_no('{ROLL}').
-lab_number('Lab II - Family Facts').`,
+lab_number('Lab II - Family Facts').
+
+print_identity :-
+    student_name(Name), roll_no(Roll), lab_number(Lab),
+    write('Name: '), write(Name), nl,
+    write('Roll No: '), write(Roll), nl,
+    write('Lab Number: '), write(Lab), nl.`,
         output: String.raw`?- parent(tom, jim).
 false.
 
@@ -1416,9 +1424,11 @@ true.
 ?- parent(liz, pat).
 false.
 
+?- print_identity.
 Name: {NAME}
 Roll No: {ROLL}
-Lab Number: Lab II - Family Facts`
+Lab Number: Lab II - Family Facts
+true.`
       },
       {
         no: "II.5",
@@ -1454,7 +1464,13 @@ granddaughter(GD, GP) :- grandparent(GP, GD), female(GD).
 
 student_name('{NAME}').
 roll_no('{ROLL}').
-lab_number('Lab II - Family Queries').`,
+lab_number('Lab II - Family Queries').
+
+print_identity :-
+    student_name(Name), roll_no(Roll), lab_number(Lab),
+    write('Name: '), write(Name), nl,
+    write('Roll No: '), write(Roll), nl,
+    write('Lab Number: '), write(Lab), nl.`,
         output: String.raw`?- male(X).
 X = tom ; X = bob ; X = jim ; X = dave.
 
@@ -1491,9 +1507,11 @@ X = mary ; X = ann ; X = sue.
 ?- uncle(X, angela).
 false.
 
+?- print_identity.
 Name: {NAME}
 Roll No: {ROLL}
-Lab Number: Lab II - Family Queries`
+Lab Number: Lab II - Family Queries
+true.`
       },
       {
         no: "II.6",
@@ -1584,7 +1602,13 @@ happy(Student) :- pass(Student).
 
 student_name('{NAME}').
 roll_no('{ROLL}').
-lab_number('Lab II - Study Pass Facts').`,
+lab_number('Lab II - Study Pass Facts').
+
+print_identity :-
+    student_name(Name), roll_no(Roll), lab_number(Lab),
+    write('Name: '), write(Name), nl,
+    write('Roll No: '), write(Roll), nl,
+    write('Lab Number: '), write(Lab), nl.`,
         output: String.raw`?- pass(anish).
 true.
 
@@ -1597,9 +1621,11 @@ false.
 ?- did_not_study(X).
 X = rekha ; X = bibek.
 
+?- print_identity.
 Name: {NAME}
 Roll No: {ROLL}
-Lab Number: Lab II - Study Pass Facts`
+Lab Number: Lab II - Study Pass Facts
+true.`
       },
       {
         no: "III.1",
@@ -1792,7 +1818,7 @@ print("Name: {NAME}")
 print("Roll No: {ROLL}")
 print("Lab Number: Lab IV - Perceptron")`,
         output: String.raw`AND gate
-Weights: [0.4, 0.2] Bias: -0.6
+Weights: [0.4, 0.2] Bias: -0.4
 [0, 0] => 0
 [0, 1] => 0
 [1, 0] => 0
@@ -1893,10 +1919,10 @@ print("Name: {NAME}")
 print("Roll No: {ROLL}")
 print("Lab Number: Lab IV - XOR Backpropagation")`,
         output: String.raw`XOR results after training
-[0, 0] => 0.029 class 0
-[0, 1] => 0.971 class 1
-[1, 0] => 0.971 class 1
-[1, 1] => 0.036 class 0
+[0, 0] => 0.021 class 0
+[0, 1] => 0.978 class 1
+[1, 0] => 0.978 class 1
+[1, 1] => 0.028 class 0
 Name: {NAME}
 Roll No: {ROLL}
 Lab Number: Lab IV - XOR Backpropagation`
@@ -2062,10 +2088,10 @@ print("Roll No: {ROLL}")
 print("Lab Number: Lab IV - Genetic Algorithm")`,
         output: String.raw`Generation 1 Best: 11101 x= 29 fitness= 841
 Generation 2 Best: 11101 x= 29 fitness= 841
-Generation 3 Best: 11111 x= 31 fitness= 961
-Generation 4 Best: 11111 x= 31 fitness= 961
-Generation 5 Best: 11111 x= 31 fitness= 961
-Final Best Chromosome: 11111
+Generation 3 Best: 11101 x= 29 fitness= 841
+Generation 4 Best: 11101 x= 29 fitness= 841
+Generation 5 Best: 11101 x= 29 fitness= 841
+Final Best Chromosome: 11101
 Name: {NAME}
 Roll No: {ROLL}
 Lab Number: Lab IV - Genetic Algorithm`
@@ -2127,15 +2153,10 @@ print("Name: {NAME}")
 print("Roll No: {ROLL}")
 print("Lab Number: Lab IV - NLTK Tasks")`,
         output: String.raw`Sentences: ['Artificial Intelligence is changing education.', 'Students learn better when examples are practical.']
-
 Words: ['Artificial', 'Intelligence', 'is', 'changing', 'education', '.', 'Students', 'learn', 'better', 'when', 'examples', 'are', 'practical', '.']
-
 Filtered Words: ['Artificial', 'Intelligence', 'changing', 'education', 'Students', 'learn', 'better', 'examples', 'practical']
-
 Stemmed Words: ['artifici', 'intellig', 'chang', 'educ', 'student', 'learn', 'better', 'exampl', 'practic']
-
-POS Tags: [('Artificial', 'JJ'), ('Intelligence', 'NNP'), ('is', 'VBZ'), ('changing', 'VBG'), ('education', 'NN'), ('.', '.'), ('Students', 'NNS'), ('learn', 'VBP'), ('better', 'RBR'), ('when', 'WRB'), ('examples', 'NNS'), ('are', 'VBP'), ('practical', 'JJ'), ('.', '.')]
-
+POS Tags: [('Artificial', 'JJ'), ('Intelligence', 'NNP'), ('is', 'VBZ'), ('changing', 'VBG'), ('education', 'NN'), ('.', '.'), ('Students', 'NNS'), ('learn', 'VBP'), ('better', 'JJR'), ('when', 'WRB'), ('examples', 'NNS'), ('are', 'VBP'), ('practical', 'JJ'), ('.', '.')]
 Name: {NAME}
 Roll No: {ROLL}
 Lab Number: Lab IV - NLTK Tasks`
@@ -2351,6 +2372,7 @@ Lab Number: Lab IV - NLTK Tasks`
     }
 
     function buildIndexBlocks() {
+      const submittedDate = getValue("dateIn", "____/__/__");
       const blocks = [makeBlock(`
         <h2 class="index-title">Index</h2>
         <table class="index-table">
@@ -2361,7 +2383,7 @@ Lab Number: Lab IV - NLTK Tasks`
             <tr>
               <td>${esc(item.no)}</td>
               <td>${esc(item.title)}</td>
-              <td class="submitted-date-cell">2083/04/__</td>
+              <td class="submitted-date-cell">${esc(submittedDate)}</td>
               <td class="signature-cell"></td>
             </tr>`).join("")}</tbody>
         </table>`)];
@@ -2418,7 +2440,7 @@ Lab Number: Lab IV - NLTK Tasks`
       renderMermaidDiagrams(cycle);
     }
 
-    ["nameIn", "rollIn", "sectionIn", "themeIn"].forEach((id) => {
+    ["nameIn", "rollIn", "sectionIn", "dateIn", "themeIn"].forEach((id) => {
       document.getElementById(id).addEventListener("input", renderReport);
       document.getElementById(id).addEventListener("change", renderReport);
     });
