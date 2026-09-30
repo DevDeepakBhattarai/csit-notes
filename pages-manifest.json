@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-18T07:28:11.952793+00:00",
-  "count": 19,
+  "generatedAt": "2026-09-30T14:17:32.226381+00:00",
+  "count": 23,
   "files": [
     {
       "path": "3rd Sem/Computer Architecture/Report/CSC213_CA_PDF_Generator_FIXED.html",
@@ -27,10 +27,26 @@
       "topLevel": "4th Sem"
     },
     {
+      "path": "4th Sem/Computer Network/Computer_Network_Lab_Report_Margins.html",
+      "url": "4th%20Sem/Computer%20Network/Computer_Network_Lab_Report_Margins.html",
+      "name": "Computer_Network_Lab_Report_Margins.html",
+      "title": "Lab Report - Blank Margin Paper",
+      "directory": "4th Sem/Computer Network",
+      "topLevel": "4th Sem"
+    },
+    {
       "path": "4th Sem/Computer Network/Computer_Network_Lab_Report_Semi_Printable.html",
       "url": "4th%20Sem/Computer%20Network/Computer_Network_Lab_Report_Semi_Printable.html",
       "name": "Computer_Network_Lab_Report_Semi_Printable.html",
       "title": "Computer Network Lab Report - Semi Printable",
+      "directory": "4th Sem/Computer Network",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/Computer Network/router-cli-configurations.html",
+      "url": "4th%20Sem/Computer%20Network/router-cli-configurations.html",
+      "name": "router-cli-configurations.html",
+      "title": "Cisco Router CLI Configurations — Questions 8–12",
       "directory": "4th Sem/Computer Network",
       "topLevel": "4th Sem"
     },
@@ -123,10 +139,26 @@
       "topLevel": "4th Sem"
     },
     {
+      "path": "4th Sem/OS/Linux_Case_Study_Report.html",
+      "url": "4th%20Sem/OS/Linux_Case_Study_Report.html",
+      "name": "Linux_Case_Study_Report.html",
+      "title": "Linux Case Study",
+      "directory": "4th Sem/OS",
+      "topLevel": "4th Sem"
+    },
+    {
       "path": "4th Sem/OS/OS_Lab_Report_Generator.html",
       "url": "4th%20Sem/OS/OS_Lab_Report_Generator.html",
       "name": "OS_Lab_Report_Generator.html",
       "title": "Operating System Lab Report Generator",
+      "directory": "4th Sem/OS",
+      "topLevel": "4th Sem"
+    },
+    {
+      "path": "4th Sem/OS/OS_Lab_Report_Part2.html",
+      "url": "4th%20Sem/OS/OS_Lab_Report_Part2.html",
+      "name": "OS_Lab_Report_Part2.html",
+      "title": "Operating System Lab Report - Part 2",
       "directory": "4th Sem/OS",
       "topLevel": "4th Sem"
     },

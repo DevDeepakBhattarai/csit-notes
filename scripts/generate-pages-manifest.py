@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
-EXCLUDED_PARTS = {'.git', '.github', 'skills', 'scripts'}
+EXCLUDED_PARTS = {'.git', '.github', '_site', 'skills', 'scripts'}
 EXCLUDED_NAME_PATTERNS = (
     'Editing DevDeepakBhattarai_README.md at main',
 )
